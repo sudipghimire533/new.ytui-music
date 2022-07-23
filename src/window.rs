@@ -43,9 +43,9 @@ mod tests {
                         "preferred": "100%"
                     }
         }"##
-        .replacen(" ", "", usize::MAX)
+        .replacen(' ', "", usize::MAX)
         .replacen("\r\n", "", usize::MAX)
-        .replacen("\n", "", usize::MAX);
+        .replacen('\n', "", usize::MAX);
 
         assert_eq!(expected_window, from_str(&expected_window_str).unwrap());
         assert_eq!(expected_window_str, to_string(&expected_window).unwrap());

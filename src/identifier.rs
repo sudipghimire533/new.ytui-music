@@ -21,22 +21,17 @@ pub enum Identifier {
 
 impl Identifier {
     pub fn is_custom(&self) -> bool {
-        match self {
-            Identifier::Custom(..) => true,
-            _ => false,
-        }
+        matches!(self, Identifier::Custom(..))
     }
 
     pub fn is_reserved(&self) -> bool {
-        !self.is_custom()
+        matches!(self, Identifier::Reserved(..))
     }
 
     fn is_valid_identifier(identifier: &str) -> bool {
         identifier
             .chars()
-            .all(|c| {
-                c.is_ascii_alphabetic() || c == '_'
-            })
+            .all(|c| c.is_ascii_alphabetic() || c == '_')
     }
 }
 
@@ -53,8 +48,8 @@ impl Display for Identifier {
 impl<'a> From<&'a Identifier> for &'a str {
     fn from(identifier: &'a Identifier) -> Self {
         match identifier {
-            Identifier::Custom(id) => &id,
-            Identifier::Reserved(id) => &id,
+            Identifier::Custom(id) => id,
+            Identifier::Reserved(id) => id,
         }
     }
 }
@@ -75,7 +70,7 @@ impl TryFrom<String> for Identifier {
 
             // If not verify that it is valid identifier:
             // should contains only ascii alphabet or _
-            None if src.len() > 0 => Identifier::is_valid_identifier(&src)
+            None if !src.is_empty() => Identifier::is_valid_identifier(&src)
                 .then_some(Identifier::Custom(src))
                 .ok_or("Invalid identifier"),
 
@@ -105,8 +100,8 @@ mod test {
             assert_eq!(
                 Ok(()),
                 Identifier::is_valid_identifier(identifier)
-                .then_some(())
-                .ok_or(format!("{identifier} is not valid identifier"))
+                    .then_some(())
+                    .ok_or(format!("{identifier} is not valid identifier"))
             );
         }
     }

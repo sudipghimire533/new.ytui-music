@@ -10,6 +10,11 @@ pub enum Direction {
     Horizontal,
 }
 
+// Convert Direction to static string
+// Here it is intended to implement Into<> over From<>
+// Since for reverse there is chance of failure
+// so TryFrom is implemeneted later
+#[allow(clippy::from_over_into)]
 impl Into<&'static str> for Direction {
     fn into(self) -> &'static str {
         match self {

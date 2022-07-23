@@ -1,9 +1,8 @@
-use std::collections::HashMap;
 use crate::direction::Direction;
 use crate::identifier::Identifier;
 use crate::size::Size;
 use serde::{Deserialize, Serialize};
-
+use std::collections::HashMap;
 
 #[derive(Debug, Clone, Eq, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
@@ -31,10 +30,10 @@ mod serde_helper {
     use super::*;
     pub(super) type ItemTreeAsVec = Vec<Item>;
 
-    fn construct_tree<'b>(
+    fn construct_tree(
         item: Item,
         parent: Option<Box<ItemTree>>,
-        item_map: &'b HashMap<Identifier, Item>,
+        item_map: &HashMap<Identifier, Item>,
     ) -> Result<ItemTree, String> {
         let mut item_tree = Box::new(ItemTree {
             item: item.clone(),
@@ -42,27 +41,19 @@ mod serde_helper {
             childs: vec![],
         });
 
-        let child_containers = item
-            .childs
-            .iter()
-            .filter(|v| v.is_custom());
+        let child_containers = item.childs.iter().filter(|v| v.is_custom());
 
         for child_identifier in child_containers {
             let child_item = item_map
                 .get(child_identifier)
                 .ok_or(format!("Cannot find element {child_identifier}"))?;
-            let child_tree = construct_tree(
-                child_item.clone(),
-                Some(item_tree.clone()),
-                item_map
-            )?;
+            let child_tree = construct_tree(child_item.clone(), Some(item_tree.clone()), item_map)?;
 
             item_tree.childs.push(Box::new(child_tree));
         }
 
         Ok(*item_tree)
     }
-
 
     // Convert Item vector to tree
     // First item in the vector will be treated as super root
@@ -84,9 +75,7 @@ mod serde_helper {
 
             let item_map = item_vec
                 .into_iter()
-                .map(|item| {
-                    (item.identifier.clone(), item)
-                })
+                .map(|item| (item.identifier.clone(), item))
                 .collect::<HashMap<Identifier, Item>>();
 
             construct_tree(root_item, None, &item_map)
@@ -94,12 +83,11 @@ mod serde_helper {
         }
     }
 
-
     fn add_me_to_vec(tree: &ItemTree, target: &mut ItemTreeAsVec) {
         target.push(tree.item.clone());
-        
+
         for child in tree.childs.iter() {
-            add_me_to_vec(&child, target)
+            add_me_to_vec(child, target)
         }
     }
 

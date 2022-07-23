@@ -1,42 +1,7 @@
-use crate::item::Item;
 use crate::item::ItemTree;
 use crate::popup::Popup;
 use crate::window::Window;
-use crate::identifier::Identifier;
-use std::collections::HashMap;
-use std::borrow::Cow;
 use serde::{Deserialize, Serialize};
-
-#[derive(Default, Debug)]
-pub struct UIBuilder {
-    pub window: Option<Window>,
-    pub popup: Option<Popup>,
-    pub items: Vec<Item>,
-}
-
-impl UIBuilder {
-    pub fn window(&mut self, window: Window) -> &mut Self {
-        (*self).window = Some(window);
-        self
-    }
-
-    pub fn popup(&mut self, popup: Popup) -> &mut Self {
-        (*self).popup = Some(popup);
-        self
-    }
-
-    pub fn extend_items(&mut self, items: Vec<Item>) -> &mut Self {
-        (*self).items.extend(items);
-        self
-    }
-
-    pub fn set_items(&mut self, items: Vec<Item>) -> &mut Self {
-        (*self).items = items;
-        self
-    }
-
-}
-
 
 #[derive(Debug, Clone, Eq, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
@@ -46,7 +11,6 @@ pub struct UI {
     popup: Popup,
     items: ItemTree,
 }
-
 
 #[cfg(test)]
 mod tests {
@@ -59,9 +23,9 @@ mod tests {
     #[test]
     fn layout_file_valid() {
         let expected_layout_str = include_str!("../layout.json")
-            .replacen(" ", "", usize::MAX)
+            .replacen(' ', "", usize::MAX)
             .replacen("\r\n", "", usize::MAX)
-            .replacen("\n", "", usize::MAX);
+            .replacen('\n', "", usize::MAX);
 
         let expected_layout = UI {
             window: Window {
@@ -179,7 +143,9 @@ mod tests {
                     childs: vec!["Blue_element".try_into().unwrap()],
                     split: Direction::Horizontal,
                 },
-            ].try_into().unwrap(),
+            ]
+            .try_into()
+            .unwrap(),
         };
 
         assert_eq!(
