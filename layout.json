@@ -23,7 +23,7 @@
       "preferred": "80%"
     }
   },
-  "grid": [
+  "items": [
     {
       "identifier": "root",
       "size": {
@@ -35,17 +35,7 @@
       "split": "vertical"
     },
     {
-      "identifier": "red_element_custom",
-      "size": {
-        "minimum": "5u",
-        "maximum": "5u",
-        "preferred": "5u"
-      },
-      "childs": ["Red_element"],
-      "split": "vertical"
-    },
-    {
-      "identifier": "top_rea",
+      "identifier": "top_area",
       "size": {
         "minimum": "20u",
         "maximum": "100%",
@@ -95,9 +85,7 @@
         "maximum": "33%",
         "preferred": "33%"
       },
-      "childs": [
-        "Yellow_element"
-      ],
+      "childs": ["Yellow_element"],
       "split": "horizontal"
     },
     {
@@ -109,6 +97,16 @@
       },
       "childs": ["Blue_element"],
       "split": "horizontal"
+    },
+    {
+      "identifier": "red_element_custom",
+      "size": {
+        "minimum": "5u",
+        "maximum": "5u",
+        "preferred": "5u"
+      },
+      "childs": ["Red_element"],
+      "split": "vertical"
     }
   ]
 }
