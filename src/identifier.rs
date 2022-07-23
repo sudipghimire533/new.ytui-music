@@ -1,5 +1,5 @@
 use serde::{Deserialize, Serialize};
-use std::borrow::Cow;
+use std::{borrow::Cow, fmt::Display};
 
 const RESERVED_IDENTIFIER: &[&str] = &[
     "Red_element",
@@ -8,7 +8,7 @@ const RESERVED_IDENTIFIER: &[&str] = &[
     "Yellow_element",
 ];
 
-#[derive(Debug, Clone, Eq, PartialEq, Serialize, Deserialize)]
+#[derive(Debug, Clone, Eq, PartialEq, Serialize, Deserialize, Hash)]
 #[serde(rename_all = "camelCase")]
 #[serde(try_from = "String")]
 #[serde(into = "String")]
@@ -16,6 +16,16 @@ const RESERVED_IDENTIFIER: &[&str] = &[
 pub enum Identifier {
     Custom(String),
     Reserved(Cow<'static, str>),
+}
+
+impl Display for Identifier {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let id_str = match self {
+            Identifier::Reserved(r) => r,
+            Identifier::Custom(c) => c.as_str(),
+        };
+        write!(f, "{}", id_str)
+    }
 }
 
 impl<'a> From<&'a Identifier> for &'a str {

@@ -1,7 +1,41 @@
-use crate::item::Grid;
+use crate::item::Item;
+use crate::item::ItemTree;
 use crate::popup::Popup;
 use crate::window::Window;
+use crate::identifier::Identifier;
+use std::collections::HashMap;
+use std::borrow::Cow;
 use serde::{Deserialize, Serialize};
+
+#[derive(Default)]
+pub struct UIBuilder {
+    pub window: Option<Window>,
+    pub popup: Option<Popup>,
+    pub items: Vec<Item>,
+}
+
+impl UIBuilder {
+    pub fn window(&mut self, window: Window) -> &mut Self {
+        (*self).window = Some(window);
+        self
+    }
+
+    pub fn popup(&mut self, popup: Popup) -> &mut Self {
+        (*self).popup = Some(popup);
+        self
+    }
+
+    pub fn extend_items(&mut self, items: Vec<Item>) -> &mut Self {
+        (*self).items.extend(items);
+        self
+    }
+
+    pub fn set_items(&mut self, items: Vec<Item>) -> &mut Self {
+        (*self).items = items;
+        self
+    }
+
+}
 
 #[derive(Debug, Clone, Eq, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
@@ -9,7 +43,61 @@ use serde::{Deserialize, Serialize};
 struct UI {
     window: Window,
     popup: Popup,
-    grid: Grid,
+    items: HashMap<Identifier, Item>,
+    #[serde(skip)]
+    item_tree: ItemTree,
+}
+
+impl UI {
+    fn get_root_identifier(&self) -> &Identifier {
+        &self.window.render
+    }
+
+    pub fn get_window(&self) -> &Window {
+        &self.window
+    }
+
+    pub fn get_popup(&self) -> &Popup {
+        &self.popup
+    }
+
+    pub fn get_items(&self) -> &HashMap<Identifier, Item> {
+        &self.items
+    }
+
+    pub fn get_item_tree(&self) -> &ItemTree {
+        &self.item_tree
+    }
+
+    pub fn set_items(
+        &mut self,
+        items: HashMap<Identifier, Item>
+    ) -> Result<&mut Self, Cow<'static, str>> {
+        (*self).item_tree = ItemTree::new(
+                self.get_root_identifier().clone(),
+                &items
+            )
+            .map_err(|e| {
+                format!("While setting items in tree layout: {e:?}").to_owned()
+            })?;
+        (*self).items = items;
+
+        Ok(self)
+    }
+
+    pub fn set_items_vec(
+        &mut self,
+        items: Vec<Item>
+        ) -> Result<&mut Self, Cow<'static, str>> {
+        let item_map = items
+            .into_iter()
+            .map(|v| {
+                (v.identifier.clone(), v)
+            })
+            .collect();
+        
+        self.set_items(item_map)
+    }
 }
 
 #[cfg(test)]
@@ -54,7 +142,7 @@ mod tests {
                     minimum: Length::Relative(80),
                 },
             },
-            grid: vec![
+            items: vec![
                 Item {
                     identifier: "root".try_into().unwrap(),
                     size: Size {
@@ -146,6 +234,7 @@ mod tests {
                     split: Direction::Horizontal,
                 },
             ],
+            item_tree: Default::default(),
         };
 
         assert_eq!(
