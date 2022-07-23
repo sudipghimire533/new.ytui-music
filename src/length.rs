@@ -1,5 +1,26 @@
 use serde::{Deserialize, Serialize};
 
+#[derive(Clone, Copy, Debug, Eq, PartialEq, PartialOrd, Ord)]
+pub struct AbsoluteLength(u16);
+
+impl From<AbsoluteLength> for u16 {
+    fn from(len: AbsoluteLength) -> Self {
+        len.get()
+    }
+}
+
+impl From<u16> for AbsoluteLength {
+    fn from(val: u16) -> Self {
+        AbsoluteLength(val)
+    }
+}
+
+impl AbsoluteLength {
+    pub fn get(self) -> u16 {
+        self.0
+    }
+}
+
 #[derive(Debug, Clone, Eq, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 #[serde(try_from = "&str")]
@@ -41,18 +62,11 @@ impl TryFrom<&str> for Length {
 }
 
 impl Length {
-    pub fn get_absolute(&self, parent_length: u16) -> u16 {
+    pub fn get_absolute(&self, parent_length: AbsoluteLength) -> AbsoluteLength {
         match self {
-            Length::Absolute(l) => *l,
-            Length::Relative(l) => parent_length * l / 100,
+            Length::Absolute(l) => AbsoluteLength(*l),
+            Length::Relative(l) => AbsoluteLength(<_ as Into<u16>>::into(parent_length) * l / 100),
         }
-    }
-
-    pub fn make_absolute(&mut self, parent_length: u16) -> u16 {
-        let absolute_len = self.get_absolute(parent_length);
-        (*self) = Length::Absolute(absolute_len);
-
-        absolute_len
     }
 }
 
