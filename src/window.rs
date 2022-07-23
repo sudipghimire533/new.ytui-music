@@ -1,4 +1,3 @@
-use crate::identifier::Identifier;
 use crate::size::Size;
 use serde::{Deserialize, Serialize};
 
@@ -6,7 +5,6 @@ use serde::{Deserialize, Serialize};
 #[serde(rename_all = "camelCase")]
 #[serde(deny_unknown_fields)]
 pub struct Window {
-    pub render: Identifier,
     pub height: Size,
     pub width: Size,
 }
@@ -19,11 +17,9 @@ mod tests {
     #[test]
     fn serialization_and_deserialization() {
         use serde_json::{from_str, to_string};
-        use Identifier::Custom;
         use Length::{Absolute, Relative};
 
         let expected_window = Window {
-            render: Custom("root".to_string()),
             height: Size {
                 minimum: Absolute(300),
                 maximum: Absolute(2000),
@@ -36,7 +32,6 @@ mod tests {
             },
         };
         let expected_window_str = r##"{
-                    "render":"root",
                     "height":{
                         "minimum": "300u",
                         "maximum": "2000u",

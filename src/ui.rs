@@ -7,7 +7,7 @@ use std::collections::HashMap;
 use std::borrow::Cow;
 use serde::{Deserialize, Serialize};
 
-#[derive(Default)]
+#[derive(Default, Debug)]
 pub struct UIBuilder {
     pub window: Option<Window>,
     pub popup: Option<Popup>,
@@ -37,74 +37,21 @@ impl UIBuilder {
 
 }
 
+
 #[derive(Debug, Clone, Eq, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 #[serde(deny_unknown_fields)]
-struct UI {
+pub struct UI {
     window: Window,
     popup: Popup,
-    items: HashMap<Identifier, Item>,
-    #[serde(skip)]
-    item_tree: ItemTree,
+    items: ItemTree,
 }
 
-impl UI {
-    fn get_root_identifier(&self) -> &Identifier {
-        &self.window.render
-    }
-
-    pub fn get_window(&self) -> &Window {
-        &self.window
-    }
-
-    pub fn get_popup(&self) -> &Popup {
-        &self.popup
-    }
-
-    pub fn get_items(&self) -> &HashMap<Identifier, Item> {
-        &self.items
-    }
-
-    pub fn get_item_tree(&self) -> &ItemTree {
-        &self.item_tree
-    }
-
-    pub fn set_items(
-        &mut self,
-        items: HashMap<Identifier, Item>
-    ) -> Result<&mut Self, Cow<'static, str>> {
-        (*self).item_tree = ItemTree::new(
-                self.get_root_identifier().clone(),
-                &items
-            )
-            .map_err(|e| {
-                format!("While setting items in tree layout: {e:?}").to_owned()
-            })?;
-        (*self).items = items;
-
-        Ok(self)
-    }
-
-    pub fn set_items_vec(
-        &mut self,
-        items: Vec<Item>
-        ) -> Result<&mut Self, Cow<'static, str>> {
-        let item_map = items
-            .into_iter()
-            .map(|v| {
-                (v.identifier.clone(), v)
-            })
-            .collect();
-        
-        self.set_items(item_map)
-    }
-}
 
 #[cfg(test)]
 mod tests {
     use super::*;
     use crate::direction::Direction;
-    use crate::identifier::Identifier;
     use crate::item::Item;
     use crate::length::Length;
     use crate::size::Size;
@@ -118,7 +65,6 @@ mod tests {
 
         let expected_layout = UI {
             window: Window {
-                render: Identifier::Custom("root".into()),
                 height: Size {
                     preferred: Length::Relative(100),
                     minimum: Length::Absolute(300),
@@ -167,7 +113,7 @@ mod tests {
                     split: Direction::Vertical,
                 },
                 Item {
-                    identifier: "top_rea".try_into().unwrap(),
+                    identifier: "top_area".try_into().unwrap(),
                     size: Size {
                         preferred: Length::Relative(100),
                         minimum: Length::Absolute(20),
@@ -233,8 +179,7 @@ mod tests {
                     childs: vec!["Blue_element".try_into().unwrap()],
                     split: Direction::Horizontal,
                 },
-            ],
-            item_tree: Default::default(),
+            ].try_into().unwrap(),
         };
 
         assert_eq!(

@@ -1,6 +1,5 @@
 {
   "window": {
-    "render": "root",
     "height": {
       "minimum": "300u",
       "maximum": "2000u",

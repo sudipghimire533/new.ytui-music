@@ -15,55 +15,126 @@ pub struct Item {
     pub split: Direction,
 }
 
-
-#[derive(Debug, Clone, Eq, PartialEq)]
+#[derive(Debug, Clone, Eq, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+#[serde(deny_unknown_fields)]
+#[serde(try_from = "serde_helper::ItemTreeAsVec")]
+#[serde(into = "serde_helper::ItemTreeAsVec")]
 pub struct ItemTree {
-    identifier: Identifier,
-    parent: Option<Item>,
-    childs: Vec<Box<ItemTree>>,
+    pub item: Item,
+    #[serde(skip)]
+    pub parent: Option<Box<ItemTree>>,
+    pub childs: Vec<Box<ItemTree>>,
 }
 
-fn construct_tree<'a, 'b>(
-    identifier: Identifier,
-    parent: Option<Item>,
-    item_map: &'b HashMap<Identifier, Item>,
-) -> Result<ItemTree, String> {
-    let item = item_map
-        .get(&identifier)
-        .ok_or(format!("Cannot find: {}", identifier))?;
-    let mut item_tree = ItemTree {
-        identifier,
-        parent,
-        childs: vec![],
-    };
-    for child_identifier in item.childs.iter() {
-        let child_tree = construct_tree(
-            child_identifier.clone(),
-            Some(item.clone()),
-            item_map
-        )?;
+mod serde_helper {
+    use super::*;
+    pub(super) type ItemTreeAsVec = Vec<Item>;
 
-        item_tree.childs.push(Box::new(child_tree));
-    }
-
-    Ok(item_tree)
-}
-
-impl ItemTree {
-    pub fn new(
-        root: Identifier,
-        item_set: &HashMap<Identifier, Item>
-    ) -> Result<Self, String> {
-        construct_tree(root, None, item_set)
-    }
-}
-
-impl Default for ItemTree {
-    fn default() -> Self {
-        ItemTree {
-            identifier: Identifier::Reserved("## uninitilized".into()),
+    fn construct_tree<'b>(
+        item: Item,
+        parent: Option<Box<ItemTree>>,
+        item_map: &'b HashMap<Identifier, Item>,
+    ) -> Result<ItemTree, String> {
+        let mut item_tree = Box::new(ItemTree {
+            item: item.clone(),
+            parent,
             childs: vec![],
-            parent: None,
+        });
+
+        let child_containers = item
+            .childs
+            .iter()
+            .filter(|v| v.is_custom());
+
+        for child_identifier in child_containers {
+            let child_item = item_map
+                .get(child_identifier)
+                .ok_or(format!("Cannot find element {child_identifier}"))?;
+            let child_tree = construct_tree(
+                child_item.clone(),
+                Some(item_tree.clone()),
+                item_map
+            )?;
+
+            item_tree.childs.push(Box::new(child_tree));
+        }
+
+        Ok(*item_tree)
+    }
+
+
+    // Convert Item vector to tree
+    // First item in the vector will be treated as super root
+    // it's child will be read followed by randchild
+    // until whole tree is being built
+    // see comment on impl From<ItemTree> for ItemTreeAsVec
+    // to see expected reverse conversion.
+    // creation will be such that expectation of reverse conversion
+    // holds true
+    impl TryFrom<ItemTreeAsVec> for ItemTree {
+        type Error = String;
+
+        fn try_from(item_vec: ItemTreeAsVec) -> Result<Self, Self::Error> {
+            let root_item = if let Some(root) = item_vec.first() {
+                root.clone()
+            } else {
+                return Err("Empty item set found...".to_string());
+            };
+
+            let item_map = item_vec
+                .into_iter()
+                .map(|item| {
+                    (item.identifier.clone(), item)
+                })
+                .collect::<HashMap<Identifier, Item>>();
+
+            construct_tree(root_item, None, &item_map)
+                .map_err(|e| format!("Constructing tree from item set: {e:?}"))
+        }
+    }
+
+
+    fn add_me_to_vec(tree: &ItemTree, target: &mut ItemTreeAsVec) {
+        target.push(tree.item.clone());
+        
+        for child in tree.childs.iter() {
+            add_me_to_vec(&child, target)
+        }
+    }
+
+    // Convert item tree back to vector
+    // the order of vector should be deterministic
+    // Current. Asume following tree
+    //  - super_root
+    // |____ - opt
+    // |____ - usr
+    // |_______ - hidden
+    // |_______ - local
+    // |___________ - bin
+    // |___________ - scripts
+    // |________- global
+    // |____- var
+    // In vector it will be:
+    // [ super_root, opt, usr, hidden, local, bin, scripts, global, var ]
+    //
+    // So instead of inserting in map as we get from tree
+    // we will first search for super root and then
+    // proceed preserving order of child defined
+    //
+    // It should also be noted that
+    // item with reserved id will not be on the list
+    // so when encountered one, we won't read it's child neither itself
+    impl From<ItemTree> for ItemTreeAsVec {
+        fn from(item_tree: ItemTree) -> Self {
+            let mut super_root = &item_tree;
+            while let Some(parent) = &super_root.parent {
+                super_root = parent;
+            }
+
+            let mut items = Vec::new();
+            add_me_to_vec(super_root, &mut items);
+            items
         }
     }
 }

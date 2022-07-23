@@ -6,6 +6,7 @@ const RESERVED_IDENTIFIER: &[&str] = &[
     "Blue_element",
     "Green_element",
     "Yellow_element",
+    "Root",
 ];
 
 #[derive(Debug, Clone, Eq, PartialEq, Serialize, Deserialize, Hash)]
@@ -16,6 +17,27 @@ const RESERVED_IDENTIFIER: &[&str] = &[
 pub enum Identifier {
     Custom(String),
     Reserved(Cow<'static, str>),
+}
+
+impl Identifier {
+    pub fn is_custom(&self) -> bool {
+        match self {
+            Identifier::Custom(..) => true,
+            _ => false,
+        }
+    }
+
+    pub fn is_reserved(&self) -> bool {
+        !self.is_custom()
+    }
+
+    fn is_valid_identifier(identifier: &str) -> bool {
+        identifier
+            .chars()
+            .all(|c| {
+                c.is_ascii_alphabetic() || c == '_'
+            })
+    }
 }
 
 impl Display for Identifier {
@@ -52,10 +74,8 @@ impl TryFrom<String> for Identifier {
             Some(reserved_id) => Ok(Identifier::Reserved(Cow::Borrowed(*reserved_id))),
 
             // If not verify that it is valid identifier:
-            // - should contains only ascii alphabet or _
-            None if src.len() > 0 => src
-                .chars()
-                .all(|c| c.is_ascii_alphabetic() || c == '_')
+            // should contains only ascii alphabet or _
+            None if src.len() > 0 => Identifier::is_valid_identifier(&src)
                 .then_some(Identifier::Custom(src))
                 .ok_or("Invalid identifier"),
 
@@ -77,6 +97,19 @@ impl<'a> TryFrom<&'a str> for Identifier {
 #[cfg(test)]
 mod test {
     use super::*;
+
+    #[test]
+    fn identifier_set() {
+        // Make sure all reserved identifier are valid
+        for identifier in RESERVED_IDENTIFIER {
+            assert_eq!(
+                Ok(()),
+                Identifier::is_valid_identifier(identifier)
+                .then_some(())
+                .ok_or(format!("{identifier} is not valid identifier"))
+            );
+        }
+    }
 
     #[test]
     fn serialization_and_deserialization() {
