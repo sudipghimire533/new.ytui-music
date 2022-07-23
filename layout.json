@@ -1,0 +1,115 @@
+{
+  "window": {
+    "render": "root",
+    "height": {
+      "minimum": "300u",
+      "maximum": "2000u",
+      "preferred": "100%"
+    },
+    "width": {
+      "minimum": "500u",
+      "maximum": "1500u",
+      "preferred": "100%"
+    }
+  },
+  "popup": {
+    "height": {
+      "minimum": "80%",
+      "maximum": "80%",
+      "preferred": "80%"
+    },
+    "width": {
+      "minimum": "80%",
+      "maximum": "80%",
+      "preferred": "80%"
+    }
+  },
+  "grid": [
+    {
+      "identifier": "root",
+      "size": {
+        "minimum": "100%",
+        "maximum": "100%",
+        "preferred": "100%"
+      },
+      "childs": ["top_area", "red_element_custom"],
+      "split": "vertical"
+    },
+    {
+      "identifier": "red_element_custom",
+      "size": {
+        "minimum": "5u",
+        "maximum": "5u",
+        "preferred": "5u"
+      },
+      "childs": ["Red_element"],
+      "split": "vertical"
+    },
+    {
+      "identifier": "top_rea",
+      "size": {
+        "minimum": "20u",
+        "maximum": "100%",
+        "preferred": "100%"
+      },
+      "childs": ["top_left", "top_right"],
+      "split": "horizontal"
+    },
+    {
+      "identifier": "top_left",
+      "size": {
+        "minimum": "50%",
+        "maximum": "50%",
+        "preferred": "50%"
+      },
+      "childs": ["Blue_element"],
+      "split": "vertical"
+    },
+    {
+      "identifier": "top_right",
+      "size": {
+        "minimum": "50%",
+        "maximum": "50%",
+        "preferred": "50%"
+      },
+      "childs": [
+        "green_container",
+        "yellow_container",
+        "blue_container"
+      ],
+      "split": "vertical"
+    },
+    {
+      "identifier": "green_container",
+      "size": {
+        "minimum": "33%",
+        "maximum": "33%",
+        "preferred": "33%"
+      },
+      "childs": ["Green_element"],
+      "split": "horizontal"
+    },
+    {
+      "identifier": "yellow_container",
+      "size": {
+        "minimum": "33%",
+        "maximum": "33%",
+        "preferred": "33%"
+      },
+      "childs": [
+        "Yellow_element"
+      ],
+      "split": "horizontal"
+    },
+    {
+      "identifier": "blue_container",
+      "size": {
+        "minimum": "33%",
+        "maximum": "33%",
+        "preferred": "33%"
+      },
+      "childs": ["Blue_element"],
+      "split": "horizontal"
+    }
+  ]
+}
