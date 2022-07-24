@@ -174,6 +174,35 @@ mod tests {
             Some(&top_right),
             size_map.get(&Identifier::Custom("top_right".into()))
         );
+
+        let green_container = Rect {
+            x: 75,
+            y: 0,
+            height: 5,
+            width: 75,
+        };
+        assert_eq!(
+            Some(&green_container),
+            size_map.get(&Identifier::Custom("green_container".into()))
+        );
+
+        let yellow_container = Rect {
+            y: 5,
+            ..green_container
+        };
+        assert_eq!(
+            Some(&yellow_container),
+            size_map.get(&Identifier::Custom("yellow_container".into()))
+        );
+
+        let blue_container = Rect {
+            y: 10,
+            ..yellow_container
+        };
+        assert_eq!(
+            Some(&blue_container),
+            size_map.get(&Identifier::Custom("blue_container".into()))
+        );
     }
 
     #[test]
