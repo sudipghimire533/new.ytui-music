@@ -10,11 +10,27 @@ fn i_can_start_from(
     size_map: &mut HashMap<Identifier, Rect>,
     terminal_rect: &Rect,
 ) -> (u16, u16) {
-    let previous_sibling_rect = me.parent.as_ref().map(|p| {
-        size_map
-            .get(&p.item.identifier)
-            .expect("Expected that previous sibling rect have been computed")
-    });
+    let previous_sibling_rect = me
+        .parent
+        .as_ref()
+        .map(|p| {
+            let previous_sibling = p
+                .childs
+                .iter()
+                .take_while(|c| c.item.identifier != me.item.identifier)
+                .last()?;
+            let previous_siblig_identifer = &previous_sibling.item.identifier;
+
+            if !size_map.contains_key(previous_siblig_identifer) {
+                compute_rect_for_item_tree(previous_sibling, size_map, terminal_rect);
+            }
+            let rect = size_map
+                .get(&p.item.identifier)
+                .expect("Just inserted sibling rect. Should have been existed");
+
+            Some(rect)
+        })
+        .flatten();
 
     match previous_sibling_rect {
         // Can start from where previous sibling started
@@ -33,9 +49,12 @@ fn i_can_start_from(
                 .parent
                 .as_ref()
                 .map(|p| {
+                    if !size_map.contains_key(&p.item.identifier) {
+                        compute_rect_for_item_tree(p, size_map, terminal_rect);
+                    }
                     size_map
                         .get(&p.item.identifier)
-                        .expect("Expected parent rect to be computed already")
+                        .expect("Just inserted sibling rect. Should have been existed")
                 })
                 .unwrap_or(terminal_rect);
 
@@ -87,5 +106,75 @@ pub fn compute_rect_for_item_tree(
     // Now also compute for all child
     for child in me.childs.iter() {
         compute_rect_for_item_tree(child, size_map, terminal_rect)
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use layout_config::direction::Direction;
+    use layout_config::identifier::Identifier;
+    use layout_config::item::Item;
+    use layout_config::length::Length;
+    use layout_config::size::Size;
+
+    #[cfg(test)]
+    const TERMINAL_RECT: Rect = Rect {
+        x: 0,
+        y: 0,
+        height: 33,
+        width: 150,
+    };
+
+    #[test]
+    fn start_for_root() {
+        let mut size_map = HashMap::new();
+        let root_item = Item {
+            identifier: Identifier::Custom("root".to_string()),
+            childs: vec![Identifier::Reserved("gadget".into())],
+            split: Direction::Vertical,
+            size: Size {
+                maximum: Length::Relative(100),
+                minimum: Length::Absolute(0),
+                preferred: Length::Relative(100),
+            },
+        };
+        let first_child = Item {
+            identifier: Identifier::Custom("first_child".into()),
+            childs: vec![Identifier::Reserved("gadget2".into())],
+            split: Direction::Vertical,
+            size: Size {
+                minimum: Length::Absolute(0),
+                maximum: Length::Relative(100),
+                preferred: Length::Relative(50),
+            },
+        };
+        let second_child = Item {
+            identifier: Identifier::Custom("second_child".into()),
+            ..first_child.clone()
+        };
+
+        let item_tree: ItemTree = vec![
+            Item {
+                childs: vec![
+                    Identifier::Custom("first_child".into()),
+                    Identifier::Custom("second_child".into()),
+                ],
+                size: Size {
+                    minimum: Length::Relative(50),
+                    preferred: Length::Relative(50),
+                    maximum: Length::Relative(50),
+                },
+                ..root_item.clone()
+            },
+            first_child.clone(),
+            second_child.clone(),
+        ]
+        .try_into()
+        .unwrap();
+        assert_eq!(
+            (16, 0),
+            i_can_start_from(&item_tree.childs[1], &mut size_map, &TERMINAL_RECT),
+        );
     }
 }
