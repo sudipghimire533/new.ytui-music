@@ -1,10 +1,10 @@
 [package]
-name = "layout"
+name = "layout-config"
 version = "0.1.0"
 edition = "2021"
 
 [lib]
-name = "layout"
+name = "layout_config"
 path = "src/lib.rs"
 
 [dependencies]
