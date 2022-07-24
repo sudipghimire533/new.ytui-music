@@ -9,7 +9,8 @@ use serde::{Deserialize, Serialize};
 pub struct UI {
     pub window: Window,
     pub popup: Popup,
-    pub items: ItemTree,
+    #[serde(rename = "items")]
+    pub item_root: ItemTree,
 }
 
 #[cfg(test)]
@@ -52,9 +53,9 @@ mod tests {
                     minimum: Length::Relative(80),
                 },
             },
-            items: vec![
+            item_root: vec![
                 Item {
-                    identifier: "root".try_into().unwrap(),
+                    identifier: "things_starts_from_me".try_into().unwrap(),
                     size: Size {
                         preferred: Length::Relative(100),
                         maximum: Length::Relative(100),

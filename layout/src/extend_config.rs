@@ -59,5 +59,4 @@ mod tests {
         assert_eq!(size.get_appliable_size(4), 4);
         assert_eq!(size.get_appliable_size(17), 17);
     }
-
 }
