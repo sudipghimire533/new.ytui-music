@@ -65,21 +65,21 @@ pub fn compute_rect_for_item_tree(
             }
             let parent_rect = size_map
                 .get(&parent.item.identifier)
-                .expect("Parent rect was computed just here..");
+                .expect("Parent rect was computed just here..")
+                .clone();
 
             let mut final_rect = parent_rect.clone();
+            let my_starting = i_can_start_from(me, size_map, terminal_rect);
             match parent.item.split {
                 Direction::Vertical => {
+                    final_rect.y = my_starting.0;
                     final_rect.height = me.item.size.get_appliable_size(parent_rect.height);
                 }
                 Direction::Horizontal => {
+                    final_rect.x = my_starting.1;
                     final_rect.width = me.item.size.get_appliable_size(parent_rect.width);
                 }
             }
-
-            let my_starting = i_can_start_from(me, size_map, terminal_rect);
-            final_rect.y = my_starting.0;
-            final_rect.x = my_starting.1;
 
             final_rect
         }
@@ -120,26 +120,37 @@ mod tests {
 
         compute_rect_for_item_tree(&ui.item_root, &mut size_map, &TERMINAL_RECT);
 
-        let expected_root = Rect {
+        let root = Rect {
             x: 0,
             y: 0,
             height: 33,
             width: 150,
         };
         assert_eq!(
-            Some(&expected_root),
+            Some(&root),
             size_map.get(&Identifier::Custom("things_starts_from_me".into()))
         );
 
-        let expected_top_area = Rect {
+        let top_area = Rect {
             x: 0,
             y: 0,
             height: 16,
             width: 150,
         };
         assert_eq!(
-            Some(&expected_top_area),
+            Some(&top_area),
             size_map.get(&Identifier::Custom("top_area".into()))
+        );
+
+        let red_el_custom = Rect {
+            x: 0,
+            y: 16,
+            height: 5,
+            width: 150,
+        };
+        assert_eq!(
+            Some(&red_el_custom),
+            size_map.get(&Identifier::Custom("red_element_custom".into())),
         );
     }
 
