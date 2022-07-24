@@ -28,16 +28,15 @@ pub struct ItemTree {
 
 fn print_tree(f: &mut std::fmt::Formatter, item: &ItemTree, mut indent: usize) -> std::fmt::Result {
     let name = &item.item.identifier;
-    let previous_indent = std::iter::repeat("\u{205E}   ")
-        .take(indent/4)
-        .collect::<String>()
-        .replacen("\u{205E}", " ", 1);
+    let previous_indent = "\u{205E}   "
+        .repeat(indent / 4)
+        .replacen('\u{205E}', " ", 1);
     let (new_line, self_indent) = if indent != 0 {
         ("\n", '\u{21B3}')
     } else {
         ("", '\u{229A}')
     };
-    write!(f,"{new_line}{previous_indent}{self_indent} {name}")?;
+    write!(f, "{new_line}{previous_indent}{self_indent} {name}")?;
 
     // repeat for childs too
     for child in item.childs.iter() {
@@ -54,7 +53,6 @@ impl std::fmt::Display for ItemTree {
         print_tree(f, self, 0)
     }
 }
-
 
 mod serde_helper {
     use super::*;

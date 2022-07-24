@@ -8,7 +8,7 @@ pub trait ExtendSize {
 
 impl ExtendSize for Size {
     fn get_appliable_size(&self, parent_length: u16) -> u16 {
-        use std::cmp::{min, max};
+        use std::cmp::{max, min};
 
         let minimum_length = self.minimum.get_absolute(parent_length);
         let maximum_length = self.maximum.get_absolute(parent_length);
@@ -19,7 +19,6 @@ impl ExtendSize for Size {
             max(preferred_length, minimum_length),
         )
     }
-
 }
 
 #[cfg(test)]
