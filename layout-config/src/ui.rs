@@ -80,9 +80,9 @@ mod tests {
                 Item {
                     identifier: "top_area".try_into().unwrap(),
                     size: Size {
-                        preferred: Length::Relative(100),
-                        minimum: Length::Absolute(20),
-                        maximum: Length::Relative(100),
+                        preferred: Length::Relative(50),
+                        minimum: Length::Absolute(12),
+                        maximum: Length::Relative(50),
                     },
                     childs: vec![
                         "top_left".try_into().unwrap(),

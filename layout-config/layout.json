@@ -37,9 +37,9 @@
     {
       "identifier": "top_area",
       "size": {
-        "minimum": "20u",
-        "maximum": "100%",
-        "preferred": "100%"
+        "minimum": "12u",
+        "maximum": "50%",
+        "preferred": "50%"
       },
       "childs": ["top_left", "top_right"],
       "split": "horizontal"

@@ -10,55 +10,37 @@ fn i_can_start_from(
     size_map: &mut HashMap<Identifier, Rect>,
     terminal_rect: &Rect,
 ) -> (u16, u16) {
-    let previous_sibling_rect = me
-        .parent
-        .as_ref()
-        .map(|p| {
-            let previous_sibling = p
+    match me.parent.as_ref() {
+        None => (terminal_rect.x, terminal_rect.y),
+
+        Some(parent) => {
+            if !size_map.contains_key(&parent.item.identifier) {
+                compute_rect_for_item_tree(&parent, size_map, terminal_rect);
+            }
+            let parent_rect = size_map
+                .get(&parent.item.identifier)
+                .expect("Just computed parent rect, must be there")
+                .clone();
+
+            parent
                 .childs
                 .iter()
                 .take_while(|c| c.item.identifier != me.item.identifier)
-                .last()?;
-            let previous_siblig_identifer = &previous_sibling.item.identifier;
-
-            if !size_map.contains_key(previous_siblig_identifer) {
-                compute_rect_for_item_tree(previous_sibling, size_map, terminal_rect);
-            }
-            let rect = size_map
-                .get(&p.item.identifier)
-                .expect("Just inserted sibling rect. Should have been existed");
-
-            Some(rect)
-        })
-        .flatten();
-
-    match previous_sibling_rect {
-        // Can start from where previous sibling started
-        // but leaving sibling's area
-        Some(sib_rect) => {
-            let starting_height = sib_rect.y + sib_rect.height;
-            let starting_width = sib_rect.x + sib_rect.width;
-            (starting_height, starting_width)
-        }
-
-        // If no previous sibling rect is found
-        // i.e this is the first child
-        // it can start from where it's parent started
-        None => {
-            let parent_rect = me
-                .parent
-                .as_ref()
-                .map(|p| {
-                    if !size_map.contains_key(&p.item.identifier) {
-                        compute_rect_for_item_tree(p, size_map, terminal_rect);
+                .last()
+                .map(|s| {
+                    if !size_map.contains_key(&s.item.identifier) {
+                        compute_rect_for_item_tree(s, size_map, terminal_rect);
                     }
-                    size_map
-                        .get(&p.item.identifier)
-                        .expect("Just inserted sibling rect. Should have been existed")
-                })
-                .unwrap_or(terminal_rect);
+                    let sibling_rect = size_map
+                        .get(&s.item.identifier)
+                        .expect("Just computed sibling rect, must be there");
 
-            (parent_rect.x, parent_rect.y)
+                    (
+                        sibling_rect.y + sibling_rect.height,
+                        sibling_rect.x + sibling_rect.width,
+                    )
+                })
+                .unwrap_or((parent_rect.y, parent_rect.x))
         }
     }
 }
@@ -68,37 +50,40 @@ pub fn compute_rect_for_item_tree(
     size_map: &mut HashMap<Identifier, Rect>,
     terminal_rect: &Rect,
 ) {
-    let parent_rect: &Rect = match &me.parent {
+    let final_rect: Rect = match me.parent.as_ref() {
+        // for root element it always fill the terminal_rect
+        // this means that
+        // for root element, provided size is ignored
+        //
+        // if it is intended to limit the total layout
+        // use window's height & width property instead
+        None => terminal_rect.clone(),
+
         Some(parent) => {
-            // if parent rect is not present yet,
-            // we compute it
             if !size_map.contains_key(&parent.item.identifier) {
                 compute_rect_for_item_tree(parent, size_map, terminal_rect);
             }
-            size_map
+            let parent_rect = size_map
                 .get(&parent.item.identifier)
-                .expect("Just called compute_length. parent rect should be present")
-        }
+                .expect("Parent rect was computed just here..");
 
-        // If this element do not have any parent
-        // i.e this is root. We can treat terminal as parent
-        None => terminal_rect,
+            let mut final_rect = parent_rect.clone();
+            match parent.item.split {
+                Direction::Vertical => {
+                    final_rect.height = me.item.size.get_appliable_size(parent_rect.height);
+                }
+                Direction::Horizontal => {
+                    final_rect.width = me.item.size.get_appliable_size(parent_rect.width);
+                }
+            }
+
+            let my_starting = i_can_start_from(me, size_map, terminal_rect);
+            final_rect.y = my_starting.0;
+            final_rect.x = my_starting.1;
+
+            final_rect
+        }
     };
-
-    let mut final_rect = parent_rect.clone();
-
-    match me.item.split {
-        Direction::Vertical => {
-            final_rect.height = me.item.size.get_appliable_size(parent_rect.height);
-        }
-        Direction::Horizontal => {
-            final_rect.width = me.item.size.get_appliable_size(parent_rect.width);
-        }
-    };
-
-    let my_starting_point = i_can_start_from(me, size_map, terminal_rect);
-    final_rect.y = my_starting_point.0;
-    final_rect.x = my_starting_point.1;
 
     // Record this final rect
     size_map.insert(me.item.identifier.clone(), final_rect);
@@ -135,13 +120,23 @@ mod tests {
 
         compute_rect_for_item_tree(&ui.item_root, &mut size_map, &TERMINAL_RECT);
 
-        let expected_root = Rect { x: 0, y: 0, height: 33, width: 150 };
+        let expected_root = Rect {
+            x: 0,
+            y: 0,
+            height: 33,
+            width: 150,
+        };
         assert_eq!(
             Some(&expected_root),
             size_map.get(&Identifier::Custom("things_starts_from_me".into()))
         );
 
-        let expected_top_area = Rect { x: 0, y: 0, height: 33, width: 150 };
+        let expected_top_area = Rect {
+            x: 0,
+            y: 0,
+            height: 16,
+            width: 150,
+        };
         assert_eq!(
             Some(&expected_top_area),
             size_map.get(&Identifier::Custom("top_area".into()))
