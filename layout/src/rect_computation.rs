@@ -152,6 +152,28 @@ mod tests {
             Some(&red_el_custom),
             size_map.get(&Identifier::Custom("red_element_custom".into())),
         );
+
+        let top_left = Rect {
+            x: 0,
+            y: 0,
+            height: 16,
+            width: 75,
+        };
+        assert_eq!(
+            Some(&top_left),
+            size_map.get(&Identifier::Custom("top_left".into()))
+        );
+
+        let top_right = Rect {
+            x: 75,
+            y: 0,
+            height: 16,
+            width: 75,
+        };
+        assert_eq!(
+            Some(&top_right),
+            size_map.get(&Identifier::Custom("top_right".into()))
+        );
     }
 
     #[test]
