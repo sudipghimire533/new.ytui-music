@@ -117,6 +117,7 @@ mod tests {
     use layout_config::item::Item;
     use layout_config::length::Length;
     use layout_config::size::Size;
+    use layout_config::ui::UI;
 
     #[cfg(test)]
     const TERMINAL_RECT: Rect = Rect {
@@ -127,8 +128,30 @@ mod tests {
     };
 
     #[test]
+    fn test_rect_for_layout_file() {
+        let config_file_str = include_str!("../../layout-config/layout.json");
+        let ui: UI = serde_json::from_str(config_file_str).unwrap();
+        let mut size_map = HashMap::new();
+
+        compute_rect_for_item_tree(&ui.item_root, &mut size_map, &TERMINAL_RECT);
+
+        let expected_root = Rect { x: 0, y: 0, height: 33, width: 150 };
+        assert_eq!(
+            Some(&expected_root),
+            size_map.get(&Identifier::Custom("things_starts_from_me".into()))
+        );
+
+        let expected_top_area = Rect { x: 0, y: 0, height: 33, width: 150 };
+        assert_eq!(
+            Some(&expected_top_area),
+            size_map.get(&Identifier::Custom("top_area".into()))
+        );
+    }
+
+    #[test]
     fn start_for_root() {
         let mut size_map = HashMap::new();
+
         let root_item = Item {
             identifier: Identifier::Custom("root".to_string()),
             childs: vec![Identifier::Reserved("gadget".into())],
@@ -173,7 +196,7 @@ mod tests {
         .try_into()
         .unwrap();
         assert_eq!(
-            (16, 0),
+            (16, 150),
             i_can_start_from(&item_tree.childs[1], &mut size_map, &TERMINAL_RECT),
         );
     }
