@@ -13,6 +13,8 @@ name = "layout"
 version = "0.1.0"
 dependencies = [
  "layout-config",
+ "serde",
+ "serde_json",
 ]
 
 [[package]]

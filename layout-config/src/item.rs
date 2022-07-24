@@ -26,6 +26,36 @@ pub struct ItemTree {
     pub childs: Vec<Box<ItemTree>>,
 }
 
+fn print_tree(f: &mut std::fmt::Formatter, item: &ItemTree, mut indent: usize) -> std::fmt::Result {
+    let name = &item.item.identifier;
+    let previous_indent = std::iter::repeat("\u{205E}   ")
+        .take(indent/4)
+        .collect::<String>()
+        .replacen("\u{205E}", " ", 1);
+    let (new_line, self_indent) = if indent != 0 {
+        ("\n", '\u{21B3}')
+    } else {
+        ("", '\u{229A}')
+    };
+    write!(f,"{new_line}{previous_indent}{self_indent} {name}")?;
+
+    // repeat for childs too
+    for child in item.childs.iter() {
+        indent += 4;
+        print_tree(f, child, indent)?;
+        indent -= 4;
+    }
+
+    Ok(())
+}
+
+impl std::fmt::Display for ItemTree {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        print_tree(f, self, 0)
+    }
+}
+
+
 mod serde_helper {
     use super::*;
     pub(super) type ItemTreeAsVec = Vec<Item>;

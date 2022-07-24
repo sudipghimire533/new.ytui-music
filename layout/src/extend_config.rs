@@ -1,4 +1,5 @@
 use layout_config::size::Size;
+
 pub trait ExtendSize {
     // Given the size of parent element
     // return what size can be applied to self
@@ -9,15 +10,14 @@ impl ExtendSize for Size {
     fn get_appliable_size(&self, parent_length: u16) -> u16 {
         use std::cmp::{min, max};
 
-        let minimum_length: u16 = self.minimum.get_absolute(parent_length);
-        let maximum_length: u16 = self.maximum.get_absolute(parent_length);
-        let preferred_length: u16 = self.preferred.get_absolute(parent_length);
+        let minimum_length = self.minimum.get_absolute(parent_length);
+        let maximum_length = self.maximum.get_absolute(parent_length);
+        let preferred_length = self.preferred.get_absolute(parent_length);
 
         min(
             min(maximum_length, parent_length),
             max(preferred_length, minimum_length),
         )
-        
     }
 
 }
