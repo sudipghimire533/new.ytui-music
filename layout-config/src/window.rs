@@ -17,31 +17,14 @@ mod tests {
     #[test]
     fn serialization_and_deserialization() {
         use serde_json::{from_str, to_string};
-        use Length::{Absolute, Relative};
 
         let expected_window = Window {
-            height: Size {
-                minimum: Absolute(300),
-                maximum: Absolute(2000),
-                preferred: Relative(100),
-            },
-            width: Size {
-                minimum: Absolute(500),
-                maximum: Absolute(1500),
-                preferred: Relative(100),
-            },
+            height: Length::Relative(100),
+            width: Length::Relative(100),
         };
         let expected_window_str = r##"{
-                    "height":{
-                        "minimum": "300u",
-                        "maximum": "2000u",
-                        "preferred": "100%"
-                    },
-                    "width": {
-                        "minimum": "500u",
-                        "maximum": "1500u",
-                        "preferred": "100%"
-                    }
+                    "height": "100%",
+                    "width": "100%"
         }"##
         .replacen(' ', "", usize::MAX)
         .replacen("\r\n", "", usize::MAX)

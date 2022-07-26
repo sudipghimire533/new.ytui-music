@@ -1,6 +1,6 @@
 use crate::direction::Direction;
 use crate::identifier::Identifier;
-use crate::size::Size;
+use crate::length::Length;
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 
@@ -9,7 +9,7 @@ use std::collections::HashMap;
 #[serde(deny_unknown_fields)]
 pub struct Item {
     pub identifier: Identifier,
-    pub size: Size,
+    pub size: Length,
     pub childs: Vec<Identifier>,
     pub split: Direction,
 }

@@ -30,37 +30,17 @@ mod tests {
 
         let expected_layout = UI {
             window: Window {
-                height: Size {
-                    preferred: Length::Relative(100),
-                    minimum: Length::Absolute(300),
-                    maximum: Length::Absolute(2000),
-                },
-                width: Size {
-                    preferred: Length::Relative(100),
-                    minimum: Length::Absolute(500),
-                    maximum: Length::Absolute(1500),
-                },
+                height: Length::AtLeast(300),
+                width: Length::AtLeast(500),
             },
             popup: Popup {
-                height: Size {
-                    preferred: Length::Relative(80),
-                    maximum: Length::Relative(80),
-                    minimum: Length::Relative(80),
-                },
-                width: Size {
-                    preferred: Length::Relative(80),
-                    maximum: Length::Relative(80),
-                    minimum: Length::Relative(80),
-                },
+               height: Length::Relative(80),
+               width: Length::Relative(80),
             },
             item_root: vec![
                 Item {
                     identifier: "things_starts_from_me".try_into().unwrap(),
-                    size: Size {
-                        preferred: Length::Relative(100),
-                        maximum: Length::Relative(100),
-                        minimum: Length::Relative(100),
-                    },
+                    size: Length::Relative(100),
                     childs: vec![
                         "top_area".try_into().unwrap(),
                         "red_element_custom".try_into().unwrap(),
@@ -69,21 +49,13 @@ mod tests {
                 },
                 Item {
                     identifier: "red_element_custom".try_into().unwrap(),
-                    size: Size {
-                        preferred: Length::Absolute(5),
-                        minimum: Length::Absolute(5),
-                        maximum: Length::Absolute(5),
-                    },
+                    size: Length::Absolute(5),
                     childs: vec!["Red_element".try_into().unwrap()],
                     split: Direction::Vertical,
                 },
                 Item {
                     identifier: "top_area".try_into().unwrap(),
-                    size: Size {
-                        preferred: Length::Relative(50),
-                        minimum: Length::Absolute(12),
-                        maximum: Length::Relative(50),
-                    },
+                    size: Length::AtLeast(10),
                     childs: vec![
                         "top_left".try_into().unwrap(),
                         "top_right".try_into().unwrap(),
@@ -92,21 +64,13 @@ mod tests {
                 },
                 Item {
                     identifier: "top_left".try_into().unwrap(),
-                    size: Size {
-                        preferred: Length::Relative(50),
-                        maximum: Length::Relative(50),
-                        minimum: Length::Relative(50),
-                    },
+                    size: Length::Relative(50),
                     childs: vec!["Blue_element".try_into().unwrap()],
                     split: Direction::Vertical,
                 },
                 Item {
                     identifier: "top_right".try_into().unwrap(),
-                    size: Size {
-                        preferred: Length::Relative(50),
-                        maximum: Length::Relative(50),
-                        minimum: Length::Relative(50),
-                    },
+                    size: Length::Relative(50),
                     childs: vec![
                         "green_container".try_into().unwrap(),
                         "yellow_container".try_into().unwrap(),
@@ -116,31 +80,19 @@ mod tests {
                 },
                 Item {
                     identifier: "green_container".try_into().unwrap(),
-                    size: Size {
-                        preferred: Length::Relative(33),
-                        maximum: Length::Relative(33),
-                        minimum: Length::Relative(33),
-                    },
+                    size: Length::Relative(33),
                     childs: vec!["Green_element".try_into().unwrap()],
                     split: Direction::Horizontal,
                 },
                 Item {
                     identifier: "yellow_container".try_into().unwrap(),
-                    size: Size {
-                        preferred: Length::Relative(33),
-                        maximum: Length::Relative(33),
-                        minimum: Length::Relative(33),
-                    },
+                    size: Length::Relative(33),
                     childs: vec!["Yellow_element".try_into().unwrap()],
                     split: Direction::Horizontal,
                 },
                 Item {
                     identifier: "blue_container".try_into().unwrap(),
-                    size: Size {
-                        preferred: Length::Relative(33),
-                        maximum: Length::Relative(33),
-                        minimum: Length::Relative(33),
-                    },
+                    size: Length::Relative(33),
                     childs: vec!["Blue_element".try_into().unwrap()],
                     split: Direction::Horizontal,
                 },

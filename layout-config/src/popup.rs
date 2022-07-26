@@ -17,31 +17,14 @@ mod test {
     #[test]
     fn popup_serde() {
         use serde_json::{from_str, to_string};
-        use Length::Relative;
 
         let expected_popup = Popup {
-            height: Size {
-                minimum: Relative(100),
-                maximum: Relative(100),
-                preferred: Relative(100),
-            },
-            width: Size {
-                minimum: Relative(100),
-                maximum: Relative(100),
-                preferred: Relative(100),
-            },
+            height: Length::Relative(100),
+            width: Length::Relative(100),
         };
         let expected_window_str = r##"{
-                    "height":{
-                        "minimum": "100%",
-                        "maximum": "100%",
-                        "preferred": "100%"
-                    },
-                    "width": {
-                        "minimum": "100%",
-                        "maximum": "100%",
-                        "preferred": "100%"
-                    }
+            "height": "100%",
+            "width": "100%"
         }"##
         .replacen(' ', "", usize::MAX)
         .replacen("\r\n", "", usize::MAX)

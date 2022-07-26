@@ -1,66 +1,34 @@
 {
   "window": {
-    "height": {
-      "minimum": "300u",
-      "maximum": "2000u",
-      "preferred": "100%"
-    },
-    "width": {
-      "minimum": "500u",
-      "maximum": "1500u",
-      "preferred": "100%"
-    }
+    "height": "300l",
+    "width": "500l"
   },
   "popup": {
-    "height": {
-      "minimum": "80%",
-      "maximum": "80%",
-      "preferred": "80%"
-    },
-    "width": {
-      "minimum": "80%",
-      "maximum": "80%",
-      "preferred": "80%"
-    }
+    "height": "80%",
+    "width": "80%"
   },
   "items": [
     {
       "identifier": "things_starts_from_me",
-      "size": {
-        "minimum": "100%",
-        "maximum": "100%",
-        "preferred": "100%"
-      },
+      "size": "100%",
       "childs": ["top_area", "red_element_custom"],
       "split": "vertical"
     },
     {
       "identifier": "top_area",
-      "size": {
-        "minimum": "12u",
-        "maximum": "50%",
-        "preferred": "50%"
-      },
+      "size": "10l",
       "childs": ["top_left", "top_right"],
       "split": "horizontal"
     },
     {
       "identifier": "top_left",
-      "size": {
-        "minimum": "50%",
-        "maximum": "50%",
-        "preferred": "50%"
-      },
+      "size": "50%",
       "childs": ["Blue_element"],
       "split": "vertical"
     },
     {
       "identifier": "top_right",
-      "size": {
-        "minimum": "50%",
-        "maximum": "50%",
-        "preferred": "50%"
-      },
+      "size": "50%",
       "childs": [
         "green_container",
         "yellow_container",
@@ -70,41 +38,25 @@
     },
     {
       "identifier": "green_container",
-      "size": {
-        "minimum": "33%",
-        "maximum": "33%",
-        "preferred": "33%"
-      },
+      "size": "33%",
       "childs": ["Green_element"],
       "split": "horizontal"
     },
     {
       "identifier": "yellow_container",
-      "size": {
-        "minimum": "33%",
-        "maximum": "33%",
-        "preferred": "33%"
-      },
+      "size": "33%",
       "childs": ["Yellow_element"],
       "split": "horizontal"
     },
     {
       "identifier": "blue_container",
-      "size": {
-        "minimum": "33%",
-        "maximum": "33%",
-        "preferred": "33%"
-      },
+      "size": "33%",
       "childs": ["Blue_element"],
       "split": "horizontal"
     },
     {
       "identifier": "red_element_custom",
-      "size": {
-        "minimum": "5u",
-        "maximum": "5u",
-        "preferred": "5u"
-      },
+      "size": "5a",
       "childs": ["Red_element"],
       "split": "vertical"
     }
