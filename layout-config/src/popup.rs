@@ -1,12 +1,12 @@
-use crate::size::Size;
+use crate::length::Length;
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Clone, Eq, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 #[serde(deny_unknown_fields)]
 pub struct Popup {
-    pub height: Size,
-    pub width: Size,
+    pub height: Length,
+    pub width: Length,
 }
 
 #[cfg(test)]

@@ -19,7 +19,6 @@ mod tests {
     use crate::direction::Direction;
     use crate::item::Item;
     use crate::length::Length;
-    use crate::size::Size;
 
     #[test]
     fn layout_file_valid() {
