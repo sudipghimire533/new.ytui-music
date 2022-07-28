@@ -41,8 +41,8 @@ mod tests {
                     identifier: "things_starts_from_me".try_into().unwrap(),
                     size: Length::Relative(100),
                     childs: vec![
-                        "top_area".try_into().unwrap(),
                         "red_element_custom".try_into().unwrap(),
+                        "bottom_area".try_into().unwrap(),
                     ],
                     split: Direction::Vertical,
                 },
@@ -53,22 +53,22 @@ mod tests {
                     split: Direction::Vertical,
                 },
                 Item {
-                    identifier: "top_area".try_into().unwrap(),
+                    identifier: "bottom_area".try_into().unwrap(),
                     size: Length::AtLeast(10),
                     childs: vec![
-                        "top_left".try_into().unwrap(),
-                        "top_right".try_into().unwrap(),
+                        "bottom_left".try_into().unwrap(),
+                        "bottom_right".try_into().unwrap(),
                     ],
                     split: Direction::Horizontal,
                 },
                 Item {
-                    identifier: "top_left".try_into().unwrap(),
+                    identifier: "bottom_left".try_into().unwrap(),
                     size: Length::Relative(50),
                     childs: vec!["Blue_element".try_into().unwrap()],
                     split: Direction::Vertical,
                 },
                 Item {
-                    identifier: "top_right".try_into().unwrap(),
+                    identifier: "bottom_right".try_into().unwrap(),
                     size: Length::Relative(50),
                     childs: vec![
                         "green_container".try_into().unwrap(),

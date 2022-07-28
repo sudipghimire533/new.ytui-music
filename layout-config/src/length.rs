@@ -45,12 +45,19 @@ impl TryFrom<&str> for Length {
 }
 
 impl Length {
-    pub fn get_absolute(&self, parent_length: u16) -> u16 {
+    pub fn get_absolute(
+        &self,
+        parent_length: u16,
+        net_sibling_length: u16,
+    ) -> u16 {
+        let usable_length = parent_length
+            .checked_sub(net_sibling_length)
+            .expect("Siblings length must not have out grown parent length");
         match self {
-            Length::Absolute(l) => *l,
-            Length::Relative(l) => parent_length * l / 100,
-            Length::AtLeast(l) => parent_length.max(*l),
-            Length::AtMost(l) => parent_length.min(*l),
+            Length::Absolute(l) => usable_length.min(*l),
+            Length::Relative(l) => usable_length.min(parent_length * l / 100),
+            Length::AtLeast(l) => usable_length.max(*l),
+            Length::AtMost(l) => usable_length.min(*l),
         }
     }
 }

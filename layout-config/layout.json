@@ -11,23 +11,29 @@
     {
       "identifier": "things_starts_from_me",
       "size": "100%",
-      "childs": ["top_area", "red_element_custom"],
+      "childs": ["red_element_custom", "bottom_area"],
       "split": "vertical"
     },
     {
-      "identifier": "top_area",
+      "identifier": "red_element_custom",
+      "size": "5a",
+      "childs": ["Red_element"],
+      "split": "vertical"
+    },
+    {
+      "identifier": "bottom_area",
       "size": "10l",
-      "childs": ["top_left", "top_right"],
+      "childs": ["bottom_left", "bottom_right"],
       "split": "horizontal"
     },
     {
-      "identifier": "top_left",
+      "identifier": "bottom_left",
       "size": "50%",
       "childs": ["Blue_element"],
       "split": "vertical"
     },
     {
-      "identifier": "top_right",
+      "identifier": "bottom_right",
       "size": "50%",
       "childs": [
         "green_container",
@@ -53,12 +59,6 @@
       "size": "33%",
       "childs": ["Blue_element"],
       "split": "horizontal"
-    },
-    {
-      "identifier": "red_element_custom",
-      "size": "5a",
-      "childs": ["Red_element"],
-      "split": "vertical"
     }
   ]
 }

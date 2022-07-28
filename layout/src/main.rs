@@ -1,4 +1,3 @@
-pub mod extend_config;
 pub mod rect;
 pub mod rect_computation;
 
