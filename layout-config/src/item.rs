@@ -28,15 +28,20 @@ pub struct ItemTree {
 
 fn print_tree(f: &mut std::fmt::Formatter, item: &ItemTree, mut indent: usize) -> std::fmt::Result {
     let name = &item.item.identifier;
-    let previous_indent = "\u{205E}   "
-        .repeat(indent / 4)
-        .replacen('\u{205E}', " ", 1);
-    let (new_line, self_indent) = if indent != 0 {
-        ("\n", '\u{21B3}')
+
+    if item.item.identifier.is_reserved() {
+        write!(f, " => {name}")?;
     } else {
-        ("", '\u{229A}')
-    };
-    write!(f, "{new_line}{previous_indent}{self_indent} {name}")?;
+        let previous_indent = "\u{205E}   "
+            .repeat(indent / 4)
+            .replacen('\u{205E}', " ", 1);
+        let (new_line, self_indent) = if indent != 0 {
+            ("\n", '\u{21B3}')
+        } else {
+            ("", '\u{229A}')
+        };
+        write!(f, "{new_line}{previous_indent}{self_indent} {name}")?;
+    }
 
     // repeat for childs too
     for child in item.childs.iter() {
@@ -69,13 +74,30 @@ mod serde_helper {
             childs: vec![],
         });
 
-        let child_containers = item.childs.iter().filter(|v| v.is_custom());
+        let child_containers = item.childs.iter();//.filter(|v| v.is_custom());
 
         for child_identifier in child_containers {
-            let child_item = item_map
-                .get(child_identifier)
-                .ok_or(format!("Cannot find element {child_identifier}"))?;
-            let child_tree = construct_tree(child_item.clone(), Some(item_tree.clone()), item_map)?;
+            let child_tree;
+            if child_identifier.is_custom(){
+                let child_item = item_map
+                    .get(child_identifier)
+                    .ok_or(format!("Cannot find element {child_identifier}"))?;
+                child_tree = construct_tree(child_item.clone(), Some(item_tree.clone()), item_map)?;
+            } else if child_identifier.is_reserved() {
+                let child_id = format!("{child_identifier}-of-{}", item_tree.item.identifier);
+                child_tree = ItemTree {
+                    item: Item {
+                        identifier: Identifier::Reserved(child_id.into()),
+                        size: Length::Fill,
+                        childs: vec![],
+                        split: Direction::Vertical,
+                    },
+                    childs: vec![],
+                    parent: Some(Box::new(item_tree.as_ref().clone()))
+                };
+            } else {
+                unreachable!("Identifier is either reserved or custom")
+            }
 
             item_tree.childs.push(Box::new(child_tree));
         }
@@ -114,7 +136,7 @@ mod serde_helper {
     fn add_me_to_vec(tree: &ItemTree, target: &mut ItemTreeAsVec) {
         target.push(tree.item.clone());
 
-        for child in tree.childs.iter() {
+        for child in tree.childs.iter().filter(|c| c.item.identifier.is_custom()) {
             add_me_to_vec(child, target)
         }
     }

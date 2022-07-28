@@ -3,6 +3,10 @@ name = "layout"
 version = "0.1.0"
 edition = "2021"
 
+[lib]
+name = "layout"
+path = "src/lib.rs"
+
 [[bin]]
 name = "layout"
 path = "src/main.rs"

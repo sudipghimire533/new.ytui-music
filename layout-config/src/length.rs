@@ -10,6 +10,7 @@ pub enum Length {
     Relative(u16),
     AtLeast(u16),
     AtMost(u16),
+    Fill,
 }
 
 impl From<Length> for String {
@@ -19,6 +20,7 @@ impl From<Length> for String {
             Length::Relative(l) => format!("{l}%"),
             Length::AtMost(l) => format!("{l}m"),
             Length::AtLeast(l) => format!("{l}l"),
+            Length::Fill => "0f".to_string(),
         }
     }
 }
@@ -37,6 +39,7 @@ impl TryFrom<&str> for Length {
             'a' => Ok(Length::Absolute(value)),
             'l' => Ok(Length::AtLeast(value)),
             'm' => Ok(Length::AtMost(value)),
+            'f' => Ok(Length::Fill),
             _ => Err("Invalid unit"),
         }
     }
@@ -52,6 +55,7 @@ impl Length {
             Length::Relative(l) => usable_length.min(parent_length * l / 100),
             Length::AtLeast(l) => usable_length.max(*l),
             Length::AtMost(l) => usable_length.min(*l),
+            Length::Fill => usable_length,
         }
     }
 }

@@ -38,7 +38,7 @@ impl Identifier {
 impl Display for Identifier {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         let id_str = match self {
-            Identifier::Reserved(r) => r,
+            Identifier::Reserved(r) => r.split('-').next().unwrap(),
             Identifier::Custom(c) => c.as_str(),
         };
         write!(f, "{}", id_str)
