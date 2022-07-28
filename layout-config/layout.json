@@ -56,7 +56,7 @@
     },
     {
       "identifier": "blue_container",
-      "size": "33%",
+      "size": "0f",
       "childs": ["Blue_element"],
       "split": "horizontal"
     }

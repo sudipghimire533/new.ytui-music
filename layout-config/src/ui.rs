@@ -91,7 +91,7 @@ mod tests {
                 },
                 Item {
                     identifier: "blue_container".try_into().unwrap(),
-                    size: Length::Relative(33),
+                    size: Length::Fill,
                     childs: vec!["Blue_element".try_into().unwrap()],
                     split: Direction::Horizontal,
                 },

@@ -246,7 +246,7 @@ mod tests {
         );
 
         #[rustfmt::skip]
-        let blue_container = Rect { y: 23, ..yellow_container };
+        let blue_container = Rect { y: 23, height: 10, ..yellow_container };
         assert_eq!(
             Some(&blue_container),
             size_map.get(&Identifier::Custom("blue_container".into()))
