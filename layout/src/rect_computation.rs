@@ -148,38 +148,30 @@ mod tests {
     use layout_config::length::Length;
     use layout_config::ui::UI;
 
-    fn ensure_boundry_check(item_root: ItemTree ,filled_size_map: &HashMap<Identifier, Rect>) {
+    fn ensure_boundry_check(item_root: ItemTree, filled_size_map: &HashMap<Identifier, Rect>) {
         let tree_as_vec: Vec<_> = item_root.try_into().unwrap();
-        tree_as_vec
-            .iter()
-            .for_each(|item| {
-                let (my_height, my_width) = filled_size_map
-                    .get(&item.identifier)
-                    .map(|r| (r.height, r.width))
-                    .unwrap();
-                let (net_child_height, net_child_width) = item
-                    .childs
-                    .iter()
-                    .filter(|c| matches!(c, Identifier::Custom(..)))
-                    .fold((0, 0), |acc, c| {
-                        let child_rect = filled_size_map
-                            .get(c)
-                            .unwrap();
-                        (
-                            acc.0 + child_rect.height,
-                            acc.1 + child_rect.width,
-                        )
-                    });
-                match item.split {
-                    Direction::Vertical => {
-                        assert!(my_height >= net_child_height);
-                    },
-                    Direction::Horizontal => {
-                        assert!(my_width >= net_child_width);
-                    }
+        tree_as_vec.iter().for_each(|item| {
+            let (my_height, my_width) = filled_size_map
+                .get(&item.identifier)
+                .map(|r| (r.height, r.width))
+                .unwrap();
+            let (net_child_height, net_child_width) = item
+                .childs
+                .iter()
+                .filter(|c| matches!(c, Identifier::Custom(..)))
+                .fold((0, 0), |acc, c| {
+                    let child_rect = filled_size_map.get(c).unwrap();
+                    (acc.0 + child_rect.height, acc.1 + child_rect.width)
+                });
+            match item.split {
+                Direction::Vertical => {
+                    assert!(my_height >= net_child_height);
                 }
-            })
-
+                Direction::Horizontal => {
+                    assert!(my_width >= net_child_width);
+                }
+            }
+        })
     }
 
     #[cfg(test)]

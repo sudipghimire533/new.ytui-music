@@ -74,11 +74,11 @@ mod serde_helper {
             childs: vec![],
         });
 
-        let child_containers = item.childs.iter();//.filter(|v| v.is_custom());
+        let child_containers = item.childs.iter(); //.filter(|v| v.is_custom());
 
         for child_identifier in child_containers {
             let child_tree;
-            if child_identifier.is_custom(){
+            if child_identifier.is_custom() {
                 let child_item = item_map
                     .get(child_identifier)
                     .ok_or(format!("Cannot find element {child_identifier}"))?;
@@ -93,7 +93,7 @@ mod serde_helper {
                         split: Direction::Vertical,
                     },
                     childs: vec![],
-                    parent: Some(Box::new(item_tree.as_ref().clone()))
+                    parent: Some(Box::new(item_tree.as_ref().clone())),
                 };
             } else {
                 unreachable!("Identifier is either reserved or custom")

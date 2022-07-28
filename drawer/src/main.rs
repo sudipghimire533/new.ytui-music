@@ -34,9 +34,7 @@ fn from_my_rect(my: layout::rect::Rect) -> tui::layout::Rect {
 }
 
 fn get_block<'a>(title: String) -> Block<'a> {
-    Block::default()
-        .borders(Borders::ALL)
-        .title(title)
+    Block::default().borders(Borders::ALL).title(title)
 }
 
 fn main() -> Result<(), Box<dyn Error>> {
@@ -84,14 +82,17 @@ fn ui<B: Backend>(f: &mut Frame<B>) {
     // with at least a margin of 1
     let terminal_size = f.size();
 
-
     let json_str = include_str!("../../layout-config/layout.json");
     let ui: UI = serde_json::from_str(json_str).unwrap();
     let mut size_map = HashMap::new();
-    layout::rect_computation::compute_rect_for_item_tree(&ui.item_root, &mut size_map, &into_my_rect(terminal_size));
+    layout::rect_computation::compute_rect_for_item_tree(
+        &ui.item_root,
+        &mut size_map,
+        &into_my_rect(terminal_size),
+    );
 
     for (item, rect) in size_map.iter().filter(|(item, _)| item.is_reserved()) {
         let item_block = get_block(item.clone().into());
-        f.render_widget(item_block, from_my_rect(rect.clone()) );
+        f.render_widget(item_block, from_my_rect(rect.clone()));
     }
 }
