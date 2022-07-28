@@ -10,44 +10,6 @@ enum NoSiblingRect {
     IsEldestChild,
 }
 
-impl NoSiblingRect {
-    fn when_eldest<R, F>(self, func: F) -> Option<R>
-    where
-        F: FnOnce() -> R,
-    {
-        match self {
-            NoSiblingRect::IsEldestChild => Some(func()),
-            _ => None,
-        }
-    }
-
-    fn when_orphan<R, F>(self, func: F) -> Option<R>
-    where
-        F: FnOnce() -> R,
-    {
-        match self {
-            NoSiblingRect::IsOrphan => Some(func()),
-            _ => None,
-        }
-    }
-}
-
-fn unwrap_or_else_sibling_rect_res<'s, F>(
-    res: Result<&'s Rect, NoSiblingRect>,
-    on_orphan: F,
-    on_elder: F,
-) -> &'s Rect
-where
-    F: FnOnce() -> &'s Rect
-{
-    match res {
-        Ok(r) => r,
-        Err(NoSiblingRect::IsOrphan) => on_orphan(),
-        Err(NoSiblingRect::IsEldestChild) => on_elder(),
-    }
-}
-
-
 fn get_sibling_rect<'a, 'b, 's>(
     me: &'b ItemTree,
     size_map: &'s mut HashMap<Identifier, Rect>,
@@ -63,7 +25,7 @@ fn get_sibling_rect<'a, 'b, 's>(
         .ok_or(NoSiblingRect::IsEldestChild)?;
 
     if !size_map.contains_key(&immidiate_elder_sibling.item.identifier) {
-        compute_rect(&immidiate_elder_sibling, size_map, terminal_rect, false)
+        compute_rect(immidiate_elder_sibling, size_map, terminal_rect, false)
     }
 
     let sibling_rect = size_map
@@ -73,10 +35,10 @@ fn get_sibling_rect<'a, 'b, 's>(
     Ok(sibling_rect)
 }
 
-fn i_can_start_from<'a, 'b, 's>(
-    me: &'a ItemTree,
-    size_map: &'s mut HashMap<Identifier, Rect>,
-    terminal_rect: &'b Rect,
+fn i_can_start_from(
+    me: &ItemTree,
+    size_map: &mut HashMap<Identifier, Rect>,
+    terminal_rect: &Rect,
 ) -> (u16, u16) {
     match get_sibling_rect(me, size_map, terminal_rect) {
         Err(NoSiblingRect::IsOrphan) => (terminal_rect.y, terminal_rect.x),
@@ -147,10 +109,7 @@ fn compute_rect(
                     final_rect.height = me
                         .item
                         .size
-                        .get_absolute(
-                            parent_rect.height,
-                            net_sibling_height
-                        );
+                        .get_absolute(parent_rect.height, net_sibling_height);
                 }
                 Direction::Horizontal => {
                     final_rect.x = my_starting.1;
@@ -158,10 +117,10 @@ fn compute_rect(
                     let net_sibling_width = get_sibling_rect(me, size_map, terminal_rect)
                         .map(|s| s.width + s.x - parent_rect.x)
                         .unwrap_or_default();
-                    final_rect.width = me.item.size.get_absolute(
-                        parent_rect.width,
-                        net_sibling_width
-                    );
+                    final_rect.width = me
+                        .item
+                        .size
+                        .get_absolute(parent_rect.width, net_sibling_width);
                 }
             }
 
@@ -174,7 +133,7 @@ fn compute_rect(
 
     me.childs
         .iter()
-        .take_while(|_|compute_for_child)
+        .take_while(|_| compute_for_child)
         .for_each(|child| {
             compute_rect(child, size_map, terminal_rect, compute_for_child);
         });

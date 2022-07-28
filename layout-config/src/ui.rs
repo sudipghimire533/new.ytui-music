@@ -33,8 +33,8 @@ mod tests {
                 width: Length::AtLeast(500),
             },
             popup: Popup {
-               height: Length::Relative(80),
-               width: Length::Relative(80),
+                height: Length::Relative(80),
+                width: Length::Relative(80),
             },
             item_root: vec![
                 Item {

@@ -30,26 +30,20 @@ impl TryFrom<&str> for Length {
         let value_str = &source[..source.len() - 1];
         let unit = source.chars().last().ok_or("Invalid length string")?;
 
-        let value = value_str
-            .parse::<u16>()
-            .map_err(|_| "Invalid value")?;
+        let value = value_str.parse::<u16>().map_err(|_| "Invalid value")?;
 
         match unit {
             '%' => Ok(Length::Relative(value)),
             'a' => Ok(Length::Absolute(value)),
             'l' => Ok(Length::AtLeast(value)),
             'm' => Ok(Length::AtMost(value)),
-            _ => Err("Invalid unit")
+            _ => Err("Invalid unit"),
         }
     }
 }
 
 impl Length {
-    pub fn get_absolute(
-        &self,
-        parent_length: u16,
-        net_sibling_length: u16,
-    ) -> u16 {
+    pub fn get_absolute(&self, parent_length: u16, net_sibling_length: u16) -> u16 {
         let usable_length = parent_length
             .checked_sub(net_sibling_length)
             .expect("Siblings length must not have out grown parent length");
@@ -68,7 +62,7 @@ mod tests {
 
     #[test]
     fn serialization_and_deserialization() {
-        use Length::{Absolute, Relative, AtMost, AtLeast};
+        use Length::{Absolute, AtLeast, AtMost, Relative};
         let from_str = |s: &str| {
             let json_string = format!("\"{s}\"");
             serde_json::from_str(&json_string)
