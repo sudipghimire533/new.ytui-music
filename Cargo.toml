@@ -3,4 +3,5 @@ members = [
   "layout-config",
   "layout",
   "drawer",
+  "user-config",
 ]
