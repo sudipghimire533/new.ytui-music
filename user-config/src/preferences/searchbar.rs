@@ -1,1 +1,3 @@
-pub struct SearchbarPreferences {}
+pub struct SearchbarPreferences {
+    pub cursor: char,
+}

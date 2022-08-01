@@ -57,10 +57,10 @@ name = "drawer"
 version = "0.1.0"
 dependencies = [
  "crossterm",
- "layout",
- "layout-config",
  "serde_json",
+ "termion",
  "tui",
+ "user-config",
 ]
 
 [[package]]
