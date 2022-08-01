@@ -27,7 +27,7 @@ pub fn get_shortcut_list<'a, A>(appdata: A, theme: &Theme) -> List<'a>
 where
     A: ShortcutListAppdata,
 {
-    let list_items = vec![
+    const LIST_ITEMS: [Shortcut; 8] = [
         Shortcut::Trending,
         Shortcut::YoutubeCommunity,
         Shortcut::LikedSongs,
@@ -36,19 +36,21 @@ where
         Shortcut::FollowingArtist,
         Shortcut::Local,
         Shortcut::Search,
-    ]
-    .into_iter()
-    .enumerate()
-    .map(|(i, s)| {
-        let item_str = <_ as Into<&'static str>>::into(s);
-        let list_color = if appdata.selected() == Some(i) {
-            theme.highlight_color
-        } else {
-            theme.base_color
-        };
-        ListItem::new(item_str).style(Style::default().fg(list_color.into()))
-    })
-    .collect::<Vec<_>>();
+    ];
+
+    let list_items = LIST_ITEMS
+        .into_iter()
+        .enumerate()
+        .map(|(i, s)| {
+            let item_str = <_ as Into<&'static str>>::into(s);
+            let list_color = if appdata.selected() == Some(i) {
+                theme.highlight_color
+            } else {
+                theme.base_color
+            };
+            ListItem::new(item_str).style(Style::default().fg(list_color.into()))
+        })
+        .collect::<Vec<_>>();
 
     let border_style: Style;
     if appdata.is_shortcutlist_active() {

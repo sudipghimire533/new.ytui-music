@@ -2,6 +2,7 @@ pub mod searchbar;
 use std::borrow::Cow;
 
 use tui::widgets::ListState;
+pub mod gauge;
 pub mod shortcut;
 
 pub enum Query {

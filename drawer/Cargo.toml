@@ -32,3 +32,8 @@ path = "src/examples/searchbar.rs"
 name = "shortcut"
 required-features = ["crossterm"]
 path = "src/examples/shortcut.rs"
+
+[[example]]
+name = "gauge"
+required-features = ["crossterm"]
+path = "src/examples/gauge.rs"
