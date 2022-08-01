@@ -37,3 +37,8 @@ path = "src/examples/shortcut.rs"
 name = "gauge"
 required-features = ["crossterm"]
 path = "src/examples/gauge.rs"
+
+[[example]]
+name = "tabpane"
+required-features = ["crossterm"]
+path = "src/examples/tabpane.rs"
