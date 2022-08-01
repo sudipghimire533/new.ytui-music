@@ -10,11 +10,21 @@ pub use tui::{
     widgets::{Block, Borders},
     Frame, Terminal,
 };
+pub use user_config::preferences::theme::Theme;
+pub use user_config::styles::color::RGB;
+
+pub fn get_default_theme() -> Theme {
+    Theme {
+        active_color: RGB(10, 150, 150),
+        base_color: RGB(200, 160, 0),
+        highlight_color: RGB(175, 125, 115),
+        inactive_color: RGB(200, 160, 0),
+    }
+}
 
 pub fn entrypoint(
-    run: impl Fn(&mut tui::terminal::Frame<CrosstermBackend<std::io::Stdout>>) -> ()
-) -> Result<(), Box<dyn Error>>
-{
+    run: impl Fn(&mut tui::terminal::Frame<CrosstermBackend<std::io::Stdout>>) -> (),
+) -> Result<(), Box<dyn Error>> {
     // setup terminal
     enable_raw_mode()?;
     let mut stdout = io::stdout();
@@ -41,7 +51,10 @@ pub fn entrypoint(
     Ok(())
 }
 
-fn run_app<B: Backend>(terminal: &mut Terminal<B>, updater: impl Fn(&mut tui::terminal::Frame<B>)) -> io::Result<()> {
+fn run_app<B: Backend>(
+    terminal: &mut Terminal<B>,
+    updater: impl Fn(&mut tui::terminal::Frame<B>),
+) -> io::Result<()> {
     loop {
         terminal.draw(|f| updater(f))?;
 

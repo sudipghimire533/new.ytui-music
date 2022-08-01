@@ -1,6 +1,7 @@
 mod common;
 use common::*;
 use drawer::gadgets::searchbar;
+use tui::layout::Rect;
 
 struct ExampleSearchbarAppdata;
 
@@ -9,29 +10,24 @@ impl searchbar::SearchbarAppdata for ExampleSearchbarAppdata {
         true
     }
 
-    fn get_altering_query<'a>(&'a self) -> &'a str{
+    fn get_altering_query<'a>(&'a self) -> &'a str {
         "example search"
     }
 }
 
 fn main() -> Result<(), Box<dyn Error>> {
-    entrypoint(ui)
+    entrypoint(draw_searchbar)
 }
 
-fn ui<B: Backend>(f: &mut Frame<B>) {
-    let searchbar = searchbar::get_searchbar(ExampleSearchbarAppdata);
+fn draw_searchbar<B: Backend>(f: &mut Frame<B>) {
+    let theme = get_default_theme();
+    let searchbar = searchbar::get_searchbar(ExampleSearchbarAppdata, &theme);
+    let place = Rect {
+        x: 0,
+        y: 0,
+        height: 3,
+        width: f.size().width,
+    };
 
-    let chunks = Layout::default()
-        .direction(Direction::Vertical)
-        .constraints(
-            [
-                Constraint::Length(3),
-                Constraint::Max(f.size().height)
-            ]
-            .as_ref(),
-        )
-        .split(f.size());
-
-    let block = Block::default().title("Block").borders(Borders::ALL);
-    f.render_widget(searchbar, chunks[0]);
+    f.render_widget(searchbar, place);
 }

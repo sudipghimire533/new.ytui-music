@@ -34,7 +34,7 @@ impl From<RGB> for ColorCode<'_> {
     }
 }
 
-#[derive(Clone, Debug, Serialize, Deserialize, PartialEq, Eq)]
+#[derive(Clone, Copy, Debug, Serialize, Deserialize, PartialEq, Eq)]
 #[serde(try_from = "ColorCode")]
 #[serde(into = "ColorCode")]
 pub struct RGB(pub u8, pub u8, pub u8);
