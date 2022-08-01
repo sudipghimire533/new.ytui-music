@@ -1,4 +1,4 @@
-use crate::gadgets::AppData;
+use crate::gadgets::AppState;
 use crate::gadgets::Window;
 use std::borrow::Cow;
 use tui::style::Modifier;
@@ -18,7 +18,7 @@ pub trait SearchbarAppdata {
     }
 }
 
-impl SearchbarAppdata for AppData {
+impl SearchbarAppdata for AppState {
     fn is_searchbar_active(&self) -> bool {
         self.active_window == Window::SearchBar
     }
@@ -26,9 +26,7 @@ impl SearchbarAppdata for AppData {
     fn get_altering_query<'a>(&'a self) -> &'a str {
         &self.altering_query
     }
-   
 }
-
 
 pub fn get_searchbar<'c, A>(appdata: A, theme: &Theme) -> Paragraph<'c>
 where

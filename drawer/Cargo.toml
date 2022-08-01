@@ -27,3 +27,8 @@ termion = ["tui/termion", "dep:termion"]
 name = "searchbar"
 required-features = ["crossterm"]
 path = "src/examples/searchbar.rs"
+
+[[example]]
+name = "shortcut"
+required-features = ["crossterm"]
+path = "src/examples/shortcut.rs"

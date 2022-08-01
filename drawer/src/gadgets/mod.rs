@@ -1,6 +1,9 @@
 pub mod searchbar;
 use std::borrow::Cow;
 
+use tui::widgets::ListState;
+pub mod shortcut;
+
 pub enum Query {
     SearchAll(String),
     SearchMusic(String),
@@ -65,7 +68,7 @@ pub struct QueryResult<T> {
 /// This struct will contains data that
 /// the app actually functions over
 /// this include all the runtime mutable datas
-pub struct AppData {
+pub struct AppState {
     /// Every result shown must be the outcome of some query
     /// For example,
     pub altering_query: String,
@@ -73,4 +76,5 @@ pub struct AppData {
     pub artist_result: QueryResult<ArtistUnit>,
     pub playlist_result: QueryResult<PlaylistUnit>,
     pub active_window: Window,
+    pub shortcut_list_state: ListState,
 }
