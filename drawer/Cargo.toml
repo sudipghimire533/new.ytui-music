@@ -42,3 +42,9 @@ path = "src/examples/gauge.rs"
 name = "tabpane"
 required-features = ["crossterm"]
 path = "src/examples/tabpane.rs"
+
+[[example]]
+name = "musicpane"
+required-features = ["crossterm"]
+path = "src/examples/musicpane.rs"
+

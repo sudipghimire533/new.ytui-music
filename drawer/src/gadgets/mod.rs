@@ -5,6 +5,7 @@ use tui::widgets::ListState;
 pub mod gauge;
 pub mod panetab;
 pub mod shortcut;
+pub mod musicpane;
 
 pub enum Query {
     SearchAll(String),
