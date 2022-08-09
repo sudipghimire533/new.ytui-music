@@ -1,13 +1,18 @@
-use crate::gadgets::AppState;
-use crate::gadgets::GeometryData;
-use tui::layout::Constraint;
-use tui::style::{Modifier, Style};
+use tui::widgets::Table;
+use tui::widgets::Borders;
+use tui::widgets::Block;
+use tui::widgets::Row;
+use tui::widgets::BorderType;
 use tui::text::Span;
-use tui::widgets::{Block, Borders, Row, Table};
+use tui::style::Style;
+use tui::style::Modifier;
+use tui::layout::Constraint;
 use user_config::preferences::theme::Theme;
-
-use super::PaneWindow;
-use super::{PlaylistUnit, Window};
+use crate::gadgets::window::Window;
+use crate::gadgets::window::PaneWindow;
+use crate::gadgets::state::AppState;
+use crate::gadgets::state::GeometryData;
+use crate::gadgets::unit::PlaylistUnit;
 
 pub trait PlaylistpaneAppdata {
     fn is_playlistpane_active(&self) -> bool;
@@ -69,6 +74,7 @@ where
         .border_type(tui::widgets::BorderType::Rounded)
         .title(block_title)
         .borders(Borders::ALL)
+        .border_type(BorderType::Rounded)
         .border_style(border_style);
 
     let rows = appdata

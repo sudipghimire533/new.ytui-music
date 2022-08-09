@@ -1,8 +1,12 @@
-use super::Window;
-use crate::gadgets::AppState;
-use tui::style::{Color, Style};
-use tui::widgets::{Block, BorderType, Borders, Gauge, List, ListItem, ListState};
-use user_config::preferences::{shortcut::Shortcut, theme::Theme};
+use tui::widgets::Gauge;
+use tui::widgets::Borders;
+use tui::widgets::Block;
+use tui::widgets::BorderType;
+use tui::layout::Alignment;
+use tui::style::Style;
+use user_config::preferences::theme::Theme;
+use crate::gadgets::window::Window;
+use crate::gadgets::state::AppState;
 
 pub trait GaugeAppData {
     fn is_gauge_active(&self) -> bool;
@@ -29,9 +33,9 @@ where
     A: GaugeAppData,
 {
     let block = Block::default()
-        .border_type(tui::widgets::BorderType::Rounded)
+        .border_type(BorderType::Rounded)
         .borders(Borders::ALL)
-        .title_alignment(tui::layout::Alignment::Center)
+        .title_alignment(Alignment::Center)
         .title(" 00:00 / 00:00 ");
 
     Gauge::default()

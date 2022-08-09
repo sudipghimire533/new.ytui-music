@@ -1,9 +1,12 @@
-use crate::gadgets::AppState;
-use tui::style::{Color, Style};
-use tui::widgets::{Block, Borders, List, ListItem, ListState};
+use tui::style::Style;
+use tui::widgets::Borders;
+use tui::widgets::BorderType;
+use tui::widgets::Block;
+use tui::widgets::List;
+use tui::widgets::ListItem;
 use user_config::preferences::{shortcut::Shortcut, theme::Theme};
-
-use super::Window;
+use crate::gadgets::window::Window;
+use crate::gadgets::state::AppState;
 
 pub trait ShortcutListAppdata {
     fn is_shortcutlist_active(&self) -> bool;
@@ -62,6 +65,7 @@ where
     let block = Block::default()
         .title(appdata.get_title())
         .borders(Borders::ALL)
+        .border_type(BorderType::Rounded)
         .border_type(tui::widgets::BorderType::Rounded)
         .border_style(border_style);
 

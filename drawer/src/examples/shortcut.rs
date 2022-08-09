@@ -2,7 +2,6 @@ mod common;
 use common::*;
 use drawer::gadgets::shortcut;
 use tui::layout::Rect;
-use tui::widgets::ListState;
 
 struct ExampleShortcutAppdata;
 

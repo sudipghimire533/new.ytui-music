@@ -2,7 +2,7 @@ mod common;
 use common::*;
 use drawer::gadgets::{
     playlistpane::{self, PlaylistpaneGeometry},
-    PlaylistUnit,
+    unit::PlaylistUnit,
 };
 use tui::{layout::Rect, widgets::TableState};
 

@@ -1,11 +1,13 @@
-use crate::gadgets::AppState;
-use crate::gadgets::Window;
-use std::borrow::Cow;
 use tui::style::Modifier;
 use tui::style::Style;
 use tui::text::{Span, Spans, Text};
-use tui::widgets::{Block, Borders, Paragraph};
+use tui::widgets::Block;
+use tui::widgets::BorderType;
+use tui::widgets::Borders;
+use tui::widgets::Paragraph;
 use user_config::preferences::theme::Theme;
+use crate::gadgets::state::AppState;
+use crate::gadgets::window::Window;
 
 pub trait SearchbarAppdata {
     fn is_searchbar_active(&self) -> bool;
@@ -57,6 +59,7 @@ where
         .border_type(tui::widgets::BorderType::Rounded)
         .title(block_title)
         .borders(Borders::ALL)
+        .border_type(BorderType::Rounded)
         .border_style(border_style);
 
     Paragraph::new(text).block(block)

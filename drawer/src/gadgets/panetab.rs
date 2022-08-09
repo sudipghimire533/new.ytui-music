@@ -1,5 +1,3 @@
-use crate::gadgets::AppState;
-use std::iter::Extend;
 use tui::style::Style;
 use tui::text::Span;
 use tui::text::Spans;
@@ -8,8 +6,8 @@ use tui::widgets::BorderType;
 use tui::widgets::Borders;
 use tui::widgets::Tabs;
 use user_config::preferences::theme::Theme;
-
-use super::Window;
+use crate::gadgets::state::AppState;
+use crate::gadgets::window::Window;
 
 pub trait PanetabAppdata {
     fn is_panetab_active(&self) -> bool;

@@ -2,7 +2,7 @@ mod common;
 use common::*;
 use drawer::gadgets::{
     musicpane::{self, MusicpaneGeometry},
-    FinalQuery, MusicUnit, Query, QueryResult,
+    unit::MusicUnit,
 };
 use tui::{layout::Rect, widgets::TableState};
 

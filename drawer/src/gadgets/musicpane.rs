@@ -1,13 +1,18 @@
-use crate::gadgets::AppState;
-use crate::gadgets::GeometryData;
-use tui::layout::Constraint;
-use tui::style::{Color, Modifier, Style};
+use tui::widgets::Table;
+use tui::widgets::Borders;
+use tui::widgets::Block;
+use tui::widgets::Row;
+use tui::widgets::BorderType;
 use tui::text::Span;
-use tui::widgets::{Block, Borders, Row, Table, TableState};
-use user_config::preferences::{shortcut::Shortcut, theme::Theme};
-
-use super::PaneWindow;
-use super::{MusicUnit, QueryResult, Window};
+use tui::style::Style;
+use tui::style::Modifier;
+use tui::layout::Constraint;
+use user_config::preferences::theme::Theme;
+use crate::gadgets::window::Window;
+use crate::gadgets::window::PaneWindow;
+use crate::gadgets::state::AppState;
+use crate::gadgets::state::GeometryData;
+use crate::gadgets::unit::MusicUnit;
 
 pub trait MusicpaneAppdata {
     fn is_musicpane_active(&self) -> bool;
@@ -66,7 +71,7 @@ where
     let highlight_style = Style::default().fg(theme.highlight_color.into());
 
     let block = Block::default()
-        .border_type(tui::widgets::BorderType::Rounded)
+        .border_type(BorderType::Rounded)
         .title(block_title)
         .borders(Borders::ALL)
         .border_style(border_style);
