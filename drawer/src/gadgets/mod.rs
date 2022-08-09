@@ -88,6 +88,11 @@ pub struct AppState {
     pub music_pane_state: TableState,
 }
 
+pub struct PaneDivision<const COL_LEN: usize> {
+    pub splits: [Constraint; COL_LEN],
+    pub spacing: u16,
+}
+
 /// Size & Position related config
 pub struct GeometryData {
     pub searchbar: Rect,
@@ -97,5 +102,5 @@ pub struct GeometryData {
     pub musicpane: Rect,
     pub playlistpane: Rect,
     pub artistpane: Rect,
-    pub musicpane_division: [Constraint; 3],
+    pub musicpane_division: PaneDivision<3>,
 }

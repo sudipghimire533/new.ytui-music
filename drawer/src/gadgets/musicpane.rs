@@ -19,6 +19,7 @@ pub trait MusicpaneAppdata {
 
 pub trait MusicpaneGeometry {
     fn column_division(&self) -> &[Constraint];
+    fn column_spacing(&self) -> u16;
 }
 
 impl MusicpaneAppdata for AppState {
@@ -35,7 +36,10 @@ impl MusicpaneAppdata for AppState {
 
 impl MusicpaneGeometry for GeometryData {
     fn column_division(&self) -> &[Constraint] {
-        &self.musicpane_division
+        &self.musicpane_division.splits
+    }
+    fn column_spacing(&self) -> u16 {
+        self.musicpane_division.spacing
     }
 }
 
@@ -80,9 +84,10 @@ where
 
     let header = Row::new(vec!["Music", "Artist", "Duration"]).style(header_style);
     let widths = geometry.column_division();
+    let col_spacing = geometry.column_spacing();
 
     Table::new(rows)
-        .column_spacing(1)
+        .column_spacing(col_spacing)
         .widths(widths)
         .header(header)
         .style(base_style)

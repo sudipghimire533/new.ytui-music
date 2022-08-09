@@ -60,6 +60,9 @@ impl MusicpaneGeometry for ExampleGeometry {
             Constraint::Percentage(15),
         ]
     }
+    fn column_spacing(&self) -> u16 {
+        1
+    }
 }
 
 impl musicpane::MusicpaneAppdata for ExampleMusicpaneAppdata {
