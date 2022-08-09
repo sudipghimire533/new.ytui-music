@@ -16,8 +16,8 @@ pub use user_config::styles::color::RGB;
 pub fn get_default_theme() -> Theme {
     Theme {
         active_color: RGB(10, 150, 150),
-        base_color: RGB(200, 160, 0),
-        highlight_color: RGB(175, 125, 115),
+        highlight_color: RGB(200, 160, 0),
+        base_color: RGB(175, 125, 115),
         inactive_color: RGB(200, 160, 0),
     }
 }

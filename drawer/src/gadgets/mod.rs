@@ -1,7 +1,7 @@
 pub mod searchbar;
 use std::borrow::Cow;
 
-use tui::widgets::ListState;
+use tui::widgets::{ListState, TableState};
 pub mod gauge;
 pub mod panetab;
 pub mod shortcut;
@@ -80,4 +80,5 @@ pub struct AppState {
     pub playlist_result: QueryResult<PlaylistUnit>,
     pub active_window: Window,
     pub shortcut_list_state: ListState,
+    pub music_pane_state: TableState,
 }
