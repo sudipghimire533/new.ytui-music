@@ -9,13 +9,14 @@ impl gauge::GaugeAppData for ExampleGaugeAppdata {
     fn is_gauge_active(&self) -> bool {
         false
     }
-
-    fn get_music_total_duration(&self) -> String {
-        todo!()
+    fn music_total_duration(&self) -> String {
+        "05:35".to_string()
     }
-
-    fn get_played_music_duration(&self) -> String {
-        todo!()
+    fn played_music_duration(&self) -> String {
+        "03:54".to_string()
+    }
+    fn music_title(&self) -> String {
+        "Bimbakash (Maya Jastai) - From album Bimbakash - Bartika Eam Rai".to_string()
     }
 }
 

@@ -6,6 +6,25 @@ use tui::layout::Rect;
 use tui::widgets::ListState;
 use tui::widgets::TableState;
 
+pub trait PlayerInfo {
+    fn playing_track_title(&self) -> String;
+    // TODO: return more Duration specific type rather than String
+    fn playing_track_duration(&self) -> String;
+    fn playing_track_completed(&self) -> String;
+}
+
+impl PlayerInfo for AppState {
+    fn playing_track_title(&self) -> String {
+        unimplemented!()
+    }
+    fn playing_track_duration(&self) -> String {
+        unimplemented!()
+    }
+    fn playing_track_completed(&self) -> String {
+        unimplemented!()
+    }
+}
+
 pub struct QueryResult<T> {
     pub query: FinalQuery,
     pub list: Vec<T>,
