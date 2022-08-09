@@ -6,6 +6,7 @@ use tui::text::Span;
 use tui::widgets::{Block, Borders, Row, Table, TableState};
 use user_config::preferences::{shortcut::Shortcut, theme::Theme};
 
+use super::PaneWindow;
 use super::{MusicUnit, QueryResult, Window};
 
 pub trait MusicpaneAppdata {
@@ -24,7 +25,7 @@ pub trait MusicpaneGeometry {
 
 impl MusicpaneAppdata for AppState {
     fn is_musicpane_active(&self) -> bool {
-        self.active_window == Window::MusicPane
+        self.active_window == Window::Pane(PaneWindow::MusicPane)
     }
     fn selected(&self) -> Option<usize> {
         self.music_pane_state.selected()

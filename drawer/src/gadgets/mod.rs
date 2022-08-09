@@ -63,12 +63,17 @@ pub enum Window {
     SearchBar,
     Shortcut,
     PaneTab,
-    MusicPane,
-    PlaylistPane,
-    ArtistPane,
+    Pane(PaneWindow),
     None,
     Popup,
     Gauge,
+}
+
+#[derive(PartialEq, Eq)]
+pub enum PaneWindow {
+    MusicPane,
+    PlaylistPane,
+    ArtistPane,
 }
 
 pub struct QueryResult<T> {

@@ -6,6 +6,7 @@ use tui::text::Span;
 use tui::widgets::{Block, Borders, Row, Table};
 use user_config::preferences::theme::Theme;
 
+use super::PaneWindow;
 use super::{PlaylistUnit, Window};
 
 pub trait PlaylistpaneAppdata {
@@ -24,7 +25,7 @@ pub trait PlaylistpaneGeometry {
 
 impl PlaylistpaneAppdata for AppState {
     fn is_playlistpane_active(&self) -> bool {
-        self.active_window == Window::PlaylistPane
+        self.active_window == Window::Pane(PaneWindow::PlaylistPane)
     }
     fn selected(&self) -> Option<usize> {
         self.playlist_pane_state.selected()
