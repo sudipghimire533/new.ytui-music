@@ -22,7 +22,7 @@ impl PanetabAppdata for AppState {
         self.active_window == Window::PaneTab
     }
     fn selected(&self) -> usize {
-        self.panetab.selected
+        self.panetab_state.selected
     }
 }
 

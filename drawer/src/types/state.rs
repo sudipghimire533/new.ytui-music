@@ -54,6 +54,7 @@ make_wrapper!(ShortcutListState, ListState);
 make_wrapper!(MusicPaneState, TableState);
 make_wrapper!(PlaylistPaneState, TableState);
 
+#[derive(Clone)]
 pub struct PanetabState {
     pub selected: usize,
 }
@@ -69,7 +70,7 @@ pub struct AppState {
     pub artist_result: QueryResult<ArtistUnit>,
     pub playlist_result: QueryResult<PlaylistUnit>,
     pub active_window: Window,
-    pub panetab: PanetabState,
+    pub panetab_state: PanetabState,
     pub shortcut_list_state: ShortcutListState,
     pub music_pane_state: MusicPaneState,
     pub playlist_pane_state: PlaylistPaneState,

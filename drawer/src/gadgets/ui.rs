@@ -8,12 +8,12 @@ use user_config::preferences::theme::Theme;
 
 use super::gauge::get_gauge;
 use super::gauge::GaugeAppData;
-use super::musicpane::MusicpaneAppdata;
 use super::musicpane::get_musicpane_list;
+use super::musicpane::MusicpaneAppdata;
 use super::panetab::get_panetab;
 use super::panetab::PanetabAppdata;
-use super::playlistpane::PlaylistpaneAppdata;
 use super::playlistpane::get_playlistpane_list;
+use super::playlistpane::PlaylistpaneAppdata;
 use super::shortcut::get_shortcut_list;
 use super::shortcut::ShortcutListAppdata;
 use super::state::AppState;
@@ -24,6 +24,30 @@ use super::window::PaneWindow;
 
 pub trait Provider<Value> {
     fn provide(&self) -> Value;
+}
+
+impl Provider<ShortcutListState> for AppState {
+    fn provide(&self) -> ShortcutListState {
+        self.shortcut_list_state.clone()
+    }
+}
+
+impl Provider<PanetabState> for AppState {
+    fn provide(&self) -> PanetabState {
+        self.panetab_state.clone()
+    }
+}
+
+impl Provider<MusicPaneState> for AppState {
+    fn provide(&self) -> MusicPaneState {
+        self.music_pane_state.clone()
+    }
+}
+
+impl Provider<PlaylistPaneState> for AppState {
+    fn provide(&self) -> PlaylistPaneState {
+        self.playlist_pane_state.clone()
+    }
 }
 
 pub fn draw_all_ui<A, B>(frame: &mut Frame<B>, appdata: &A, theme: &Theme, geometrics: GeometryData)
@@ -38,7 +62,7 @@ where
         + Provider<ShortcutListState>
         + Provider<PanetabState>
         + Provider<MusicPaneState>
-        + Provider<PlaylistPaneState>
+        + Provider<PlaylistPaneState>,
 {
     let searchbar_rect = geometrics.searchbar;
     if searchbar_rect.area() > 1 {
@@ -75,7 +99,11 @@ where
             if musicpane_rect.area() > 1 {
                 let mut musicpane_state = <A as Provider<MusicPaneState>>::provide(appdata);
                 let musicpane = get_musicpane_list(appdata, &geometrics, theme);
-                frame.render_stateful_widget(musicpane, musicpane_rect, musicpane_state.get_mut_ref());
+                frame.render_stateful_widget(
+                    musicpane,
+                    musicpane_rect,
+                    musicpane_state.get_mut_ref(),
+                );
             }
         }
 
@@ -84,7 +112,11 @@ where
             if playlistpane_rect.area() > 1 {
                 let mut playlistpane_state = <A as Provider<PlaylistPaneState>>::provide(appdata);
                 let playlistpane = get_playlistpane_list(appdata, &geometrics, theme);
-                frame.render_stateful_widget(playlistpane, playlistpane_rect, playlistpane_state.get_mut_ref());
+                frame.render_stateful_widget(
+                    playlistpane,
+                    playlistpane_rect,
+                    playlistpane_state.get_mut_ref(),
+                );
             }
         }
 
