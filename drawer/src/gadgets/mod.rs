@@ -1,7 +1,7 @@
 pub mod searchbar;
 use std::borrow::Cow;
 
-use tui::widgets::{ListState, TableState};
+use tui::{widgets::{ListState, TableState}, layout::{Rect, Constraint}};
 pub mod gauge;
 pub mod musicpane;
 pub mod panetab;
@@ -86,4 +86,16 @@ pub struct AppState {
     pub active_window: Window,
     pub shortcut_list_state: ListState,
     pub music_pane_state: TableState,
+}
+
+/// Size & Position related config
+pub struct GeometryData {
+    pub searchbar: Rect,
+    pub sidebar: Rect,
+    pub gauge: Rect,
+    pub panetab: Rect,
+    pub musicpane: Rect,
+    pub playlistpane: Rect,
+    pub artistpane: Rect,
+    pub musicpane_division: [Constraint; 3],
 }

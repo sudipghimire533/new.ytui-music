@@ -1,4 +1,5 @@
 use crate::gadgets::AppState;
+use crate::gadgets::GeometryData;
 use tui::layout::Constraint;
 use tui::style::{Color, Modifier, Style};
 use tui::text::Span;
@@ -16,6 +17,10 @@ pub trait MusicpaneAppdata {
     }
 }
 
+pub trait MusicpaneGeometry {
+    fn column_division(&self) -> &[Constraint];
+}
+
 impl MusicpaneAppdata for AppState {
     fn is_musicpane_active(&self) -> bool {
         self.active_window == Window::MusicPane
@@ -28,9 +33,16 @@ impl MusicpaneAppdata for AppState {
     }
 }
 
-pub fn get_musicpane_list<'a, A>(appdata: A, theme: &Theme) -> Table<'a>
+impl MusicpaneGeometry for GeometryData {
+    fn column_division(&self) -> &[Constraint] {
+        &self.musicpane_division
+    }
+}
+
+pub fn get_musicpane_list<'a, A, G>(appdata: A, geometry: &'a G, theme: &Theme) -> Table<'a>
 where
     A: MusicpaneAppdata,
+    G: MusicpaneGeometry,
 {
     let block_title: Span;
     let border_style: Style;
@@ -67,14 +79,11 @@ where
         .collect::<Vec<Row>>();
 
     let header = Row::new(vec!["Music", "Artist", "Duration"]).style(header_style);
+    let widths = geometry.column_division();
 
     Table::new(rows)
         .column_spacing(1)
-        .widths(&[
-            Constraint::Percentage(60),
-            Constraint::Percentage(25),
-            Constraint::Percentage(15),
-        ])
+        .widths(widths)
         .header(header)
         .style(base_style)
         .highlight_style(highlight_style)

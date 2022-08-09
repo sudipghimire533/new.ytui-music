@@ -1,8 +1,12 @@
 mod common;
 use common::*;
-use drawer::gadgets::{musicpane, FinalQuery, MusicUnit, Query, QueryResult};
+use drawer::gadgets::{
+    musicpane::{self, MusicpaneGeometry},
+    FinalQuery, MusicUnit, Query, QueryResult,
+};
 use tui::{layout::Rect, widgets::TableState};
 
+struct ExampleGeometry;
 struct ExampleMusicpaneAppdata {
     music_list: Vec<MusicUnit>,
 }
@@ -48,6 +52,16 @@ impl ExampleMusicpaneAppdata {
     }
 }
 
+impl MusicpaneGeometry for ExampleGeometry {
+    fn column_division(&self) -> &[Constraint] {
+        &[
+            Constraint::Percentage(60),
+            Constraint::Percentage(25),
+            Constraint::Percentage(15),
+        ]
+    }
+}
+
 impl musicpane::MusicpaneAppdata for ExampleMusicpaneAppdata {
     fn is_musicpane_active(&self) -> bool {
         true
@@ -68,7 +82,11 @@ fn main() -> Result<(), Box<dyn Error>> {
 
 fn draw_musicpane<B: Backend>(f: &mut Frame<B>) {
     let theme = get_default_theme();
-    let shortcut = musicpane::get_musicpane_list(ExampleMusicpaneAppdata::new_filled(), &theme);
+    let shortcut = musicpane::get_musicpane_list(
+        ExampleMusicpaneAppdata::new_filled(),
+        &ExampleGeometry,
+        &theme,
+    );
     let place = Rect {
         x: 15,
         y: 7,
