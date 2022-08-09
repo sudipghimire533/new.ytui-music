@@ -43,10 +43,8 @@ impl ExampleMusicpaneAppdata {
                 duration: duration.to_string(),
             })
             .collect::<Vec<MusicUnit>>();
-        
-        Self {
-            music_list
-        }
+
+        Self { music_list }
     }
 }
 

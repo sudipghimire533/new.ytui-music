@@ -3,9 +3,9 @@ use std::borrow::Cow;
 
 use tui::widgets::{ListState, TableState};
 pub mod gauge;
+pub mod musicpane;
 pub mod panetab;
 pub mod shortcut;
-pub mod musicpane;
 
 pub enum Query {
     SearchAll(String),

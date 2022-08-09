@@ -1,11 +1,11 @@
 use crate::gadgets::AppState;
 use tui::layout::Constraint;
-use tui::style::{Color, Style, Modifier};
-use tui::widgets::{Block, Borders, Table, TableState, Row};
-use user_config::preferences::{shortcut::Shortcut, theme::Theme};
+use tui::style::{Color, Modifier, Style};
 use tui::text::Span;
+use tui::widgets::{Block, Borders, Row, Table, TableState};
+use user_config::preferences::{shortcut::Shortcut, theme::Theme};
 
-use super::{Window, QueryResult, MusicUnit};
+use super::{MusicUnit, QueryResult, Window};
 
 pub trait MusicpaneAppdata {
     fn is_musicpane_active(&self) -> bool;
@@ -42,7 +42,9 @@ where
         border_style = Style::default().fg(theme.inactive_color.into());
     }
 
-    let header_style = Style::default().fg(theme.inactive_color.into()).add_modifier(Modifier::BOLD);
+    let header_style = Style::default()
+        .fg(theme.inactive_color.into())
+        .add_modifier(Modifier::BOLD);
     let base_style = Style::default().fg(theme.base_color.into());
     let highlight_style = Style::default().fg(theme.highlight_color.into());
 
@@ -55,14 +57,17 @@ where
     let rows = appdata
         .music_list()
         .iter()
-        .map(|MusicUnit { title, duration, artist }| {
-            Row::new(vec![title.clone(), artist.clone(), duration.clone()])
-        })
+        .map(
+            |MusicUnit {
+                 title,
+                 duration,
+                 artist,
+             }| { Row::new(vec![title.clone(), artist.clone(), duration.clone()]) },
+        )
         .collect::<Vec<Row>>();
 
-    let header = Row::new(vec!["Music", "Artist", "Duration"])
-        .style(header_style);
-    
+    let header = Row::new(vec!["Music", "Artist", "Duration"]).style(header_style);
+
     Table::new(rows)
         .column_spacing(1)
         .widths(&[
