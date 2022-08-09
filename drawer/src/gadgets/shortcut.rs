@@ -1,12 +1,12 @@
+use crate::gadgets::state::AppState;
+use crate::gadgets::window::Window;
 use tui::style::Style;
-use tui::widgets::Borders;
-use tui::widgets::BorderType;
 use tui::widgets::Block;
+use tui::widgets::BorderType;
+use tui::widgets::Borders;
 use tui::widgets::List;
 use tui::widgets::ListItem;
 use user_config::preferences::{shortcut::Shortcut, theme::Theme};
-use crate::gadgets::window::Window;
-use crate::gadgets::state::AppState;
 
 pub trait ShortcutListAppdata {
     fn is_shortcutlist_active(&self) -> bool;
@@ -55,12 +55,11 @@ where
         })
         .collect::<Vec<_>>();
 
-    let border_style: Style;
-    if appdata.is_shortcutlist_active() {
-        border_style = Style::default().fg(theme.active_color.into());
+    let border_style = if appdata.is_shortcutlist_active() {
+        Style::default().fg(theme.active_color.into())
     } else {
-        border_style = Style::default().fg(theme.inactive_color.into());
-    }
+        Style::default().fg(theme.inactive_color.into())
+    };
 
     let block = Block::default()
         .title(appdata.get_title())

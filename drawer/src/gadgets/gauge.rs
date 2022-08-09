@@ -1,12 +1,12 @@
-use tui::widgets::Gauge;
-use tui::widgets::Borders;
-use tui::widgets::Block;
-use tui::widgets::BorderType;
+use crate::gadgets::state::AppState;
+use crate::gadgets::window::Window;
 use tui::layout::Alignment;
 use tui::style::Style;
+use tui::widgets::Block;
+use tui::widgets::BorderType;
+use tui::widgets::Borders;
+use tui::widgets::Gauge;
 use user_config::preferences::theme::Theme;
-use crate::gadgets::window::Window;
-use crate::gadgets::state::AppState;
 
 pub trait GaugeAppData {
     fn is_gauge_active(&self) -> bool;
@@ -18,17 +18,15 @@ impl GaugeAppData for AppState {
     fn is_gauge_active(&self) -> bool {
         self.active_window == Window::Gauge
     }
-
     fn get_music_total_duration(&self) -> String {
         todo!()
     }
-
     fn get_played_music_duration(&self) -> String {
         todo!()
     }
 }
 
-pub fn get_gauge<'a, A>(appdata: A, theme: &Theme) -> Gauge<'a>
+pub fn get_gauge<'a, A>(_appdata: A, theme: &Theme) -> Gauge<'a>
 where
     A: GaugeAppData,
 {

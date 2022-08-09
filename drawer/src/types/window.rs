@@ -15,4 +15,3 @@ pub enum PaneWindow {
     PlaylistPane,
     ArtistPane,
 }
-

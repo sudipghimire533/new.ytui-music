@@ -13,7 +13,6 @@ pub enum Query {
 
 pub struct FinalQuery(Cow<'static, str>);
 
-
 impl Query {
     pub fn get_final_query(self) -> FinalQuery {
         match self {
@@ -37,4 +36,3 @@ impl Query {
         }
     }
 }
-

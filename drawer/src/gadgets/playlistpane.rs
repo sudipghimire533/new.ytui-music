@@ -1,18 +1,18 @@
-use tui::widgets::Table;
-use tui::widgets::Borders;
-use tui::widgets::Block;
-use tui::widgets::Row;
-use tui::widgets::BorderType;
-use tui::text::Span;
-use tui::style::Style;
-use tui::style::Modifier;
-use tui::layout::Constraint;
-use user_config::preferences::theme::Theme;
-use crate::gadgets::window::Window;
-use crate::gadgets::window::PaneWindow;
 use crate::gadgets::state::AppState;
 use crate::gadgets::state::GeometryData;
 use crate::gadgets::unit::PlaylistUnit;
+use crate::gadgets::window::PaneWindow;
+use crate::gadgets::window::Window;
+use tui::layout::Constraint;
+use tui::style::Modifier;
+use tui::style::Style;
+use tui::text::Span;
+use tui::widgets::Block;
+use tui::widgets::BorderType;
+use tui::widgets::Borders;
+use tui::widgets::Row;
+use tui::widgets::Table;
+use user_config::preferences::theme::Theme;
 
 pub trait PlaylistpaneAppdata {
     fn is_playlistpane_active(&self) -> bool;
@@ -85,7 +85,9 @@ where
                  song_count,
                  title,
                  creator: artist,
-             }| { Row::new(vec![song_count.to_string(), title.clone(), artist.clone()]) },
+             }| {
+                Row::new(vec![song_count.to_string(), title.clone(), artist.clone()])
+            },
         )
         .collect::<Vec<Row>>();
 

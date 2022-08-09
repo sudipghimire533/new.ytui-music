@@ -14,11 +14,7 @@ struct ExamplePlaylistpaneAppdata {
 impl ExamplePlaylistpaneAppdata {
     fn new_filled() -> Self {
         let rows = [
-            (
-                "Best of South East Asia Top 100",
-                "Spotify",
-                100
-            ),
+            ("Best of South East Asia Top 100", "Spotify", 100),
             ("Album Bimbakash", "Bartika Eam Rai", 17),
             (
                 "Best soft songs to chill at while doing homework in late night alone",

@@ -12,5 +12,3 @@ pub struct PlaylistUnit {
     pub song_count: usize,
 }
 pub struct ArtistUnit;
-
-

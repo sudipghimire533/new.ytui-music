@@ -1,10 +1,10 @@
-use tui::layout::Rect;
+use crate::types::query::FinalQuery;
+use crate::types::unit::{ArtistUnit, MusicUnit, PlaylistUnit};
+use crate::types::window::Window;
 use tui::layout::Constraint;
+use tui::layout::Rect;
 use tui::widgets::ListState;
 use tui::widgets::TableState;
-use crate::types::window::Window;
-use crate::types::query::FinalQuery;
-use crate::types::unit::{MusicUnit, PlaylistUnit, ArtistUnit};
 
 pub struct QueryResult<T> {
     pub query: FinalQuery,

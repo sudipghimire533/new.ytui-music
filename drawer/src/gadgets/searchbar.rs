@@ -1,3 +1,5 @@
+use crate::gadgets::state::AppState;
+use crate::gadgets::window::Window;
 use tui::style::Modifier;
 use tui::style::Style;
 use tui::text::{Span, Spans, Text};
@@ -6,12 +8,10 @@ use tui::widgets::BorderType;
 use tui::widgets::Borders;
 use tui::widgets::Paragraph;
 use user_config::preferences::theme::Theme;
-use crate::gadgets::state::AppState;
-use crate::gadgets::window::Window;
 
 pub trait SearchbarAppdata {
     fn is_searchbar_active(&self) -> bool;
-    fn get_altering_query<'a>(&'a self) -> &'a str;
+    fn get_altering_query(&self) -> &str;
     fn get_title(&self) -> &'static str {
         "Search "
     }
@@ -24,8 +24,7 @@ impl SearchbarAppdata for AppState {
     fn is_searchbar_active(&self) -> bool {
         self.active_window == Window::SearchBar
     }
-
-    fn get_altering_query<'a>(&'a self) -> &'a str {
+    fn get_altering_query(&self) -> &str {
         &self.altering_query
     }
 }

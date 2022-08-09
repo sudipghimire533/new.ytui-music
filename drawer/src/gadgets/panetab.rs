@@ -1,3 +1,5 @@
+use crate::gadgets::state::AppState;
+use crate::gadgets::window::Window;
 use tui::style::Style;
 use tui::text::Span;
 use tui::text::Spans;
@@ -6,8 +8,6 @@ use tui::widgets::BorderType;
 use tui::widgets::Borders;
 use tui::widgets::Tabs;
 use user_config::preferences::theme::Theme;
-use crate::gadgets::state::AppState;
-use crate::gadgets::window::Window;
 
 pub trait PanetabAppdata {
     fn is_panetab_active(&self) -> bool;
@@ -34,12 +34,11 @@ where
         })
         .collect::<Vec<_>>();
 
-    let border_style: Style;
-    if appdata.is_panetab_active() {
-        border_style = Style::default().fg(theme.active_color.into());
+    let border_style = if appdata.is_panetab_active() {
+        Style::default().fg(theme.active_color.into())
     } else {
-        border_style = Style::default().fg(theme.inactive_color.into());
-    }
+        Style::default().fg(theme.inactive_color.into())
+    };
 
     let block = Block::default()
         .borders(Borders::ALL)
