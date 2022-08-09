@@ -5,11 +5,12 @@ use tui::widgets::{Block, Borders, Table, TableState, Row};
 use user_config::preferences::{shortcut::Shortcut, theme::Theme};
 use tui::text::Span;
 
-use super::Window;
+use super::{Window, QueryResult, MusicUnit};
 
 pub trait MusicpaneAppdata {
     fn is_musicpane_active(&self) -> bool;
     fn selected(&self) -> Option<usize>;
+    fn music_list(&self) -> &QueryResult<MusicUnit>;
     fn get_title(&self) -> &'static str {
         "Musics "
     }
@@ -21,6 +22,9 @@ impl MusicpaneAppdata for AppState {
     }
     fn selected(&self) -> Option<usize> {
         self.music_pane_state.selected()
+    }
+    fn music_list(&self) -> &QueryResult<MusicUnit> {
+        &self.music_result
     }
 }
 
@@ -48,26 +52,18 @@ where
         .borders(Borders::ALL)
         .border_style(border_style);
 
-    let header = Row::new(vec!["Music", "Artist", "Duration"])
-        .style(header_style);
-    let rows = [
-        Row::new(vec!["Gems of Nepal, Session 323 - Rachana Dahal - Aagya", "Rachana Dahal", "03:43"]),
-        Row::new(vec!["Bimbakash - Bimbakash", "I am sudip ghimire x 533", "03:43"]),
-        Row::new(vec!["Gems of Nepal, Session 323 - Rachana Dahal - Aagya", "Rachana Dahal", "03:43"]),
-        Row::new(vec!["Gems - Rachana Dahal - Aagya", "Rachana Dahal", "01:03:43"]),
-        Row::new(vec!["Come and get your love - Gurdain of Galaxy", "From movie Gurdain of galaxy", "05:03"])
-    ]
-    .into_iter()
-    .collect::<Vec<_>>();
-    let rows = rows
-        .clone()
-        .into_iter()
-        .chain(rows.clone().into_iter())
-        .chain(rows.clone().into_iter())
-        .chain(rows.clone().into_iter())
-        .chain(rows.clone().into_iter())
+    let rows = appdata
+        .music_list()
+        .list
+        .iter()
+        .map(|MusicUnit { title, duration, artist }| {
+            Row::new(vec![title.clone(), duration.clone(), artist.clone()])
+        })
         .collect::<Vec<Row>>();
 
+    let header = Row::new(vec!["Music", "Artist", "Duration"])
+        .style(header_style);
+    
     Table::new(rows)
         .column_spacing(1)
         .widths(&[
