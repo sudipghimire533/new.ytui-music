@@ -6,6 +6,26 @@ use tui::layout::Rect;
 use tui::widgets::ListState;
 use tui::widgets::TableState;
 
+macro_rules! make_wrapper {
+    ($name: ident, $inner: ident) => {
+        // Todo:
+        /// Make #[derive] statement as input of this arm
+        #[derive(Clone)]
+        pub struct $name($inner);
+        impl $name {
+            pub fn get(self) -> $inner {
+                self.0
+            }
+            pub fn get_ref(&self) -> &$inner {
+                &self.0
+            }
+            pub fn get_mut_ref(&mut self) -> &mut $inner {
+                &mut self.0
+            }
+        }
+    };
+}
+
 pub trait PlayerInfo {
     fn playing_track_title(&self) -> String;
     // TODO: return more Duration specific type rather than String
@@ -30,6 +50,14 @@ pub struct QueryResult<T> {
     pub list: Vec<T>,
 }
 
+make_wrapper!(ShortcutListState, ListState);
+make_wrapper!(MusicPaneState, TableState);
+make_wrapper!(PlaylistPaneState, TableState);
+
+pub struct PanetabState {
+    pub selected: usize,
+}
+
 /// This struct will contains data that
 /// the app actually functions over
 /// this include all the runtime mutable datas
@@ -41,9 +69,10 @@ pub struct AppState {
     pub artist_result: QueryResult<ArtistUnit>,
     pub playlist_result: QueryResult<PlaylistUnit>,
     pub active_window: Window,
-    pub shortcut_list_state: ListState,
-    pub music_pane_state: TableState,
-    pub playlist_pane_state: TableState,
+    pub panetab: PanetabState,
+    pub shortcut_list_state: ShortcutListState,
+    pub music_pane_state: MusicPaneState,
+    pub playlist_pane_state: PlaylistPaneState,
 }
 
 pub struct PaneDivision<const COL_LEN: usize> {

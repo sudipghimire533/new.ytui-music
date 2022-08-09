@@ -86,7 +86,7 @@ fn main() -> Result<(), Box<dyn Error>> {
 fn draw_musicpane<B: Backend>(f: &mut Frame<B>) {
     let theme = get_default_theme();
     let shortcut = musicpane::get_musicpane_list(
-        ExampleMusicpaneAppdata::new_filled(),
+        &ExampleMusicpaneAppdata::new_filled(),
         &ExampleGeometry,
         &theme,
     );

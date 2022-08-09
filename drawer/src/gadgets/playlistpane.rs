@@ -33,7 +33,7 @@ impl PlaylistpaneAppdata for AppState {
         self.active_window == Window::Pane(PaneWindow::PlaylistPane)
     }
     fn selected(&self) -> Option<usize> {
-        self.playlist_pane_state.selected()
+        self.playlist_pane_state.get_ref().selected()
     }
     fn playlist_list(&self) -> &[PlaylistUnit] {
         &self.playlist_result.list
@@ -49,7 +49,7 @@ impl PlaylistpaneGeometry for GeometryData {
     }
 }
 
-pub fn get_playlistpane_list<'a, A, G>(appdata: A, geometry: &'a G, theme: &Theme) -> Table<'a>
+pub fn get_playlistpane_list<'a, A, G>(appdata: &A, geometry: &'a G, theme: &Theme) -> Table<'a>
 where
     A: PlaylistpaneAppdata,
     G: PlaylistpaneGeometry,

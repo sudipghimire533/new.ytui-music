@@ -22,11 +22,11 @@ impl ShortcutListAppdata for AppState {
     }
 
     fn selected(&self) -> Option<usize> {
-        self.shortcut_list_state.selected()
+        self.shortcut_list_state.get_ref().selected()
     }
 }
 
-pub fn get_shortcut_list<'a, A>(appdata: A, theme: &Theme) -> List<'a>
+pub fn get_shortcut_list<'a, A>(appdata: &A, theme: &Theme) -> List<'a>
 where
     A: ShortcutListAppdata,
 {

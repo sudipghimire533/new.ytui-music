@@ -33,7 +33,7 @@ impl MusicpaneAppdata for AppState {
         self.active_window == Window::Pane(PaneWindow::MusicPane)
     }
     fn selected(&self) -> Option<usize> {
-        self.music_pane_state.selected()
+        self.music_pane_state.get_ref().selected()
     }
     fn music_list(&self) -> &[MusicUnit] {
         &self.music_result.list
@@ -49,7 +49,7 @@ impl MusicpaneGeometry for GeometryData {
     }
 }
 
-pub fn get_musicpane_list<'a, A, G>(appdata: A, geometry: &'a G, theme: &Theme) -> Table<'a>
+pub fn get_musicpane_list<'a, A, G>(appdata: &A, geometry: &'a G, theme: &Theme) -> Table<'a>
 where
     A: MusicpaneAppdata,
     G: MusicpaneGeometry,

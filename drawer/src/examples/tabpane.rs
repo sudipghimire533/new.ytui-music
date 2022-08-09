@@ -9,6 +9,10 @@ impl panetab::PanetabAppdata for ExamplepanetabAppdata {
     fn is_panetab_active(&self) -> bool {
         true
     }
+
+    fn selected(&self) -> usize {
+        0
+    }
 }
 
 fn main() -> Result<(), Box<dyn Error>> {
@@ -17,7 +21,7 @@ fn main() -> Result<(), Box<dyn Error>> {
 
 fn draw_searchbar<B: Backend>(f: &mut Frame<B>) {
     let theme = get_default_theme();
-    let panetab = panetab::get_panetab(ExamplepanetabAppdata, &theme);
+    let panetab = panetab::get_panetab(&ExamplepanetabAppdata, &theme);
     let place = Rect {
         x: 20,
         y: 10,

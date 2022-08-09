@@ -21,7 +21,7 @@ fn main() -> Result<(), Box<dyn Error>> {
 
 fn draw_searchbar<B: Backend>(f: &mut Frame<B>) {
     let theme = get_default_theme();
-    let shortcut = shortcut::get_shortcut_list(ExampleShortcutAppdata, &theme);
+    let shortcut = shortcut::get_shortcut_list(&ExampleShortcutAppdata, &theme);
     let place = Rect {
         x: 0,
         y: 3,

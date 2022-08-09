@@ -14,23 +14,33 @@ pub trait PanetabAppdata {
     fn get_title(&self) -> &'static str {
         "Filter "
     }
+    fn selected(&self) -> usize;
 }
 
 impl PanetabAppdata for AppState {
     fn is_panetab_active(&self) -> bool {
         self.active_window == Window::PaneTab
     }
+    fn selected(&self) -> usize {
+        self.panetab.selected
+    }
 }
 
-pub fn get_panetab<'a, A>(appdata: A, theme: &Theme) -> Tabs<'a>
+pub fn get_panetab<'a, A>(appdata: &A, theme: &Theme) -> Tabs<'a>
 where
     A: PanetabAppdata,
 {
+    let selected_tab = appdata.selected();
     let items = ["Music", "Playlist", "Artist"]
         .into_iter()
-        .map(|label| {
-            let label_color = theme.base_color.into();
-            Spans::from(Span::styled(label, Style::default().fg(label_color)))
+        .enumerate()
+        .map(|(i, label)| {
+            let label_color = if i == selected_tab {
+                theme.base_color
+            } else {
+                theme.active_color
+            };
+            Spans::from(Span::styled(label, Style::default().fg(label_color.into())))
         })
         .collect::<Vec<_>>();
 

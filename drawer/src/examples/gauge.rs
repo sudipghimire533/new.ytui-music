@@ -26,7 +26,7 @@ fn main() -> Result<(), Box<dyn Error>> {
 
 fn draw_gauge<B: Backend>(f: &mut Frame<B>) {
     let theme = get_default_theme();
-    let gauge = gauge::get_gauge(ExampleGaugeAppdata, &theme);
+    let gauge = gauge::get_gauge(&ExampleGaugeAppdata, &theme);
     let place = Rect {
         x: 0,
         y: f.size().height - 3,

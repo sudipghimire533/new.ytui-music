@@ -29,9 +29,9 @@ impl SearchbarAppdata for AppState {
     }
 }
 
-pub fn get_searchbar<'c, A>(appdata: A, theme: &Theme) -> Paragraph<'c>
+pub fn get_searchbar<'c, A>(appdata: &A, theme: &Theme) -> Paragraph<'c>
 where
-    A: SearchbarAppdata + 'c,
+    A: SearchbarAppdata,
 {
     let block_title: Span;
     let cursor_style: Style;

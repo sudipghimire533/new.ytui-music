@@ -38,7 +38,7 @@ fn get_played_percent(total: String, played: String) -> u16 {
     21
 }
 
-pub fn get_gauge<'a, A>(appdata: A, theme: &Theme) -> Gauge<'a>
+pub fn get_gauge<'a, A>(appdata: &A, theme: &Theme) -> Gauge<'a>
 where
     A: GaugeAppData,
 {

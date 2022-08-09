@@ -82,7 +82,7 @@ fn main() -> Result<(), Box<dyn Error>> {
 fn draw_playlistpane<B: Backend>(f: &mut Frame<B>) {
     let theme = get_default_theme();
     let shortcut = playlistpane::get_playlistpane_list(
-        ExamplePlaylistpaneAppdata::new_filled(),
+        &ExamplePlaylistpaneAppdata::new_filled(),
         &ExampleGeometry,
         &theme,
     );
