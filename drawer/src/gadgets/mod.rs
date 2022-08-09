@@ -45,8 +45,6 @@ impl Query {
     }
 }
 
-// TODO:
-// use actual music unit type
 pub struct MusicUnit {
     pub title: String,
     pub artist: String,
