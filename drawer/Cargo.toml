@@ -48,3 +48,8 @@ name = "musicpane"
 required-features = ["crossterm"]
 path = "src/examples/musicpane.rs"
 
+[[example]]
+name = "playlistpane"
+required-features = ["crossterm"]
+path = "src/examples/playlistpane.rs"
+

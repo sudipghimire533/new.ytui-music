@@ -4,6 +4,7 @@ use std::borrow::Cow;
 use tui::{widgets::{ListState, TableState}, layout::{Rect, Constraint}};
 pub mod gauge;
 pub mod musicpane;
+pub mod playlistpane;
 pub mod panetab;
 pub mod shortcut;
 
@@ -52,7 +53,11 @@ pub struct MusicUnit {
     pub duration: String, // TODO:
 }
 
-pub struct PlaylistUnit;
+pub struct PlaylistUnit {
+    pub title: String,
+    pub creator: String,
+    pub song_count: usize,
+}
 pub struct ArtistUnit;
 
 #[derive(PartialEq, Eq)]
@@ -86,6 +91,7 @@ pub struct AppState {
     pub active_window: Window,
     pub shortcut_list_state: ListState,
     pub music_pane_state: TableState,
+    pub playlist_pane_state: TableState,
 }
 
 pub struct PaneDivision<const COL_LEN: usize> {
@@ -103,4 +109,5 @@ pub struct GeometryData {
     pub playlistpane: Rect,
     pub artistpane: Rect,
     pub musicpane_division: PaneDivision<3>,
+    pub playlistpane_division: PaneDivision<3>,
 }
