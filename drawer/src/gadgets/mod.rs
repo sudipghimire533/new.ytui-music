@@ -48,8 +48,8 @@ impl Query {
 // use actual music unit type
 pub struct MusicUnit {
     pub title: String,
-    pub duration: String, // TODO:
     pub artist: String,
+    pub duration: String, // TODO:
 }
 
 pub struct PlaylistUnit;

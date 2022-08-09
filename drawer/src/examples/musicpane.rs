@@ -4,7 +4,7 @@ use drawer::gadgets::{musicpane, FinalQuery, MusicUnit, Query, QueryResult};
 use tui::{layout::Rect, widgets::TableState};
 
 struct ExampleMusicpaneAppdata {
-    result: QueryResult<MusicUnit>,
+    music_list: Vec<MusicUnit>,
 }
 
 impl ExampleMusicpaneAppdata {
@@ -30,7 +30,7 @@ impl ExampleMusicpaneAppdata {
         ]
         .into_iter()
         .collect::<Vec<_>>();
-        let list = rows
+        let music_list = rows
             .clone()
             .into_iter()
             .chain(rows.clone().into_iter())
@@ -45,10 +45,7 @@ impl ExampleMusicpaneAppdata {
             .collect::<Vec<MusicUnit>>();
         
         Self {
-            result: QueryResult {
-                query: Query::LikedMusic.get_final_query(),
-                list
-            }
+            music_list
         }
     }
 }
@@ -62,8 +59,8 @@ impl musicpane::MusicpaneAppdata for ExampleMusicpaneAppdata {
         Some(4)
     }
 
-    fn music_list(&self) -> &drawer::gadgets::QueryResult<drawer::gadgets::MusicUnit> {
-        &self.result
+    fn music_list(&self) -> &[MusicUnit] {
+        &self.music_list
     }
 }
 

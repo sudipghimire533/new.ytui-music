@@ -10,7 +10,7 @@ use super::{Window, QueryResult, MusicUnit};
 pub trait MusicpaneAppdata {
     fn is_musicpane_active(&self) -> bool;
     fn selected(&self) -> Option<usize>;
-    fn music_list(&self) -> &QueryResult<MusicUnit>;
+    fn music_list(&self) -> &[MusicUnit];
     fn get_title(&self) -> &'static str {
         "Musics "
     }
@@ -23,8 +23,8 @@ impl MusicpaneAppdata for AppState {
     fn selected(&self) -> Option<usize> {
         self.music_pane_state.selected()
     }
-    fn music_list(&self) -> &QueryResult<MusicUnit> {
-        &self.music_result
+    fn music_list(&self) -> &[MusicUnit] {
+        &self.music_result.list
     }
 }
 
@@ -54,10 +54,9 @@ where
 
     let rows = appdata
         .music_list()
-        .list
         .iter()
         .map(|MusicUnit { title, duration, artist }| {
-            Row::new(vec![title.clone(), duration.clone(), artist.clone()])
+            Row::new(vec![title.clone(), artist.clone(), duration.clone()])
         })
         .collect::<Vec<Row>>();
 
