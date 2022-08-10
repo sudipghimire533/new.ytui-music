@@ -9,8 +9,8 @@ use tui::widgets::Borders;
 use tui::widgets::Tabs;
 use user_config::preferences::theme::Theme;
 
-pub const TAB_NAMES: [&'static str; 3] = ["Music", "Playlist", "Artist"];
-pub const SEPERATOR: &'static str = "|";
+pub const TAB_NAMES: [&str; 3] = ["Music", "Playlist", "Artist"];
+pub const SEPERATOR: &str = "|";
 
 pub fn get_preferred_width() -> usize {
     TAB_NAMES.into_iter().fold(0, |acc, t| acc + Span::from(t).width()) // width of text

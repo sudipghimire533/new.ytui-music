@@ -1,27 +1,28 @@
 mod common;
 use common::*;
-use drawer::gadgets::searchbar::SearchbarAppdata;
 use drawer::gadgets::gauge::GaugeAppData;
-use drawer::gadgets::panetab::PanetabAppdata;
-use drawer::gadgets::shortcut::ShortcutListAppdata;
 use drawer::gadgets::musicpane::MusicpaneAppdata;
+use drawer::gadgets::panetab::get_preferred_width as panetab_preferred_width;
+use drawer::gadgets::panetab::PanetabAppdata;
 use drawer::gadgets::playlistpane::PlaylistpaneAppdata;
-use drawer::gadgets::unit::PlaylistUnit;
-use drawer::gadgets::ui::draw_all_ui;
+use drawer::gadgets::searchbar::SearchbarAppdata;
+use drawer::gadgets::shortcut::ShortcutListAppdata;
 use drawer::gadgets::state::GeometryData;
+use drawer::gadgets::state::MusicPaneState;
 use drawer::gadgets::state::PaneDivision;
+use drawer::gadgets::state::PanetabState;
+use drawer::gadgets::state::PlaylistPaneState;
+use drawer::gadgets::state::ShortcutListState;
+use drawer::gadgets::ui::draw_all_ui;
+use drawer::gadgets::ui::Provider;
+use drawer::gadgets::unit::MusicUnit;
+use drawer::gadgets::unit::PlaylistUnit;
 use tui::layout::Constraint;
 use tui::layout::Rect;
 use tui::widgets::ListState;
 use tui::widgets::TableState;
 use user_config::preferences::theme::Theme;
 use user_config::styles::color::RGB;
-use drawer::gadgets::state::PlaylistPaneState;
-use drawer::gadgets::state::PanetabState;
-use drawer::gadgets::state::MusicPaneState;
-use drawer::gadgets::state::ShortcutListState;
-use drawer::gadgets::ui::Provider;
-use drawer::gadgets::panetab::get_preferred_width as panetab_preferred_width;
 
 struct ExampleAppdata {
     playlist_list: Vec<PlaylistUnit>,
@@ -110,7 +111,7 @@ impl MusicpaneAppdata for ExampleAppdata {
     fn is_musicpane_active(&self) -> bool {
         false
     }
-    fn music_list(&self) -> &[drawer::types::unit::MusicUnit] {
+    fn music_list(&self) -> &[MusicUnit] {
         &[]
     }
     fn selected(&self) -> Option<usize> {
@@ -125,7 +126,7 @@ impl PlaylistpaneAppdata for ExampleAppdata {
     fn selected(&self) -> Option<usize> {
         Some(4)
     }
-    fn playlist_list(&self) -> &[drawer::types::unit::PlaylistUnit] {
+    fn playlist_list(&self) -> &[PlaylistUnit] {
         &self.playlist_list
     }
 }
@@ -158,7 +159,6 @@ impl Provider<PlaylistPaneState> for ExampleAppdata {
     }
 }
 
-
 fn main() -> Result<(), Box<dyn Error>> {
     entrypoint(draw_playlistpane)
 }
@@ -166,17 +166,23 @@ fn main() -> Result<(), Box<dyn Error>> {
 fn draw_playlistpane<B: tui::backend::Backend>(f: &mut tui::Frame<B>) {
     let screen_size = f.size();
     if screen_size.height < 20 {
-        panic!("Your terminal height {} is too small to draw ui. Maxamize your terminal or zoom out", screen_size.height);
+        panic!(
+            "Your terminal height {} is too small to draw ui. Maxamize your terminal or zoom out",
+            screen_size.height
+        );
     }
     if screen_size.width < 70 {
-        panic!("Your terminal width {} is too small to draw ui. Maxamize your terminal or zoom out", screen_size.width);
+        panic!(
+            "Your terminal width {} is too small to draw ui. Maxamize your terminal or zoom out",
+            screen_size.width
+        );
     }
 
     let searchbar_rect = Rect {
         x: 0,
         y: 0,
         height: 3,
-        width: screen_size.width
+        width: screen_size.width,
     };
     let gauge_rect = Rect {
         x: 0,
@@ -199,7 +205,8 @@ fn draw_playlistpane<B: tui::backend::Backend>(f: &mut tui::Frame<B>) {
     let musicpane_rect = Rect {
         x: 20,
         y: 6,
-        height: screen_size.height - ( gauge_rect.height + searchbar_rect.height + panetab_rect.height ),
+        height: screen_size.height
+            - (gauge_rect.height + searchbar_rect.height + panetab_rect.height),
         width: screen_size.width - 20,
     };
     let playlistpane_rect = Rect {
@@ -210,7 +217,11 @@ fn draw_playlistpane<B: tui::backend::Backend>(f: &mut tui::Frame<B>) {
     };
     let musicpane_division = PaneDivision::<3> {
         spacing: 1,
-        splits: [Constraint::Percentage(60), Constraint::Percentage(25), Constraint::Percentage(15)],
+        splits: [
+            Constraint::Percentage(60),
+            Constraint::Percentage(25),
+            Constraint::Percentage(15),
+        ],
     };
     let playlistpane_division = PaneDivision::<3> {
         spacing: 1,
@@ -218,7 +229,7 @@ fn draw_playlistpane<B: tui::backend::Backend>(f: &mut tui::Frame<B>) {
             Constraint::Length(5),
             Constraint::Length(playlistpane_rect.width - (5 + 20)),
             Constraint::Length(20),
-        ]
+        ],
     };
 
     let geometry = GeometryData {
