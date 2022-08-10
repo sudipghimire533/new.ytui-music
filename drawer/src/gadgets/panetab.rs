@@ -40,20 +40,15 @@ pub fn get_panetab<'a, A>(appdata: &A, theme: &Theme) -> Tabs<'a>
 where
     A: PanetabAppdata,
 {
-    let selected_tab = appdata.selected();
+    //let selected_tab = appdata.selected();
     let items = TAB_NAMES
         .into_iter()
-        .enumerate()
-        .map(|(i, label)| {
-            let label_color = if i == selected_tab {
-                theme.base_color
-            } else {
-                theme.active_color
-            };
-            Spans::from(Span::styled(label, Style::default().fg(label_color.into())))
-        })
+        .map(|tab_name| Spans::from(Span::from(tab_name)))
         .collect::<Vec<_>>();
 
+    let selected = appdata.selected();
+    let base_style = Style::default().fg(theme.base_color.into());
+    let highlight_style = Style::default().fg(theme.active_color.into());
     let border_style = if appdata.is_panetab_active() {
         Style::default().fg(theme.active_color.into())
     } else {
@@ -66,5 +61,10 @@ where
         .border_style(border_style)
         .title(appdata.get_title());
 
-    Tabs::new(items).block(block).divider(SEPERATOR)
+    Tabs::new(items)
+        .divider(SEPERATOR)
+        .highlight_style(highlight_style)
+        .style(base_style)
+        .block(block)
+        .select(selected)
 }

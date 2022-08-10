@@ -11,7 +11,7 @@ impl panetab::PanetabAppdata for ExamplepanetabAppdata {
     }
 
     fn selected(&self) -> usize {
-        0
+        1
     }
 }
 
