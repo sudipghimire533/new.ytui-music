@@ -11,7 +11,7 @@ macro_rules! make_wrapper {
         // Todo:
         /// Make #[derive] statement as input of this arm
         #[derive(Clone)]
-        pub struct $name($inner);
+        pub struct $name(pub $inner);
         impl $name {
             pub fn get(self) -> $inner {
                 self.0
