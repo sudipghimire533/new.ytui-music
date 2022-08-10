@@ -201,7 +201,7 @@ mod tests {
 
             let converted_key: Key = Cow::Borrowed(key_str)
                 .try_into()
-                .expect(&format!("Cannot convert {key_str} into key"));
+                .unwrap_or_else(|_| panic!("Cannot convert {key_str} into key"));
             assert_eq!(
                 key, converted_key,
                 "{key_str} is not same as {converted_key:?}"

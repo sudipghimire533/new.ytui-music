@@ -23,7 +23,7 @@ pub fn get_default_theme() -> Theme {
 }
 
 pub fn entrypoint(
-    run: impl Fn(&mut tui::terminal::Frame<CrosstermBackend<std::io::Stdout>>) -> (),
+    run: impl Fn(&mut tui::terminal::Frame<CrosstermBackend<std::io::Stdout>>),
 ) -> Result<(), Box<dyn Error>> {
     // setup terminal
     enable_raw_mode()?;

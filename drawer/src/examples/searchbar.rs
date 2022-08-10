@@ -10,7 +10,7 @@ impl searchbar::SearchbarAppdata for ExampleSearchbarAppdata {
         true
     }
 
-    fn get_altering_query<'a>(&'a self) -> &'a str {
+    fn get_altering_query(&self) -> &str {
         "example search"
     }
 }

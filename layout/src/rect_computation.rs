@@ -276,10 +276,10 @@ mod tests {
                 ],
                 // root size will always be overriden as it was Length::Relative(100)
                 size: Length::Relative(50),
-                ..root_item.clone()
+                ..root_item
             },
-            first_child.clone(),
-            second_child.clone(),
+            first_child,
+            second_child,
         ]
         .try_into()
         .unwrap();

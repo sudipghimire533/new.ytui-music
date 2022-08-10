@@ -6,7 +6,7 @@ use crate::gadgets::window::Window;
 use tui::layout::Constraint;
 use tui::style::Modifier;
 use tui::style::Style;
-use tui::text::Span;
+
 use tui::widgets::Block;
 use tui::widgets::BorderType;
 use tui::widgets::Borders;

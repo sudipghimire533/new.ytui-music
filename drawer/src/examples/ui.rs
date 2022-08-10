@@ -209,11 +209,9 @@ fn draw_playlistpane<B: tui::backend::Backend>(f: &mut tui::Frame<B>) {
             - (gauge_rect.height + searchbar_rect.height + panetab_rect.height),
         width: screen_size.width - 20,
     };
-    let playlistpane_rect = Rect {
-        ..musicpane_rect.clone()
-    };
+    let playlistpane_rect = Rect { ..musicpane_rect };
     let artistpane_rect = Rect {
-        ..playlistpane_rect.clone()
+        ..playlistpane_rect
     };
     let musicpane_division = PaneDivision::<3> {
         spacing: 1,
