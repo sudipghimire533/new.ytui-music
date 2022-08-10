@@ -48,6 +48,7 @@ where
         played = appdata.played_music_duration(),
         total = appdata.music_total_duration()
     );
+    let base_style = Style::default().fg(theme.base_color.into());
     let gauge_style = Style::default().fg(theme.inactive_color.into());
     let played_percent = get_played_percent(String::new(), String::new());
 
@@ -59,6 +60,7 @@ where
 
     Gauge::default()
         .gauge_style(gauge_style)
+        .style(base_style)
         .label(playing_title)
         .percent(played_percent)
         .block(block)
