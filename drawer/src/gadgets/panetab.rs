@@ -1,5 +1,6 @@
 use crate::gadgets::state::AppState;
 use crate::gadgets::window::Window;
+use tui::style::Modifier;
 use tui::style::Style;
 use tui::text::Span;
 use tui::text::Spans;
@@ -50,9 +51,13 @@ where
     let base_style = Style::default().fg(theme.base_color.into());
     let highlight_style = Style::default().fg(theme.active_color.into());
     let border_style = if appdata.is_panetab_active() {
-        Style::default().fg(theme.active_color.into())
+        Style::default()
+            .fg(theme.active_color.into())
+            .add_modifier(Modifier::ITALIC)
     } else {
-        Style::default().fg(theme.inactive_color.into())
+        Style::default()
+            .fg(theme.inactive_color.into())
+            .add_modifier(Modifier::ITALIC)
     };
 
     let block = Block::default()

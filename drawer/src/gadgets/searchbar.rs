@@ -49,7 +49,6 @@ where
         cursor_style = Style::default().fg(theme.inactive_color.into());
     }
 
-    let block_title: Span = appdata.get_title().into();
     let text: Text = Spans::from(vec![
         Span::styled(
             appdata.get_altering_query().to_string(),
@@ -61,7 +60,7 @@ where
 
     let block = Block::default()
         .border_type(tui::widgets::BorderType::Rounded)
-        .title(block_title)
+        .title(appdata.get_title())
         .borders(Borders::ALL)
         .border_type(BorderType::Rounded)
         .border_style(border_style);

@@ -19,7 +19,7 @@ pub trait PlaylistpaneAppdata {
     fn selected(&self) -> Option<usize>;
     fn playlist_list(&self) -> &[PlaylistUnit];
     fn get_title(&self) -> &'static str {
-        "playlists "
+        "Playlists "
     }
 }
 
@@ -54,15 +54,15 @@ where
     A: PlaylistpaneAppdata,
     G: PlaylistpaneGeometry,
 {
-    let block_title: Span;
-    let border_style: Style;
-    if appdata.is_playlistpane_active() {
-        block_title = Span::styled(appdata.get_title(), Default::default());
-        border_style = Style::default().fg(theme.active_color.into());
+    let border_style = if appdata.is_playlistpane_active() {
+        Style::default()
+            .fg(theme.active_color.into())
+            .add_modifier(Modifier::ITALIC)
     } else {
-        block_title = Span::styled(appdata.get_title(), Default::default());
-        border_style = Style::default().fg(theme.inactive_color.into());
-    }
+        Style::default()
+            .fg(theme.inactive_color.into())
+            .add_modifier(Modifier::ITALIC)
+    };
 
     let header_style = Style::default()
         .fg(theme.inactive_color.into())
@@ -72,7 +72,7 @@ where
 
     let block = Block::default()
         .border_type(tui::widgets::BorderType::Rounded)
-        .title(block_title)
+        .title(appdata.get_title())
         .borders(Borders::ALL)
         .border_type(BorderType::Rounded)
         .border_style(border_style);
