@@ -4,8 +4,23 @@ use std::borrow::Cow;
 fn combine_modifiers(modifier: &'static str, character: char) -> String {
     let mut res = String::with_capacity(modifier.len() + 1);
     res.push_str(modifier);
-    res.push(character);
+    if character == ' ' {
+        res.push_str("<space>");
+    } else {
+        res.push(character)
+    }
     res
+}
+
+fn get_prefix_char(prefix_str: &str) -> char {
+    if prefix_str == "<space>" {
+        ' '
+    } else {
+        prefix_str
+            .chars()
+            .next()
+            .expect("Cannot convert empty prefix to char")
+    }
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
@@ -67,6 +82,7 @@ impl From<Key> for Cow<'static, str> {
             Key::Char(' ') => Cow::Borrowed("<space>"),
             Key::Char(c) => Cow::Owned(c.to_string()),
             Key::Ctrl(c) => Cow::Owned(combine_modifiers("<ctrl>", c)),
+            Key::Alt(c) => Cow::Owned(combine_modifiers("<alt>", c)),
             Key::Esc => Cow::Borrowed("<esc>"),
             Key::PageUp => Cow::Borrowed("<pageUp>"),
             Key::PageDown => Cow::Borrowed("<pageDown>"),
@@ -83,7 +99,6 @@ impl From<Key> for Cow<'static, str> {
             Key::BackTab => Cow::Borrowed("<backtab>"),
             Key::Delete => Cow::Borrowed("<delete>"),
             Key::F(f) => Cow::Owned(format!("<F{f}>")),
-            Key::Alt(c) => Cow::Owned(combine_modifiers("<alt>", c)),
         }
     }
 }
@@ -94,40 +109,28 @@ impl TryFrom<Cow<'_, str>> for Key {
     fn try_from(value: Cow<'_, str>) -> Result<Self, Self::Error> {
         let key = value.trim();
 
-        if key.starts_with('<') {
-            let mut chunks = key[1..].split('>');
-            match chunks.next().ok_or("Invalid shortcut")? {
+        if let Some(stripped) = key.strip_prefix('<') {
+            let (modifier, prefix) = stripped
+                .split_once('>')
+                .ok_or("Invalid shortcut modifier format")?;
+            match modifier {
                 "space" => Ok(Key::Char(' ')),
-                "alt" => {
-                    let inp = chunks
-                        .next()
-                        .ok_or("Alt followed by nothing")?
-                        .chars()
-                        .next()
-                        .ok_or("Empty string for Alt")?;
-                    Ok(Key::Alt(inp))
-                }
-                "ctrl" => {
-                    let inp = chunks
-                        .next()
-                        .ok_or("Ctrl following by nothing")?
-                        .chars()
-                        .next()
-                        .ok_or("Empty string for ctrl")?;
-                    Ok(Key::Ctrl(inp))
-                }
+                "alt" => Ok(Key::Alt(get_prefix_char(prefix))),
+                "ctrl" => Ok(Key::Ctrl(get_prefix_char(prefix))),
                 "left" => Ok(Key::Left),
                 "right" => Ok(Key::Right),
                 "up" => Ok(Key::Up),
                 "down" => Ok(Key::Down),
                 "esc" => Ok(Key::Esc),
                 "backspace" => Ok(Key::Backspace),
+                "backtab" => Ok(Key::BackTab),
                 "tab" => Ok(Key::Tab),
                 "insert" => Ok(Key::Insert),
-                "backtab" => Ok(Key::Backspace),
                 "null" => Ok(Key::Null),
                 "delete" => Ok(Key::Delete),
                 "home" => Ok(Key::Home),
+                "pageUp" => Ok(Key::PageUp),
+                "pageDown" => Ok(Key::PageDown),
                 "end" => Ok(Key::End),
                 "f1" => Ok(Key::F(1)),
                 "f2" => Ok(Key::F(2)),
@@ -141,11 +144,10 @@ impl TryFrom<Cow<'_, str>> for Key {
                 "f10" => Ok(Key::F(10)),
                 "f11" => Ok(Key::F(11)),
                 "f12" => Ok(Key::F(12)),
-                _ => Err("invalid shortcut"),
+                _ => Err("Invalid modifier in shortcut"),
             }
         } else {
-            let inp = key.chars().next().ok_or("Empty string as char")?;
-            Ok(Key::Char(inp))
+            Ok(Key::Char(get_prefix_char(key)))
         }
     }
 }
@@ -161,5 +163,49 @@ impl TryFrom<KeyboardShortcut<'_>> for Key {
 
     fn try_from(value: KeyboardShortcut) -> Result<Self, Self::Error> {
         value.0.try_into()
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn serialization_and_deserilization() {
+        let mappings = [
+            (Key::Up, "<up>"),
+            (Key::Down, "<down>"),
+            (Key::Left, "<left>"),
+            (Key::Right, "<right>"),
+            (Key::End, "<end>"),
+            (Key::Home, "<home>"),
+            (Key::PageUp, "<pageUp>"),
+            (Key::PageDown, "<pageDown>"),
+            (Key::Insert, "<insert>"),
+            (Key::Delete, "<delete>"),
+            (Key::BackTab, "<backtab>"),
+            (Key::Backspace, "<backspace>"),
+            (Key::Esc, "<esc>"),
+            (Key::Null, "<null>"),
+            (Key::Char(' '), "<space>"),
+            (Key::Char('x'), "x"),
+            (Key::Alt('3'), "<alt>3"),
+            (Key::Ctrl(' '), "<ctrl><space>"),
+        ];
+        for (key, key_str) in mappings.into_iter() {
+            let converted_str: Cow<'static, str> = key.into();
+            assert_eq!(
+                key_str, converted_str,
+                "{key:?} is not equal to {converted_str}"
+            );
+
+            let converted_key: Key = Cow::Borrowed(key_str)
+                .try_into()
+                .expect(&format!("Cannot convert {key_str} into key"));
+            assert_eq!(
+                key, converted_key,
+                "{key_str} is not same as {converted_key:?}"
+            );
+        }
     }
 }

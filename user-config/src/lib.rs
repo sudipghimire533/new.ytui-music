@@ -1,3 +1,4 @@
+pub mod keyboard;
 pub mod preferences;
 pub mod styles;
 
