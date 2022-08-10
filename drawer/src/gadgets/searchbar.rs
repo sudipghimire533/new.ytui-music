@@ -33,23 +33,28 @@ pub fn get_searchbar<'c, A>(appdata: &A, theme: &Theme) -> Paragraph<'c>
 where
     A: SearchbarAppdata,
 {
-    let block_title: Span;
-    let cursor_style: Style;
-    let border_style: Style;
+    let cursor_style;
+    let border_style;
     if appdata.is_searchbar_active() {
-        block_title = Span::styled(appdata.get_title(), Default::default());
-        border_style = Style::default().fg(theme.active_color.into());
+        border_style = Style::default()
+            .fg(theme.active_color.into())
+            .add_modifier(Modifier::ITALIC);
         cursor_style = Style::default()
             .add_modifier(Modifier::RAPID_BLINK)
             .fg(theme.highlight_color.into());
     } else {
-        block_title = Span::styled(appdata.get_title(), Default::default());
-        border_style = Style::default().fg(theme.inactive_color.into());
-        cursor_style = Style::default();
+        border_style = Style::default()
+            .fg(theme.inactive_color.into())
+            .add_modifier(Modifier::ITALIC);
+        cursor_style = Style::default().fg(theme.inactive_color.into());
     }
 
+    let block_title: Span = appdata.get_title().into();
     let text: Text = Spans::from(vec![
-        Span::styled(appdata.get_altering_query().to_string(), Default::default()),
+        Span::styled(
+            appdata.get_altering_query().to_string(),
+            Style::default().fg(theme.base_color.into()),
+        ),
         Span::styled(appdata.get_cursor(), cursor_style),
     ])
     .into();
