@@ -1,4 +1,25 @@
+use crate::keyboard::Key;
+use serde::{Deserialize, Serialize};
+use std::collections::HashMap;
+
+#[repr(transparent)]
+pub struct KeyboardMapping(HashMap<Key, KeyboardAction>);
+
+impl KeyboardMapping {
+    pub fn new(mappings: HashMap<Key, KeyboardAction>) -> Self {
+        KeyboardMapping(mappings)
+    }
+
+    pub fn action_for(&self, key: &Key) -> KeyboardAction {
+        self.0
+            .get(key)
+            .map(|v| *v)
+            .unwrap_or(KeyboardAction::Nothing)
+    }
+}
+
 /// Possible set of actions that can be performed from keyboard
+#[derive(Debug, Clone, Copy, Serialize, Deserialize)]
 pub enum KeyboardAction {
     // Goto the searchbar
     StartSearching,

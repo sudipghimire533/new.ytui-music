@@ -28,7 +28,7 @@ fn get_prefix_char(prefix_str: &str) -> char {
 struct KeyboardShortcut<'a>(Cow<'a, str>);
 
 /// A key.
-#[derive(Debug, Copy, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Debug, Copy, Clone, PartialEq, Eq, Serialize, Deserialize, Hash)]
 #[serde(into = "KeyboardShortcut")]
 #[serde(try_from = "KeyboardShortcut")]
 pub enum Key {
