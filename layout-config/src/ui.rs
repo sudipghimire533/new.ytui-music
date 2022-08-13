@@ -1,14 +1,14 @@
-use crate::item::ItemTree;
-use crate::popup::Popup;
-use crate::window::Window;
+use crate::{item::ItemTree, length::Length};
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Clone, Eq, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 #[serde(deny_unknown_fields)]
 pub struct UI {
-    pub window: Window,
-    pub popup: Popup,
+    window_height: Length,
+    window_width: Length,
+    popup_height: Length,
+    popup_width: Length,
     #[serde(rename = "items")]
     pub item_root: ItemTree,
 }
@@ -28,14 +28,10 @@ mod tests {
             .replacen('\n', "", usize::MAX);
 
         let expected_layout = UI {
-            window: Window {
-                height: Length::AtLeast(300),
-                width: Length::AtLeast(500),
-            },
-            popup: Popup {
-                height: Length::Relative(80),
-                width: Length::Relative(80),
-            },
+            window_width: Length::AtLeast(500),
+            window_height: Length::AtLeast(300),
+            popup_width: Length::Relative(80),
+            popup_height: Length::Relative(80),
             item_root: vec![
                 Item {
                     identifier: "things_starts_from_me".try_into().unwrap(),

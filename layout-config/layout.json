@@ -1,12 +1,8 @@
 {
-  "window": {
-    "height": "300l",
-    "width": "500l"
-  },
-  "popup": {
-    "height": "80%",
-    "width": "80%"
-  },
+    "windowHeight": "300l",
+    "windowWidth": "500l",
+    "popupHeight": "80%",
+    "popupWidth": "80%",
   "items": [
     {
       "identifier": "things_starts_from_me",
