@@ -104,12 +104,14 @@ impl Default for AppState {
     }
 }
 
+#[derive(Debug, Clone, Eq, PartialEq)]
 pub struct PaneDivision<const COL_LEN: usize> {
     pub splits: [Constraint; COL_LEN],
     pub spacing: u16,
 }
 
 /// Size & Position related config
+#[derive(Debug, Clone, Eq, PartialEq)]
 pub struct GeometryData {
     pub searchbar: Rect,
     pub sidebar: Rect,
