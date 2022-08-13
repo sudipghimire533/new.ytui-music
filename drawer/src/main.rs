@@ -8,7 +8,7 @@ pub mod gadgets;
 pub mod init;
 pub mod types;
 
-use types::{utils::{self, into_my_rect}, state::AppState};
+use types::{state::AppState, utils};
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     let config = init::config::get_config()
@@ -40,13 +40,15 @@ fn run_app<B: tui::backend::Backend>(
     terminal: &mut tui::terminal::Terminal<B>,
     config: Config,
 ) -> Result<(), Box<dyn Error>> {
-    let terminal_rect = into_my_rect(terminal.size()?);
+    let terminal_rect = utils::into_my_rect(terminal.size()?);
     let Config { layout, theme, .. } = config;
 
     let appstate = AppState::default();
     let mut rect_map = HashMap::new();
     compute_rect(&layout.item_root, &mut rect_map, &terminal_rect);
-    let geometrics = utils::geometry_from_rect_map(rect_map.drain());
+
+    let geometrics = utils::consume_and_get_geometry(&mut rect_map)
+        .map_err(|e| format!("While creating geometry from Rect map: {e:#?}"))?;
 
     draw_all_ui(&mut terminal.get_frame(), &appstate, &theme, geometrics);
 

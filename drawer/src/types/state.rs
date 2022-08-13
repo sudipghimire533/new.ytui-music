@@ -83,9 +83,18 @@ impl Default for AppState {
     fn default() -> Self {
         AppState {
             altering_query: String::new(),
-            music_result: QueryResult { query: Query::Nothing.get_final_query(), list: [].into() },
-            artist_result: QueryResult { query: Query::Nothing.get_final_query(), list: [].into() },
-            playlist_result: QueryResult { query: Query::Nothing.get_final_query(), list: [].into() },
+            music_result: QueryResult {
+                query: Query::Nothing.get_final_query(),
+                list: [].into(),
+            },
+            artist_result: QueryResult {
+                query: Query::Nothing.get_final_query(),
+                list: [].into(),
+            },
+            playlist_result: QueryResult {
+                query: Query::Nothing.get_final_query(),
+                list: [].into(),
+            },
             active_window: Window::SearchBar,
             panetab_state: PanetabState { selected: 0 },
             shortcut_list_state: ShortcutListState(Default::default()),

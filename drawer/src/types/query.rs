@@ -34,7 +34,7 @@ impl Query {
             Query::SavedPlaylist => FinalQuery(":saved_playlist".into()),
             Query::FollowingArtist => FinalQuery(":following_artist".into()),
             Query::Local => FinalQuery(":local".into()),
-            Query::Nothing => FinalQuery(":nothing".into())
+            Query::Nothing => FinalQuery(":nothing".into()),
         }
     }
 }
