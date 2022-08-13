@@ -1,5 +1,8 @@
+use serde::{Deserialize, Serialize};
+
 use crate::styles::color::RGB;
 
+#[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct Theme {
     pub base_color: RGB,
     pub highlight_color: RGB,
