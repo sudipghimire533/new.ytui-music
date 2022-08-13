@@ -1,8 +1,14 @@
+use gadgets::ui::draw_all_ui;
+use std::collections::HashMap;
+use std::error::Error;
+use user_config::reexports::compute_rect_for_item_tree as compute_rect;
 use user_config::Config;
 
 pub mod gadgets;
 pub mod init;
 pub mod types;
+
+use types::{utils::{self, into_my_rect}, state::AppState};
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     let config = init::config::get_config()
@@ -33,10 +39,16 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 fn run_app<B: tui::backend::Backend>(
     terminal: &mut tui::terminal::Terminal<B>,
     config: Config,
-) -> Result<(), ()> {
-    let _ = terminal;
-    let _ = config;
-    std::thread::sleep(std::time::Duration::from_secs(2));
+) -> Result<(), Box<dyn Error>> {
+    let terminal_rect = into_my_rect(terminal.size()?);
+    let Config { layout, theme, .. } = config;
+
+    let appstate = AppState::default();
+    let mut rect_map = HashMap::new();
+    compute_rect(&layout.item_root, &mut rect_map, &terminal_rect);
+    let geometrics = utils::geometry_from_rect_map(rect_map.drain());
+
+    draw_all_ui(&mut terminal.get_frame(), &appstate, &theme, geometrics);
 
     Ok(())
 }

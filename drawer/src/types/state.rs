@@ -6,6 +6,8 @@ use tui::layout::Rect;
 use tui::widgets::ListState;
 use tui::widgets::TableState;
 
+use super::query::Query;
+
 macro_rules! make_wrapper {
     ($name: ident, $inner: ident) => {
         // Todo:
@@ -74,6 +76,23 @@ pub struct AppState {
     pub shortcut_list_state: ShortcutListState,
     pub music_pane_state: MusicPaneState,
     pub playlist_pane_state: PlaylistPaneState,
+}
+
+/// Default Appstate when application is freshly started
+impl Default for AppState {
+    fn default() -> Self {
+        AppState {
+            altering_query: String::new(),
+            music_result: QueryResult { query: Query::Nothing.get_final_query(), list: [].into() },
+            artist_result: QueryResult { query: Query::Nothing.get_final_query(), list: [].into() },
+            playlist_result: QueryResult { query: Query::Nothing.get_final_query(), list: [].into() },
+            active_window: Window::SearchBar,
+            panetab_state: PanetabState { selected: 0 },
+            shortcut_list_state: ShortcutListState(Default::default()),
+            music_pane_state: MusicPaneState(Default::default()),
+            playlist_pane_state: PlaylistPaneState(Default::default()),
+        }
+    }
 }
 
 pub struct PaneDivision<const COL_LEN: usize> {

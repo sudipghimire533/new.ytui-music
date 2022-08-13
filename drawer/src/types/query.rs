@@ -9,6 +9,7 @@ pub enum Query {
     FollowingArtist,
     SavedPlaylist,
     LikedMusic,
+    Nothing,
 }
 
 pub struct FinalQuery(Cow<'static, str>);
@@ -33,6 +34,7 @@ impl Query {
             Query::SavedPlaylist => FinalQuery(":saved_playlist".into()),
             Query::FollowingArtist => FinalQuery(":following_artist".into()),
             Query::Local => FinalQuery(":local".into()),
+            Query::Nothing => FinalQuery(":nothing".into())
         }
     }
 }
