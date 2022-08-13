@@ -42,4 +42,6 @@ pub enum KeyboardAction {
     // about this binary
     // and user config
     AppDetails,
+    // A action but really isn't
+    Nothing,
 }
