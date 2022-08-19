@@ -2,7 +2,7 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Clone, Eq, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
-#[serde(try_from = "&str")]
+#[serde(try_from = "String")]
 #[serde(into = "String")]
 #[serde(deny_unknown_fields)]
 pub enum Length {
@@ -22,6 +22,14 @@ impl From<Length> for String {
             Length::AtLeast(l) => format!("{l}l"),
             Length::Fill => "0f".to_string(),
         }
+    }
+}
+
+impl TryFrom<String> for Length {
+    type Error = &'static str;
+
+    fn try_from(value: String) -> Result<Self, Self::Error> {
+        value.as_str().try_into()
     }
 }
 

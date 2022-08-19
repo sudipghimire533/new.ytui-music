@@ -1,14 +1,6 @@
 use serde::{Deserialize, Serialize};
 use std::{borrow::Cow, fmt::Display};
 
-const RESERVED_IDENTIFIER: &[&str] = &[
-    "Red_element",
-    "Blue_element",
-    "Green_element",
-    "Yellow_element",
-    "Root",
-];
-
 #[derive(Debug, Clone, Eq, PartialEq, Serialize, Deserialize, Hash)]
 #[serde(rename_all = "camelCase")]
 #[serde(try_from = "String")]
@@ -38,7 +30,7 @@ impl Identifier {
 impl Display for Identifier {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         let id_str = match self {
-            Identifier::Reserved(r) => r.split('-').next().unwrap(),
+            Identifier::Reserved(r) => r,
             Identifier::Custom(c) => c.as_str(),
         };
         write!(f, "{}", id_str)
@@ -64,18 +56,16 @@ impl TryFrom<String> for Identifier {
     type Error = &'static str;
 
     fn try_from(src: String) -> Result<Self, Self::Error> {
-        match RESERVED_IDENTIFIER.iter().find(|&&id| id == src) {
-            // If one of rserved identifier just return it
-            Some(reserved_id) => Ok(Identifier::Reserved(Cow::Borrowed(*reserved_id))),
+        let is_custom = src
+            .chars()
+            .next()
+            .ok_or("Empty identifier is not valid")?
+            .is_uppercase();
 
-            // If not verify that it is valid identifier:
-            // should contains only ascii alphabet or _
-            None if !src.is_empty() => Identifier::is_valid_identifier(&src)
-                .then_some(Identifier::Custom(src))
-                .ok_or("Invalid identifier"),
-
-            // If this is empty identifier
-            _ => Err("Empty identifier is not valid"),
+        if is_custom {
+            Ok(Identifier::Custom(src))
+        } else {
+            Ok(Identifier::Reserved(src.into()))
         }
     }
 }
@@ -95,13 +85,30 @@ mod test {
 
     #[test]
     fn identifier_set() {
-        // Make sure all reserved identifier are valid
-        for identifier in RESERVED_IDENTIFIER {
+        let custom_identifiers = [
+            "TopArea",
+            "Something",
+            "Uppercase"
+        ];
+        let reserved_identifiers = [
+            "searchbar",
+            "something",
+            "lowercase",
+            "_Started",
+            "_starts",
+        ];
+
+        for custom in custom_identifiers {
             assert_eq!(
-                Ok(()),
-                Identifier::is_valid_identifier(identifier)
-                    .then_some(())
-                    .ok_or(format!("{identifier} is not valid identifier"))
+                Ok(Identifier::Custom(custom.to_string())),
+                custom.try_into()
+            );
+        }
+
+        for reserved in reserved_identifiers {
+            assert_eq!(
+                Ok(Identifier::Reserved(reserved.into())),
+                reserved.try_into()
             );
         }
     }
@@ -122,7 +129,7 @@ mod test {
         assert_eq!(Custom("a_name".into()), from_str("a_name").unwrap());
         assert!(from_str("an2me").is_err());
         assert!(from_str("m@ngo").is_err());
-        for reserved in RESERVED_IDENTIFIER {
+        for reserved in ["TopArea", "Constainer", "Apple"] {
             assert_eq!(
                 Reserved(Cow::Borrowed(reserved)),
                 from_str(reserved).unwrap()

@@ -2,7 +2,7 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Copy, Clone, Eq, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
-#[serde(try_from = "&str")]
+#[serde(try_from = "String")]
 #[serde(into = "&str")]
 #[serde(deny_unknown_fields)]
 pub enum Direction {
@@ -24,11 +24,11 @@ impl Into<&'static str> for Direction {
     }
 }
 
-impl TryFrom<&str> for Direction {
+impl TryFrom<String> for Direction {
     type Error = &'static str;
 
-    fn try_from(value: &str) -> Result<Self, Self::Error> {
-        match value {
+    fn try_from(value: String) -> Result<Self, Self::Error> {
+        match value.as_str() {
             "vertical" => Ok(Direction::Vertical),
             "horizontal" => Ok(Direction::Horizontal),
             _ => Err("invalid direction"),
