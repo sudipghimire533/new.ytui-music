@@ -1,5 +1,4 @@
 use serde::{Deserialize, Serialize};
-
 use crate::styles::color::RGB;
 
 #[derive(Debug, Serialize, Deserialize, Clone)]

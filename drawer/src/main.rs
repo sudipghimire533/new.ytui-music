@@ -11,7 +11,7 @@ pub mod types;
 use types::{state::AppState, utils};
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
-    let config = init::config::get_config()
+    let config = init::config::get_config(init::default_config_source)
         .map_err(|e| format!("Unable to get user configuration: {e:?}"))?;
 
     // read config, show option for user to generate new if not previously exists

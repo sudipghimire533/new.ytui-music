@@ -1,5 +1,6 @@
 use layout_config::ui::UI;
 use preferences::theme::Theme;
+use action::KeyboardAction;
 use serde::{Deserialize, Serialize};
 
 pub mod action;
@@ -18,5 +19,5 @@ pub mod reexports {
 pub struct Config {
     pub layout: UI,
     pub theme: Theme,
-    pub keyboard: action::KeyboardAction,
+    pub keyboard: KeyboardAction,
 }
