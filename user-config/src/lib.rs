@@ -1,6 +1,6 @@
+use action::KeyboardMapping;
 use layout_config::ui::UI;
 use preferences::theme::Theme;
-use action::KeyboardMapping;
 use serde::{Deserialize, Serialize};
 
 pub mod action;

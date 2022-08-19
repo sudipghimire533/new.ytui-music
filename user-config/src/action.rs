@@ -19,10 +19,7 @@ impl KeyboardMapping {
     }
 
     pub fn action_for(&self, key: &Key) -> KeyboardAction {
-        self.0
-            .get(key)
-            .map(|v| *v)
-            .unwrap_or(KeyboardAction::Nothing)
+        self.0.get(key).cloned().unwrap_or(KeyboardAction::Nothing)
     }
 }
 
