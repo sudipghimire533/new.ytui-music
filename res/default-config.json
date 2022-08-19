@@ -1,0 +1,68 @@
+{
+  "layout": {
+    "windowHeight": "24l",
+    "windowWidth": "80l",
+    "popupHeight": "80%",
+    "popupWidth": "80%",
+    "items": [
+      {
+        "identifier": "IAmRoot",
+        "size": "100%",
+        "childs": [
+          "TopArea",
+          "MidArea",
+          "BotttomArea"
+        ],
+        "split": "vertical"
+      },
+      {
+        "identifier": "TopArea",
+        "size": "3a",
+        "childs": ["searchbar"],
+        "split": "horizontal"
+      },
+      {
+        "identifier": "MidArea",
+        "size": "70%",
+        "childs": ["shortcuts", "Central"],
+        "split": "horizontal"
+      },
+      {
+        "identifier": "Central",
+        "size": "0f",
+        "childs": ["panetab", "result_pane"],
+        "split": "vertical"
+      },
+      {
+        "identifier": "BotttomArea",
+        "size": "3a",
+        "childs": ["gauge"],
+        "split": "vertical"
+      }
+    ]
+  },
+  "theme": {
+    "base_color": "#000000",
+    "highlight_color": "#000000",
+    "active_color": "#000000",
+    "inactive_color": "#000000"
+  },
+  "keyboard": {
+    "<up>": "MoveUp",
+    "<down>": "MoveDown",
+    "<tab>": "GotoNextWindow",
+    "<backtab>": "GotoPrviousWindow",
+    "n": "NextTrack",
+    "p": "PreviousTrack",
+    ">": "SeekForward",
+    "<": "SeekBackward",
+    "+": "VolumeUp",
+    "-": "VolumeDown",
+    "<space>": "PausePlay",
+    "s": "ShuffleToggle",
+    "r": "RepeatSwitch",
+    "q": "Quit",
+    "<ctrl>c": "ForceQuit"
+  }
+}
+

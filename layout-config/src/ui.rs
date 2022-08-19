@@ -5,10 +5,10 @@ use serde::{Deserialize, Serialize};
 #[serde(rename_all = "camelCase")]
 #[serde(deny_unknown_fields)]
 pub struct UI {
-    window_height: Length,
-    window_width: Length,
-    popup_height: Length,
-    popup_width: Length,
+    pub window_height: Length,
+    pub window_width: Length,
+    pub popup_height: Length,
+    pub popup_width: Length,
     #[serde(rename = "items")]
     pub item_root: ItemTree,
 }

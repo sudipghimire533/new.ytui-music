@@ -3,7 +3,7 @@ use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 
 #[repr(transparent)]
-#[derive(Clone, Debug, Serialize, Deserialize)]
+#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq)]
 #[serde(transparent)]
 pub struct KeyboardMapping(HashMap<Key, KeyboardAction>);
 
@@ -24,7 +24,7 @@ impl KeyboardMapping {
 }
 
 /// Possible set of actions that can be performed from keyboard
-#[derive(Debug, Clone, Copy, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, Serialize, Deserialize, Eq, PartialEq)]
 pub enum KeyboardAction {
     // Goto the searchbar
     StartSearching,
@@ -70,4 +70,8 @@ pub enum KeyboardAction {
     AppDetails,
     // A action but really isn't
     Nothing,
+    // Seek current track in forward direction
+    SeekForward,
+    // Seek current track in backward direction
+    SeekBackward,
 }
