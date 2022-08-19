@@ -3,7 +3,15 @@ use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 
 #[repr(transparent)]
+#[derive(Clone, Debug, Serialize, Deserialize)]
+#[serde(transparent)]
 pub struct KeyboardMapping(HashMap<Key, KeyboardAction>);
+
+impl From<HashMap<Key, KeyboardAction>> for KeyboardMapping {
+    fn from(map: HashMap<Key, KeyboardAction>) -> Self {
+        KeyboardMapping(map)
+    }
+}
 
 impl KeyboardMapping {
     pub fn new(mappings: HashMap<Key, KeyboardAction>) -> Self {
