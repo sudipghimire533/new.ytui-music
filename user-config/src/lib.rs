@@ -27,7 +27,7 @@ pub fn default_config() -> Config {
     use action::KeyboardAction;
     use keyboard::Key;
     use layout_config::direction::Direction;
-    use layout_config::identifier::Identifier::{Custom, Reserved};
+    use layout_config::identifier::Identifier::{Container, Gadget};
     use layout_config::item::Item;
     use std::collections::HashMap;
     use styles::color::RGB;
@@ -41,12 +41,12 @@ pub fn default_config() -> Config {
             item_root: [
                 // root
                 Item {
-                    identifier: Custom("IAmRoot".to_string()),
+                    identifier: Container("IAmRoot".to_string()),
                     size: Length::Relative(100),
                     childs: vec![
-                        Custom("TopArea".to_string()),
-                        Custom("MidArea".to_string()),
-                        Custom("BotttomArea".to_string()),
+                        Container("TopArea".to_string()),
+                        Container("MidArea".to_string()),
+                        Container("BotttomArea".to_string()),
                     ],
                     split: Direction::Vertical,
                 },
@@ -56,31 +56,31 @@ pub fn default_config() -> Config {
                 // `split` of these gadgets won't matter either
                 //
                 Item {
-                    identifier: Reserved("searchbar".into()),
+                    identifier: Gadget("searchbar".into()),
                     childs: [].to_vec(),
                     size: Length::Absolute(3),
                     split: Direction::Vertical,
                 },
                 Item {
-                    identifier: Reserved("shortcuts".into()),
+                    identifier: Gadget("shortcuts".into()),
                     childs: [].to_vec(),
                     size: Length::Relative(30),
                     split: Direction::Vertical,
                 },
                 Item {
-                    identifier: Reserved("panetab".into()),
+                    identifier: Gadget("panetab".into()),
                     childs: [].to_vec(),
                     size: Length::Absolute(3),
                     split: Direction::Vertical,
                 },
                 Item {
-                    identifier: Reserved("result_pane".into()),
+                    identifier: Gadget("result_pane".into()),
                     childs: [].to_vec(),
                     size: Length::Fill,
                     split: Direction::Vertical,
                 },
                 Item {
-                    identifier: Reserved("gauge".into()),
+                    identifier: Gadget("gauge".into()),
                     childs: [].to_vec(),
                     size: Length::AtLeast(3),
                     split: Direction::Vertical,
@@ -89,26 +89,26 @@ pub fn default_config() -> Config {
 
                 // Containers to make the layout
                 Item {
-                    identifier: Custom("TopArea".to_string()),
-                    childs: [Reserved("searchbar".into())].to_vec(),
+                    identifier: Container("TopArea".to_string()),
+                    childs: [Gadget("searchbar".into())].to_vec(),
                     split: Direction::Horizontal,
                     size: Length::Absolute(3),
                 },
                 Item {
-                    identifier: Custom("MidArea".to_string()),
-                    childs: [Reserved("shortcuts".into()), Custom("Central".to_string())].to_vec(),
+                    identifier: Container("MidArea".to_string()),
+                    childs: [Gadget("shortcuts".into()), Container("Central".to_string())].to_vec(),
                     size: Length::Relative(70),
                     split: Direction::Horizontal,
                 },
                 Item {
-                    identifier: Custom("Central".to_string()),
-                    childs: [Reserved("panetab".into()), Reserved("result_pane".into())].to_vec(),
+                    identifier: Container("Central".to_string()),
+                    childs: [Gadget("panetab".into()), Gadget("result_pane".into())].to_vec(),
                     size: Length::Fill,
                     split: Direction::Vertical,
                 },
                 Item {
-                    identifier: Custom("BotttomArea".to_string()),
-                    childs: [Reserved("gauge".into())].to_vec(),
+                    identifier: Container("BotttomArea".to_string()),
+                    childs: [Gadget("gauge".into())].to_vec(),
                     size: Length::Absolute(3),
                     split: Direction::Vertical,
                 },
@@ -164,6 +164,9 @@ mod tests {
             serde_json::from_reader(reader).unwrap()
         };
 
+        assert_eq!(config_written.keyboard, config_generated.keyboard);
+        assert_eq!(config_written.theme, config_generated.theme);
+        assert_eq!(config_written.layout, config_generated.layout);
         assert_eq!(config_written, config_generated);
     }
 }

@@ -42,7 +42,7 @@ pub fn consume_and_get_geometry(
 ) -> Result<GeometryData, &'static str> {
     let mut get_rect = |name: String| {
         rect_map
-            .remove(&ItemIdentifier::Custom(name))
+            .remove(&ItemIdentifier::Container(name))
             .map(from_my_rect)
     };
 
@@ -113,7 +113,7 @@ mod tests {
             ("-something-null-", Default::default()),
         ]
         .into_iter()
-        .map(|(identifier, rect)| (ItemIdentifier::Custom(identifier.to_string()), rect))
+        .map(|(identifier, rect)| (ItemIdentifier::Container(identifier.to_string()), rect))
         .collect::<HashMap<_, _>>();
 
         let result_geometry = consume_and_get_geometry(&mut map);

@@ -158,7 +158,7 @@ mod tests {
             let (net_child_height, net_child_width) = item
                 .childs
                 .iter()
-                .filter(|c| matches!(c, Identifier::Custom(..)))
+                .filter(|c| matches!(c, Identifier::Container(..)))
                 .fold((0, 0), |acc, c| {
                     let child_rect = filled_size_map.get(c).unwrap();
                     (acc.0 + child_rect.height, acc.1 + child_rect.width)
@@ -184,7 +184,7 @@ mod tests {
 
     #[test]
     fn test_rect_for_layout_file() {
-        use Identifier::Custom;
+        use Identifier::Container;
         let config_file_str = include_str!("../../layout-config/layout.json");
         let ui: UI = serde_json::from_str(config_file_str).unwrap();
         let mut size_map = HashMap::new();
@@ -195,84 +195,147 @@ mod tests {
         let root = Rect { x: 0, y: 0, height: 33, width: 150 };
         assert_eq!(
             Some(&root),
-            size_map.get(&Custom("things_starts_from_me".into()))
+            size_map.get(&Container("Things_starts_from_me".into()))
         );
 
         #[rustfmt::skip]
         let red_el_custom = Rect { x: 0, y: 0, height: 5, width: 150 };
         assert_eq!(
             Some(&red_el_custom),
-            size_map.get(&Identifier::Custom("red_element_custom".into())),
+            size_map.get(&Identifier::Container("Red_element_custom".into())),
         );
 
         #[rustfmt::skip]
         let top_area = Rect { x: 0, y: 5, height: 28, width: 150 };
-        assert_eq!(Some(&top_area), size_map.get(&Custom("bottom_area".into())));
+        assert_eq!(Some(&top_area), size_map.get(&Container("Bottom_area".into())));
 
         #[rustfmt::skip]
         let top_left = Rect { x: 0, y: 5, height: 28, width: 75 };
         assert_eq!(
             Some(&top_left),
-            size_map.get(&Identifier::Custom("bottom_left".into()))
+            size_map.get(&Identifier::Container("Bottom_left".into()))
         );
 
         #[rustfmt::skip]
         let top_right = Rect { x: 75, y: 5, height: 28, width: 75 };
         assert_eq!(
             Some(&top_right),
-            size_map.get(&Identifier::Custom("bottom_right".into()))
+            size_map.get(&Identifier::Container("Bottom_right".into()))
         );
 
         #[rustfmt::skip]
         let green_container = Rect { x: 75, y: 5, height: 9, width: 75 };
         assert_eq!(
             Some(&green_container),
-            size_map.get(&Identifier::Custom("green_container".into()))
+            size_map.get(&Identifier::Container("Green_container".into()))
         );
 
         #[rustfmt::skip]
         let yellow_container = Rect { y: 14, ..green_container };
         assert_eq!(
             Some(&yellow_container),
-            size_map.get(&Identifier::Custom("yellow_container".into()))
+            size_map.get(&Identifier::Container("Yellow_container".into()))
         );
 
         #[rustfmt::skip]
         let blue_container = Rect { y: 23, height: 10, ..yellow_container };
         assert_eq!(
             Some(&blue_container),
-            size_map.get(&Identifier::Custom("blue_container".into()))
+            size_map.get(&Identifier::Container("Blue_container".into()))
         );
 
         ensure_boundry_check(ui.item_root.clone(), &size_map);
     }
 
     #[test]
+    fn duplicate_element_in_tree() {
+        let item_tree: ItemTree = vec![
+            Item {
+                identifier: Identifier::Container("Root".to_string()),
+                childs: vec![
+                    Identifier::Gadget("element".into()),
+                    Identifier::Container("Container".to_string()),
+                ],
+                split: Direction::Vertical,
+                size: Length::Fill,
+            },
+            Item {
+                identifier: Identifier::Container("Container".to_string()),
+                childs: vec![Identifier::Gadget("element".into())],
+                split: Direction::Vertical,
+                size: Length::Fill,
+            },
+            Item {
+                identifier: Identifier::Gadget("element".into()),
+                childs: vec![],
+                split: Direction::Vertical,
+                size: Length::Absolute(10),
+            },
+        ]
+        .try_into()
+        .unwrap();
+        println!("{}", item_tree);
+        println!("-----------------------------");
+
+        let mut size_map = HashMap::new();
+        compute_rect_for_item_tree(&item_tree, &mut size_map, &TERMINAL_RECT);
+        println!("-----------------------------");
+
+        #[rustfmt::skip]
+        let root_rect = Rect {..TERMINAL_RECT};
+        assert_eq!(Some(&root_rect), size_map.get(&Identifier::Container("Root".into())));
+        
+        #[rustfmt::skip]
+        let first_element_rect = Rect { height: 10, ..root_rect };
+        assert_eq!(Some(&first_element_rect), size_map.get(&Identifier::Gadget("Root->element".into())));
+
+        #[rustfmt::skip]
+        let container_rect = Rect{ y: 10, height: root_rect.height - 10, ..root_rect };
+        assert_eq!(Some(&container_rect), size_map.get(&Identifier::Container("Container".into())));
+
+        #[rustfmt::skip]
+        let second_element_rect = Rect {height: 10, ..container_rect};
+        assert_eq!(Some(&second_element_rect), size_map.get(&Identifier::Gadget("Container->element".into())));
+    }
+
+    #[test]
     fn start_for_root() {
         let mut size_map = HashMap::new();
 
+        let gadget = Item {
+            identifier: Identifier::Gadget("gadget".into()),
+            childs: vec![],
+            split: Direction::Vertical,
+            size: Length::Fill,
+        };
+        let gadget2 = Item {
+            identifier: Identifier::Gadget("gadget2".into()),
+            childs: vec![],
+            split: Direction::Vertical,
+            size: Length::Fill,
+        };
         let root_item = Item {
-            identifier: Identifier::Custom("root".to_string()),
-            childs: vec![Identifier::Reserved("gadget".into())],
+            identifier: Identifier::Container("root".to_string()),
+            childs: vec![Identifier::Gadget("gadget".into())],
             split: Direction::Vertical,
             size: Length::Relative(100),
         };
         let first_child = Item {
-            identifier: Identifier::Custom("first_child".into()),
-            childs: vec![Identifier::Reserved("gadget2".into())],
+            identifier: Identifier::Container("first_child".into()),
+            childs: vec![Identifier::Gadget("gadget2".into())],
             split: Direction::Vertical,
             size: Length::Relative(50),
         };
         let second_child = Item {
-            identifier: Identifier::Custom("second_child".into()),
+            identifier: Identifier::Container("second_child".into()),
             ..first_child.clone()
         };
 
         let item_tree: ItemTree = vec![
             Item {
                 childs: vec![
-                    Identifier::Custom("first_child".into()),
-                    Identifier::Custom("second_child".into()),
+                    Identifier::Container("first_child".into()),
+                    Identifier::Container("second_child".into()),
                 ],
                 // root size will always be overriden as it was Length::Relative(100)
                 size: Length::Relative(50),
@@ -280,6 +343,8 @@ mod tests {
             },
             first_child,
             second_child,
+            gadget,
+            gadget2,
         ]
         .try_into()
         .unwrap();

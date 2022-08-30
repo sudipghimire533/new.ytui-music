@@ -5,55 +5,81 @@
     "popupWidth": "80%",
   "items": [
     {
-      "identifier": "things_starts_from_me",
+      "identifier": "Things_starts_from_me",
       "size": "100%",
-      "childs": ["red_element_custom", "bottom_area"],
+      "childs": ["Red_element_custom", "Bottom_area"],
       "split": "vertical"
     },
     {
-      "identifier": "red_element_custom",
+      "identifier": "Red_element_custom",
       "size": "5a",
-      "childs": ["Red_element"],
+      "childs": ["red_element"],
       "split": "vertical"
     },
     {
-      "identifier": "bottom_area",
+      "identifier": "Bottom_area",
       "size": "10l",
-      "childs": ["bottom_left", "bottom_right"],
+      "childs": ["Bottom_left", "Bottom_right"],
       "split": "horizontal"
     },
     {
-      "identifier": "bottom_left",
+      "identifier": "Bottom_left",
       "size": "50%",
-      "childs": ["Blue_element"],
+      "childs": ["blue_element"],
       "split": "vertical"
     },
     {
-      "identifier": "bottom_right",
+      "identifier": "Bottom_right",
       "size": "50%",
       "childs": [
-        "green_container",
-        "yellow_container",
-        "blue_container"
+        "Green_container",
+        "Yellow_container",
+        "Blue_container"
       ],
       "split": "vertical"
     },
     {
-      "identifier": "green_container",
+      "identifier": "Green_container",
       "size": "33%",
-      "childs": ["Green_element"],
+      "childs": ["green_element"],
       "split": "horizontal"
     },
     {
-      "identifier": "yellow_container",
+      "identifier": "Yellow_container",
       "size": "33%",
-      "childs": ["Yellow_element"],
+      "childs": ["yellow_element"],
       "split": "horizontal"
     },
     {
-      "identifier": "blue_container",
+      "identifier": "Blue_container",
       "size": "0f",
-      "childs": ["Blue_element"],
+      "childs": ["blue_element"],
+      "split": "horizontal"
+    },
+
+
+    {
+      "identifier": "red_element",
+      "size": "0f",
+      "childs": [],
+      "split": "horizontal"
+    },
+    {
+      "identifier": "blue_element",
+      "size": "0f",
+      "childs": [],
+      "split": "horizontal"
+    },
+    {
+      "identifier": "yellow_element",
+      "size": "0f",
+      "childs": [],
+      "split": "horizontal"
+    },
+    {
+      "identifier": "green_element",
+      "size": "0f",
+      "childs": [],
       "split": "horizontal"
     }
   ]

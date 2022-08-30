@@ -38,6 +38,37 @@
         "size": "3a",
         "childs": ["gauge"],
         "split": "vertical"
+      },
+
+      {
+        "identifier": "searchbar",
+        "size": "3a",
+        "childs": [],
+        "split": "vertical"
+      },
+      {
+        "identifier": "shortcuts",
+        "size": "30%",
+        "childs": [],
+        "split": "vertical"
+      },
+      {
+        "identifier": "panetab",
+        "size": "3a",
+        "childs": [],
+        "split": "vertical"
+      },
+      {
+        "identifier": "result_pane",
+        "size": "0f",
+        "childs": [],
+        "split": "vertical"
+      },
+      {
+        "identifier": "gauge",
+        "size": "3l",
+        "childs": [],
+        "split": "vertical"
       }
     ]
   },

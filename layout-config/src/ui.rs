@@ -34,61 +34,86 @@ mod tests {
             popup_height: Length::Relative(80),
             item_root: vec![
                 Item {
-                    identifier: "things_starts_from_me".try_into().unwrap(),
+                    identifier: "Things_starts_from_me".try_into().unwrap(),
                     size: Length::Relative(100),
                     childs: vec![
-                        "red_element_custom".try_into().unwrap(),
-                        "bottom_area".try_into().unwrap(),
+                        "Red_element_custom".try_into().unwrap(),
+                        "Bottom_area".try_into().unwrap(),
                     ],
                     split: Direction::Vertical,
                 },
                 Item {
-                    identifier: "red_element_custom".try_into().unwrap(),
+                    identifier: "Red_element_custom".try_into().unwrap(),
                     size: Length::Absolute(5),
-                    childs: vec!["Red_element".try_into().unwrap()],
+                    childs: vec!["red_element".try_into().unwrap()],
                     split: Direction::Vertical,
                 },
                 Item {
-                    identifier: "bottom_area".try_into().unwrap(),
+                    identifier: "Bottom_area".try_into().unwrap(),
                     size: Length::AtLeast(10),
                     childs: vec![
-                        "bottom_left".try_into().unwrap(),
-                        "bottom_right".try_into().unwrap(),
+                        "Bottom_left".try_into().unwrap(),
+                        "Bottom_right".try_into().unwrap(),
                     ],
                     split: Direction::Horizontal,
                 },
                 Item {
-                    identifier: "bottom_left".try_into().unwrap(),
+                    identifier: "Bottom_left".try_into().unwrap(),
                     size: Length::Relative(50),
-                    childs: vec!["Blue_element".try_into().unwrap()],
+                    childs: vec!["blue_element".try_into().unwrap()],
                     split: Direction::Vertical,
                 },
                 Item {
-                    identifier: "bottom_right".try_into().unwrap(),
+                    identifier: "Bottom_right".try_into().unwrap(),
                     size: Length::Relative(50),
                     childs: vec![
-                        "green_container".try_into().unwrap(),
-                        "yellow_container".try_into().unwrap(),
-                        "blue_container".try_into().unwrap(),
+                        "Green_container".try_into().unwrap(),
+                        "Yellow_container".try_into().unwrap(),
+                        "Blue_container".try_into().unwrap(),
                     ],
                     split: Direction::Vertical,
                 },
                 Item {
-                    identifier: "green_container".try_into().unwrap(),
+                    identifier: "Green_container".try_into().unwrap(),
                     size: Length::Relative(33),
-                    childs: vec!["Green_element".try_into().unwrap()],
+                    childs: vec!["green_element".try_into().unwrap()],
                     split: Direction::Horizontal,
                 },
                 Item {
-                    identifier: "yellow_container".try_into().unwrap(),
+                    identifier: "Yellow_container".try_into().unwrap(),
                     size: Length::Relative(33),
-                    childs: vec!["Yellow_element".try_into().unwrap()],
+                    childs: vec!["yellow_element".try_into().unwrap()],
                     split: Direction::Horizontal,
                 },
                 Item {
-                    identifier: "blue_container".try_into().unwrap(),
+                    identifier: "Blue_container".try_into().unwrap(),
                     size: Length::Fill,
-                    childs: vec!["Blue_element".try_into().unwrap()],
+                    childs: vec!["blue_element".try_into().unwrap()],
+                    split: Direction::Horizontal,
+                },
+                // elements
+                Item {
+                    identifier: "blue_element".try_into().unwrap(),
+                    size: Length::Fill,
+                    childs: vec![],
+                    split: Direction::Horizontal,
+                },
+                Item {
+                    identifier: "yellow_element".try_into().unwrap(),
+                    size: Length::Fill,
+                    childs: vec![],
+                    split: Direction::Horizontal,
+                },
+                Item {
+                    identifier: "green_element".try_into().unwrap(),
+                    size: Length::Fill,
+                    childs: vec![],
+                    split: Direction::Horizontal,
+                },
+                Item {
+                    identifier: "red_element".try_into().unwrap(),
+                    size: Length::Fill,
+                    childs: vec![],
                     split: Direction::Horizontal,
                 },
             ]
@@ -96,13 +121,12 @@ mod tests {
             .unwrap(),
         };
 
-        assert_eq!(
-            expected_layout_str,
-            serde_json::to_string(&expected_layout).unwrap()
-        );
-        assert_eq!(
-            expected_layout,
-            serde_json::from_str(&expected_layout_str).unwrap()
-        );
+        let actual_layout = serde_json::from_str::<UI>(&expected_layout_str).unwrap();
+        assert_eq!(actual_layout.window_width, expected_layout.window_width);
+        assert_eq!(actual_layout.window_height, expected_layout.window_height);
+        assert_eq!(actual_layout.popup_width, expected_layout.popup_width);
+        assert_eq!(actual_layout.popup_height, expected_layout.popup_height);
+        assert_eq!(actual_layout.item_root, expected_layout.item_root);
+        assert_eq!(actual_layout, expected_layout);
     }
 }

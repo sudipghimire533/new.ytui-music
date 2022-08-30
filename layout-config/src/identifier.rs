@@ -7,41 +7,35 @@ use std::{borrow::Cow, fmt::Display};
 #[serde(into = "String")]
 #[serde(deny_unknown_fields)]
 pub enum Identifier {
-    Custom(String),
-    Reserved(Cow<'static, str>),
+    Container(String),
+    Gadget(Cow<'static, str>),
 }
 
 impl Identifier {
-    pub fn is_custom(&self) -> bool {
-        matches!(self, Identifier::Custom(..))
+    pub fn is_container(&self) -> bool {
+        matches!(self, Identifier::Container(..))
     }
 
-    pub fn is_reserved(&self) -> bool {
-        matches!(self, Identifier::Reserved(..))
-    }
-
-    fn is_valid_identifier(identifier: &str) -> bool {
-        identifier
-            .chars()
-            .all(|c| c.is_ascii_alphabetic() || c == '_')
+    pub fn is_gadget(&self) -> bool {
+        matches!(self, Identifier::Gadget(..))
     }
 }
 
 impl Display for Identifier {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         let id_str = match self {
-            Identifier::Reserved(r) => r,
-            Identifier::Custom(c) => c.as_str(),
+            Identifier::Gadget(r) => r,
+            Identifier::Container(c) => c.as_str(),
         };
-        write!(f, "{}", id_str)
+        write!(f, "{id_str}")
     }
 }
 
 impl<'a> From<&'a Identifier> for &'a str {
     fn from(identifier: &'a Identifier) -> Self {
         match identifier {
-            Identifier::Custom(id) => id,
-            Identifier::Reserved(id) => id,
+            Identifier::Container(id) => id,
+            Identifier::Gadget(id) => id,
         }
     }
 }
@@ -63,9 +57,9 @@ impl TryFrom<String> for Identifier {
             .is_uppercase();
 
         if is_custom {
-            Ok(Identifier::Custom(src))
+            Ok(Identifier::Container(src))
         } else {
-            Ok(Identifier::Reserved(src.into()))
+            Ok(Identifier::Gadget(src.into()))
         }
     }
 }
@@ -85,37 +79,24 @@ mod test {
 
     #[test]
     fn identifier_set() {
-        let custom_identifiers = [
-            "TopArea",
-            "Something",
-            "Uppercase"
-        ];
-        let reserved_identifiers = [
-            "searchbar",
-            "something",
-            "lowercase",
-            "_Started",
-            "_starts",
-        ];
+        let container_identifiers = ["TopArea", "Something", "Uppercase"];
+        let gadget_identifiers = ["searchbar", "something", "lowercase", "_Started", "_starts"];
 
-        for custom in custom_identifiers {
+        for container in container_identifiers {
             assert_eq!(
-                Ok(Identifier::Custom(custom.to_string())),
-                custom.try_into()
+                Ok(Identifier::Container(container.to_string())),
+                container.try_into()
             );
         }
 
-        for reserved in reserved_identifiers {
-            assert_eq!(
-                Ok(Identifier::Reserved(reserved.into())),
-                reserved.try_into()
-            );
+        for gadget in gadget_identifiers {
+            assert_eq!(Ok(Identifier::Gadget(gadget.into())), gadget.try_into());
         }
     }
 
     #[test]
     fn serialization_and_deserialization() {
-        use Identifier::{Custom, Reserved};
+        use Identifier::{Container, Gadget};
         let from_str = |s: &str| {
             let json_string = format!("\"{s}\"");
             serde_json::from_str(&json_string)
@@ -125,24 +106,22 @@ mod test {
             json_string.map(|s| (&s[1..s.len() - 1]).to_string())
         };
 
-        assert_eq!(Custom("cUstom".into()), from_str("cUstom").unwrap());
-        assert_eq!(Custom("a_name".into()), from_str("a_name").unwrap());
-        assert!(from_str("an2me").is_err());
-        assert!(from_str("m@ngo").is_err());
-        for reserved in ["TopArea", "Constainer", "Apple"] {
+        assert_eq!(Gadget("cUstom".into()), from_str("cUstom").unwrap());
+        assert_eq!(Gadget("a_name".into()), from_str("a_name").unwrap());
+        for container in ["TopArea", "Constainer", "Apple"] {
             assert_eq!(
-                Reserved(Cow::Borrowed(reserved)),
-                from_str(reserved).unwrap()
+                Container(container.to_string()),
+                from_str(container).unwrap()
             );
 
             assert_eq!(
-                reserved.to_string(),
-                to_string(Reserved(Cow::Borrowed(reserved))).unwrap()
+                container.to_string(),
+                to_string(Gadget(Cow::Borrowed(container))).unwrap()
             );
         }
 
-        assert_eq!("cUstom", to_string(Custom("cUstom".into())).unwrap());
-        assert_eq!("my_Name", to_string(Custom("my_Name".into())).unwrap());
-        assert_eq!("cUst0m@", to_string(Custom("cUst0m@".into())).unwrap());
+        assert_eq!("cUstom", to_string(Container("cUstom".into())).unwrap());
+        assert_eq!("my_Name", to_string(Container("my_Name".into())).unwrap());
+        assert_eq!("cUst0m@", to_string(Container("cUst0m@".into())).unwrap());
     }
 }
