@@ -7,6 +7,10 @@ edition = "2021"
 name = "drawer"
 path = "src/main.rs"
 
+[lib]
+name = "drawer"
+path = "src/lib.rs"
+
 [dependencies]
 user-config = { path = "../user-config/" }
 crossterm = { version = "0.20", features = ["event-stream"], optional =  true }
@@ -18,39 +22,3 @@ serde_json = "1"
 default = ["crossterm"]
 crossterm = ["tui/crossterm", "dep:crossterm"]
 termion = ["tui/termion", "dep:termion"]
-
-[[example]]
-name = "searchbar"
-required-features = ["crossterm"]
-path = "src/examples/searchbar.rs"
-
-[[example]]
-name = "shortcut"
-required-features = ["crossterm"]
-path = "src/examples/shortcut.rs"
-
-[[example]]
-name = "gauge"
-required-features = ["crossterm"]
-path = "src/examples/gauge.rs"
-
-[[example]]
-name = "tabpane"
-required-features = ["crossterm"]
-path = "src/examples/tabpane.rs"
-
-[[example]]
-name = "musicpane"
-required-features = ["crossterm"]
-path = "src/examples/musicpane.rs"
-
-[[example]]
-name = "playlistpane"
-required-features = ["crossterm"]
-path = "src/examples/playlistpane.rs"
-
-[[example]]
-name = "ui"
-required-features = ["crossterm"]
-path = "src/examples/ui.rs"
-

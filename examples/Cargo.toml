@@ -1,0 +1,50 @@
+[package]
+name = "examples"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+crossterm = { version = "0.20", features = ["event-stream"], optional =  true }
+tui = { version = "0.16" }
+drawer = { path = "../drawer" }
+user-config = { path = "../user-config/" }
+
+[features]
+crossterm = ["dep:crossterm"]
+default = ["crossterm"]
+
+[[example]]
+name = "searchbar"
+required-features = ["crossterm"]
+path = "gadgets/searchbar.rs"
+
+[[example]]
+name = "shortcut"
+required-features = ["crossterm"]
+path = "gadgets/shortcut.rs"
+
+[[example]]
+name = "gauge"
+required-features = ["crossterm"]
+path = "gadgets/gauge.rs"
+
+[[example]]
+name = "tabpane"
+required-features = ["crossterm"]
+path = "gadgets/tabpane.rs"
+
+[[example]]
+name = "musicpane"
+required-features = ["crossterm"]
+path = "gadgets/musicpane.rs"
+
+[[example]]
+name = "playlistpane"
+required-features = ["crossterm"]
+path = "gadgets/playlistpane.rs"
+
+[[example]]
+name = "ui"
+required-features = ["crossterm"]
+path = "gadgets/ui.rs"
+
