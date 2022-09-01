@@ -50,10 +50,8 @@ pub fn consume_and_get_geometry(
     let sidebar = get_rect("sidebar".to_string()).ok_or("Cannot get position for sidebar")?;
     let gauge = get_rect("gauge".to_string()).ok_or("Cannot get position for gauge")?;
     let panetab = get_rect("panetab".to_string()).ok_or("Cannot get position for panetab")?;
-    let [musicpane, playlistpane, artistpane] = {
-        [get_rect("result_pane".to_string())
-            .ok_or("Cannot get position for music/playlist/artist pane")?; 3]
-    };
+    let result_pane = get_rect("result_pane".to_string())
+        .ok_or("Cannot get position for music/playlist/artist pane")?;
 
     // At the end we will also destory any other remaining element
     // this will mostly be container type
@@ -73,9 +71,9 @@ pub fn consume_and_get_geometry(
         sidebar,
         gauge,
         panetab,
-        musicpane,
-        playlistpane,
-        artistpane,
+        musicpane: result_pane,
+        playlistpane: result_pane,
+        artistpane: result_pane,
         musicpane_division,
         playlistpane_division,
     })
