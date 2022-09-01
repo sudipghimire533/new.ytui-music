@@ -207,7 +207,10 @@ mod tests {
 
         #[rustfmt::skip]
         let top_area = Rect { x: 0, y: 5, height: 28, width: 150 };
-        assert_eq!(Some(&top_area), size_map.get(&Container("Bottom_area".into())));
+        assert_eq!(
+            Some(&top_area),
+            size_map.get(&Container("Bottom_area".into()))
+        );
 
         #[rustfmt::skip]
         let top_left = Rect { x: 0, y: 5, height: 28, width: 75 };
@@ -283,19 +286,31 @@ mod tests {
 
         #[rustfmt::skip]
         let root_rect = Rect {..TERMINAL_RECT};
-        assert_eq!(Some(&root_rect), size_map.get(&Identifier::Container("Root".into())));
-        
+        assert_eq!(
+            Some(&root_rect),
+            size_map.get(&Identifier::Container("Root".into()))
+        );
+
         #[rustfmt::skip]
         let first_element_rect = Rect { height: 10, ..root_rect };
-        assert_eq!(Some(&first_element_rect), size_map.get(&Identifier::Gadget("Root->element".into())));
+        assert_eq!(
+            Some(&first_element_rect),
+            size_map.get(&Identifier::Gadget("Root->element".into()))
+        );
 
         #[rustfmt::skip]
         let container_rect = Rect{ y: 10, height: root_rect.height - 10, ..root_rect };
-        assert_eq!(Some(&container_rect), size_map.get(&Identifier::Container("Container".into())));
+        assert_eq!(
+            Some(&container_rect),
+            size_map.get(&Identifier::Container("Container".into()))
+        );
 
         #[rustfmt::skip]
         let second_element_rect = Rect {height: 10, ..container_rect};
-        assert_eq!(Some(&second_element_rect), size_map.get(&Identifier::Gadget("Container->element".into())));
+        assert_eq!(
+            Some(&second_element_rect),
+            size_map.get(&Identifier::Gadget("Container->element".into()))
+        );
     }
 
     #[test]

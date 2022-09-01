@@ -148,8 +148,8 @@ pub fn default_config() -> Config {
 
 #[cfg(test)]
 mod tests {
-    use std::{path::PathBuf, fs::File, io::BufReader};
     use super::*;
+    use std::{fs::File, io::BufReader, path::PathBuf};
 
     #[test]
     fn match_default_config() {

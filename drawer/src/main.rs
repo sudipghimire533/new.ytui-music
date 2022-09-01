@@ -4,10 +4,12 @@ use std::error::Error;
 use user_config::reexports::compute_rect_for_item_tree as compute_rect;
 use user_config::Config;
 
+pub mod event;
 pub mod gadgets;
 pub mod init;
 pub mod types;
 
+use event::listen_for_event;
 use types::{state::AppState, utils};
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
@@ -41,7 +43,11 @@ fn run_app<B: tui::backend::Backend>(
     config: Config,
 ) -> Result<(), Box<dyn Error>> {
     let terminal_rect = utils::into_my_rect(terminal.size()?);
-    let Config { layout, theme, .. } = config;
+    let Config {
+        layout,
+        theme,
+        keyboard,
+    } = config;
 
     let appstate = AppState::default();
     let mut rect_map = HashMap::new();
@@ -51,6 +57,7 @@ fn run_app<B: tui::backend::Backend>(
         .map_err(|e| format!("While creating geometry from Rect map: {e:#?}"))?;
 
     draw_all_ui(&mut terminal.get_frame(), &appstate, &theme, geometrics);
+    listen_for_event(&keyboard);
 
     Ok(())
 }
