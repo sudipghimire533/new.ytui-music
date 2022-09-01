@@ -92,8 +92,8 @@ mod serde_helper {
                 // if not, use the global element of child_identifier
                 let mut child_item = item_map
                     .get(&final_child_id)
-                    .map(|v| Some(v))
-                    .unwrap_or_else(|| item_map.get(&child_identifier))
+                    .map(Some)
+                    .unwrap_or_else(|| item_map.get(child_identifier))
                     .cloned()
                     .ok_or(format!("Required item not defined. One of `{final_child_id}` or `{child_identifier}` must be defined"))?;
                 child_item.identifier = final_child_id;
