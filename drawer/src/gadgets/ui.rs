@@ -71,7 +71,7 @@ where
     }
 
     let gauge_rect = geometrics.gauge;
-    if searchbar_rect.area() > 1 {
+    if gauge_rect.area() > 1 {
         let gauge = get_gauge(appdata, theme);
         frame.render_widget(gauge, gauge_rect)
     }
