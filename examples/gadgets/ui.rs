@@ -190,7 +190,7 @@ fn draw_playlistpane<B: tui::backend::Backend>(f: &mut tui::Frame<B>) {
         height: 3,
         width: screen_size.width,
     };
-    let sidebar_rect = Rect {
+    let shortcuts_rect = Rect {
         x: 0,
         y: 3,
         height: screen_size.height - 6,
@@ -236,7 +236,7 @@ fn draw_playlistpane<B: tui::backend::Backend>(f: &mut tui::Frame<B>) {
         musicpane: musicpane_rect,
         gauge: gauge_rect,
         searchbar: searchbar_rect,
-        sidebar: sidebar_rect,
+        shortcuts: shortcuts_rect,
         panetab: panetab_rect,
         musicpane_division,
         playlistpane_division,

@@ -114,7 +114,7 @@ pub struct PaneDivision<const COL_LEN: usize> {
 #[derive(Debug, Clone, Eq, PartialEq)]
 pub struct GeometryData {
     pub searchbar: Rect,
-    pub sidebar: Rect,
+    pub shortcuts: Rect,
     pub gauge: Rect,
     pub panetab: Rect,
     pub musicpane: Rect,

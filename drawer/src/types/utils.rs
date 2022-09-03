@@ -41,7 +41,7 @@ pub fn consume_and_get_geometry(
     rect_map: &mut HashMap<ItemIdentifier, MyRect>,
 ) -> Result<GeometryData, &'static str> {
     let mut searchbar = None;
-    let mut sidebar = None;
+    let mut shortcuts = None;
     let mut gauge = None;
     let mut panetab = None;
     let mut result_pane = None;
@@ -52,7 +52,7 @@ pub fn consume_and_get_geometry(
             if gadget_path.ends_with("searchbar") {
                 searchbar = Some(rect);
             } else if gadget_path.ends_with("shortcuts") {
-                sidebar = Some(rect);
+                shortcuts = Some(rect);
             } else if gadget_path.ends_with("gauge") {
                 gauge = Some(rect);
             } else if gadget_path.ends_with("panetab") {
@@ -64,10 +64,10 @@ pub fn consume_and_get_geometry(
     }
 
     let searchbar = searchbar.ok_or("Cannot get position for searchbar")?;
+    let shortcuts = shortcuts.ok_or("Cannot get position for shortcuts")?;
     let gauge = gauge.ok_or("Cannot get position for gauge")?;
     let panetab = panetab.ok_or("Cannot get position for panetab")?;
     let result_pane = result_pane.ok_or("Cannot get position for result_pane")?;
-    let sidebar = sidebar.ok_or("Cannot get position for shortcuts")?;
 
     // At the end we will also destory any other remaining element
     // this will mostly be container type
@@ -84,7 +84,7 @@ pub fn consume_and_get_geometry(
 
     Ok(GeometryData {
         searchbar,
-        sidebar,
+        shortcuts,
         gauge,
         panetab,
         musicpane: result_pane,
@@ -119,7 +119,7 @@ mod tests {
     fn check_consume_and_get_geometry() {
         let mut map = [
             ("searchbar", my_rect_with_x(1)),
-            ("sidebar", my_rect_with_x(2)),
+            ("shortcuts", my_rect_with_x(2)),
             ("gauge", my_rect_with_x(3)),
             ("panetab", my_rect_with_x(4)),
             ("result_pane", my_rect_with_x(5)),
@@ -134,7 +134,7 @@ mod tests {
 
         let expected_geometry_data = GeometryData {
             searchbar: tui_rect_with_x(1),
-            sidebar: tui_rect_with_x(2),
+            shortcuts: tui_rect_with_x(2),
             gauge: tui_rect_with_x(3),
             panetab: tui_rect_with_x(4),
             musicpane: tui_rect_with_x(5),

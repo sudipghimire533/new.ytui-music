@@ -76,7 +76,7 @@ where
         frame.render_widget(gauge, gauge_rect)
     }
 
-    let sidebar_rect = geometrics.sidebar;
+    let sidebar_rect = geometrics.shortcuts;
     if sidebar_rect.area() > 1 {
         let sidebar = get_shortcut_list(appdata, theme);
         let mut sidebar_state = <A as Provider<ShortcutListState>>::provide(appdata);
