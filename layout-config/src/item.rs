@@ -75,38 +75,40 @@ mod serde_helper {
         });
 
         for child_identifier in item.childs.iter() {
-            let child_tree;
-            if child_identifier.is_container() {
-                let child_item = item_map
-                    .get(child_identifier)
-                    .ok_or(format!("Cannot find element {child_identifier}"))?;
-                child_tree = construct_tree(child_item.clone(), Some(item_tree.clone()), item_map)?;
-            } else if child_identifier.is_gadget() {
-                let parent_name = item.identifier.to_string();
-                // There might be multiple final gadget under different containers
-                // so by inclufing the name of container (parent) as well
-                // we avoid clashing
-                let final_child_id =
-                    Identifier::Gadget(format!("{parent_name}->{child_identifier}").into());
-                // first try to get specific item defined under this parent
-                // if not, use the global element of child_identifier
-                let mut child_item = item_map
-                    .get(&final_child_id)
-                    .map(Some)
-                    .unwrap_or_else(|| item_map.get(child_identifier))
-                    .cloned()
-                    .ok_or(format!("Required item not defined. One of `{final_child_id}` or `{child_identifier}` must be defined"))?;
-                child_item.identifier = final_child_id;
-                child_tree = ItemTree {
-                    item: child_item.clone(),
-                    childs: vec![],
-                    parent: Some(Box::new(item_tree.as_ref().clone())),
-                };
-            } else {
-                unreachable!("Identifier is either reserved or custom")
-            }
+            match child_identifier {
+                Identifier::Container(id_name) => {
+                    let child_item = item_map
+                        .get(child_identifier)
+                        .ok_or(format!("Cannot find element `{id_name}`"))?;
+                    let child_tree =
+                        construct_tree(child_item.clone(), Some(item_tree.clone()), item_map)?;
+                    item_tree.childs.push(Box::new(child_tree));
+                }
 
-            item_tree.childs.push(Box::new(child_tree));
+                Identifier::Gadget(id_name) => {
+                    let parent_name = item.identifier.to_string();
+                    // There might be multiple final gadget under different containers
+                    // so by inclufing the name of container (parent) as well
+                    // we avoid clashing
+                    let final_child_id =
+                        Identifier::Gadget(format!("{parent_name}->{id_name}").into());
+                    // first try to get specific item defined under this parent
+                    // if not, use the global element of child_identifier
+                    let mut child_item = item_map
+                        .get(&final_child_id)
+                        .map(Some)
+                        .unwrap_or_else(|| item_map.get(child_identifier))
+                        .cloned()
+                        .ok_or(format!("Required item not defined. One of `{final_child_id}` or `{child_identifier}` must be defined"))?;
+                    child_item.identifier = final_child_id;
+                    let child_tree = ItemTree {
+                        item: child_item.clone(),
+                        childs: vec![],
+                        parent: Some(Box::new(item_tree.as_ref().clone())),
+                    };
+                    item_tree.childs.push(Box::new(child_tree));
+                }
+            }
         }
 
         Ok(*item_tree)

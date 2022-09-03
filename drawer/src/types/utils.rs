@@ -40,30 +40,46 @@ pub fn into_my_rect(tui_rect: TuiRect) -> MyRect {
 pub fn consume_and_get_geometry(
     rect_map: &mut HashMap<ItemIdentifier, MyRect>,
 ) -> Result<GeometryData, &'static str> {
-    let mut get_rect = |name: String| {
-        rect_map
-            .remove(&ItemIdentifier::Container(name))
-            .map(from_my_rect)
-    };
+    let mut searchbar = None;
+    let mut sidebar = None;
+    let mut gauge = None;
+    let mut panetab = None;
+    let mut result_pane = None;
 
-    let searchbar = get_rect("searchbar".to_string()).ok_or("Cannot get position for searchbar")?;
-    let sidebar = get_rect("sidebar".to_string()).ok_or("Cannot get position for sidebar")?;
-    let gauge = get_rect("gauge".to_string()).ok_or("Cannot get position for gauge")?;
-    let panetab = get_rect("panetab".to_string()).ok_or("Cannot get position for panetab")?;
-    let result_pane = get_rect("result_pane".to_string())
-        .ok_or("Cannot get position for music/playlist/artist pane")?;
+    for (key, rect) in rect_map.drain() {
+        let rect = from_my_rect(rect);
+        if let ItemIdentifier::Gadget(gadget_path) = key {
+            if gadget_path.ends_with("searchbar") {
+                searchbar = Some(rect);
+            } else if gadget_path.ends_with("shortcuts") {
+                sidebar = Some(rect);
+            } else if gadget_path.ends_with("gauge") {
+                gauge = Some(rect);
+            } else if gadget_path.ends_with("panetab") {
+                panetab = Some(rect);
+            } else if gadget_path.ends_with("result_pane") {
+                result_pane = Some(rect);
+            }
+        }
+    }
+
+    let searchbar = searchbar.ok_or("Cannot get position for searchbar")?;
+    let gauge = gauge.ok_or("Cannot get position for gauge")?;
+    let panetab = panetab.ok_or("Cannot get position for panetab")?;
+    let result_pane = result_pane.ok_or("Cannot get position for result_pane")?;
+    let sidebar = sidebar.ok_or("Cannot get position for sidebar")?;
 
     // At the end we will also destory any other remaining element
     // this will mostly be container type
     rect_map.drain();
 
     let musicpane_division = super::state::PaneDivision {
-        spacing: 0,
-        splits: [Constraint::Length(0); 3],
+        spacing: 1,
+        splits: [Constraint::Length(10); 3],
     };
     let playlistpane_division = super::state::PaneDivision {
-        spacing: 0,
-        splits: [Constraint::Length(0); 3],
+        spacing: 1,
+        splits: [Constraint::Length(10); 3],
     };
 
     Ok(GeometryData {
@@ -111,7 +127,7 @@ mod tests {
             ("-something-null-", Default::default()),
         ]
         .into_iter()
-        .map(|(identifier, rect)| (ItemIdentifier::Container(identifier.to_string()), rect))
+        .map(|(identifier, rect)| (ItemIdentifier::Gadget(identifier.into()), rect))
         .collect::<HashMap<_, _>>();
 
         let result_geometry = consume_and_get_geometry(&mut map);
@@ -125,12 +141,12 @@ mod tests {
             playlistpane: tui_rect_with_x(5),
             artistpane: tui_rect_with_x(5),
             musicpane_division: PaneDivision {
-                spacing: 0,
-                splits: [Constraint::Length(0); 3],
+                spacing: 1,
+                splits: [Constraint::Length(10); 3],
             },
             playlistpane_division: PaneDivision {
-                spacing: 0,
-                splits: [Constraint::Length(0); 3],
+                spacing: 1,
+                splits: [Constraint::Length(10); 3],
             },
         };
 

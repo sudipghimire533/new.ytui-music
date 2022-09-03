@@ -37,13 +37,13 @@ pub trait PlayerInfo {
 
 impl PlayerInfo for AppState {
     fn playing_track_title(&self) -> String {
-        unimplemented!()
+        "Some title".to_string()
     }
     fn playing_track_duration(&self) -> String {
-        unimplemented!()
+        "Some duration".to_string()
     }
     fn playing_track_completed(&self) -> String {
-        unimplemented!()
+        "Some duration".to_string()
     }
 }
 

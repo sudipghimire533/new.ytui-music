@@ -6,6 +6,7 @@ use user_config::Config;
 fn get_config_path() -> PathBuf {
     let root_dir = env!("CARGO_MANIFEST_DIR");
     PathBuf::from(root_dir)
+        .join("..")
         .join("res")
         .join("default-config.json")
 }
