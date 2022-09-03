@@ -147,6 +147,7 @@ mod tests {
     use layout_config::item::Item;
     use layout_config::length::Length;
     use layout_config::ui::UI;
+    use user_config::Config;
 
     fn ensure_boundry_check(item_root: ItemTree, filled_size_map: &HashMap<Identifier, Rect>) {
         let tree_as_vec: Vec<_> = item_root.try_into().unwrap();
@@ -183,8 +184,21 @@ mod tests {
     };
 
     #[test]
+    #[ignore = "Not yet implemented"]
+    fn default_config_rect_computation() {
+        let default_config = include_str!("../../res/default-config.json");
+        let ui = serde_json::from_str::<Config>(default_config).unwrap();
+        let mut size_map = HashMap::new();
+
+        compute_rect_for_item_tree(&ui.layout.item_root, &mut size_map, &TERMINAL_RECT);
+
+        todo!()
+    }
+
+    #[test]
     fn test_rect_for_layout_file() {
         use Identifier::Container;
+
         let config_file_str = include_str!("../../layout-config/layout.json");
         let ui: UI = serde_json::from_str(config_file_str).unwrap();
         let mut size_map = HashMap::new();

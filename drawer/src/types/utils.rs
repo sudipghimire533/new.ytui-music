@@ -67,7 +67,7 @@ pub fn consume_and_get_geometry(
     let gauge = gauge.ok_or("Cannot get position for gauge")?;
     let panetab = panetab.ok_or("Cannot get position for panetab")?;
     let result_pane = result_pane.ok_or("Cannot get position for result_pane")?;
-    let sidebar = sidebar.ok_or("Cannot get position for sidebar")?;
+    let sidebar = sidebar.ok_or("Cannot get position for shortcuts")?;
 
     // At the end we will also destory any other remaining element
     // this will mostly be container type

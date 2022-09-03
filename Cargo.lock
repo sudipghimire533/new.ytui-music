@@ -101,6 +101,7 @@ dependencies = [
  "layout-config",
  "serde",
  "serde_json",
+ "user-config",
 ]
 
 [[package]]
