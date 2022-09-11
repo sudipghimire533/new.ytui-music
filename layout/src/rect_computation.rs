@@ -190,46 +190,49 @@ mod tests {
         let default_config = include_str!("../../res/default-config.json");
         let ui = serde_json::from_str::<Config>(default_config).unwrap();
         let mut size_map = HashMap::new();
+        #[rustfmt::skip]
         let terminal_rect = Rect{ x: 0, y: 0, height: 43, width: 190 };
 
         compute_rect_for_item_tree(&ui.layout.item_root, &mut size_map, &terminal_rect);
 
+        #[rustfmt::skip]
         let root = Rect { ..terminal_rect.clone() };
-        assert_eq!(
-            Some(&root),
-            size_map.get(&Container("IAmRoot".into()))
-        );
+        assert_eq!(Some(&root), size_map.get(&Container("IAmRoot".into())));
 
+        #[rustfmt::skip]
         let top_area = Rect{ height: 3, ..root.clone() };
+        #[rustfmt::skip]
         let mid_area = Rect{ y: 3, height: 30, ..root };
+        #[rustfmt::skip]
         let bottom_area = Rect{ y: 33, height: 10, ..root };
-        assert_eq!(
-            Some(&top_area),
-            size_map.get(&Container("TopArea".into()))
-        );
-        assert_eq!(
-            Some(&mid_area),
-            size_map.get(&Container("MidArea".into()))
-        );
+
+        assert_eq!(Some(&top_area), size_map.get(&Container("TopArea".into())));
+        assert_eq!(Some(&mid_area), size_map.get(&Container("MidArea".into())));
         assert_eq!(
             Some(&bottom_area),
             size_map.get(&Container("BotttomArea".into()))
         );
 
+        #[rustfmt::skip]
         let shortcuts = Rect { x: 0, width: 57, ..mid_area.clone() };
+        #[rustfmt::skip]
         let central = Rect { x: 57, width: 133, ..mid_area.clone() };
-        assert_eq!(
-            Some(&central),
-            size_map.get(&Container("Central".into())),
-        );
+
+        assert_eq!(Some(&central), size_map.get(&Container("Central".into())),);
         assert_eq!(
             Some(&shortcuts),
             size_map.get(&Gadget("MidArea->shortcuts".into()))
         );
 
-        println!("{size_map:#?}");
+        #[rustfmt::skip]
         let searchbar = Rect { height: 3, ..top_area.clone() };
+        #[rustfmt::skip]
         let gauge = Rect { height: 3, ..bottom_area.clone() };
+        #[rustfmt::skip]
+        let panetab = Rect { height: 3, ..central.clone() };
+        #[rustfmt::skip]
+        let result_pane = Rect { y: 3 + 3, height: 27, ..central.clone() };
+
         assert_eq!(
             Some(&gauge),
             size_map.get(&Gadget("BotttomArea->gauge".into()))
@@ -237,6 +240,14 @@ mod tests {
         assert_eq!(
             Some(&searchbar),
             size_map.get(&Gadget("TopArea->searchbar".into())),
+        );
+        assert_eq!(
+            Some(&panetab),
+            size_map.get(&Gadget("Central->panetab".into())),
+        );
+        assert_eq!(
+            Some(&result_pane),
+            size_map.get(&Gadget("Central->result_pane".into())),
         );
     }
 
