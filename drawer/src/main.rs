@@ -10,7 +10,9 @@ pub mod init;
 pub mod types;
 
 use event::listen_for_event;
+use event::EventSummary;
 use types::{state::AppState, utils};
+use user_config::action::KeyboardAction;
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     let config = init::config::get_config(init::default_config_source)
@@ -43,7 +45,6 @@ fn run_app<B: tui::backend::Backend>(
     config: Config,
 ) -> Result<(), Box<dyn Error>> {
     let terminal_rect = utils::into_my_rect(terminal.size()?);
-    eprintln!("Terminal size is: {:?}", terminal_rect);
     let Config {
         layout,
         theme,
@@ -52,16 +53,28 @@ fn run_app<B: tui::backend::Backend>(
 
     let appstate = AppState::default();
     let mut rect_map = HashMap::new();
-    compute_rect(&layout.item_root, &mut rect_map, &terminal_rect);
 
-    let geometrics = utils::consume_and_get_geometry(&mut rect_map)
-        .map_err(|e| format!("While creating geometry from Rect map: {e:#?}"))?;
-    eprintln!("{:#?}", geometrics);
+    'ui_renderer: loop {
+        compute_rect(&layout.item_root, &mut rect_map, &terminal_rect);
 
-    terminal.draw(|frame| draw_all_ui(frame, &appstate, &theme, geometrics))?;
+        let geometrics = utils::consume_and_get_geometry(&mut rect_map)
+            .map_err(|e| format!("While creating geometry from Rect map: {e:#?}"))?;
 
-    std::thread::sleep(std::time::Duration::from_secs(3));
-    listen_for_event(&keyboard);
+        terminal.draw(|frame| draw_all_ui(frame, &appstate, &theme, geometrics))?;
+        let event_summary = listen_for_event(&keyboard);
+
+        match event_summary {
+            EventSummary::Nothing => {}
+
+            EventSummary::Execution(keyboard_action) => match keyboard_action {
+                KeyboardAction::Quit => break 'ui_renderer,
+                KeyboardAction::ForceQuit => std::process::exit(1),
+                _ => todo!(),
+            },
+
+            _ => todo!(),
+        }
+    }
 
     Ok(())
 }

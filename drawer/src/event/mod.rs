@@ -1,12 +1,20 @@
+use user_config::action::KeyboardAction;
 use user_config::action::KeyboardMapping;
 use user_config::keyboard::Key;
 
-pub fn listen_for_event(keyboard: &KeyboardMapping) {
+pub fn listen_for_event(keyboard: &KeyboardMapping) -> EventSummary {
     #[cfg(feature = "crossterm")]
     return crossterm_event::listen_for_event(keyboard);
 
     #[cfg(feature = "termion")]
     return termion_event::listen_for_event(keyboard);
+}
+#[derive(Clone, Copy, Eq, PartialEq)]
+pub enum EventSummary {
+    Execution(KeyboardAction),
+    Resize,
+    Nothing,
+    Ignored,
 }
 
 #[cfg(feature = "crossterm")]
@@ -17,21 +25,22 @@ mod crossterm_event {
 
     // TODO:
     // make this configurable
-    const REFRESH_RATE: Duration = Duration::from_millis(1000);
+    const REFRESH_RATE: Duration = Duration::from_secs(2);
 
-    pub fn listen_for_event(keyboard: &KeyboardMapping) {
+    pub fn listen_for_event(keyboard: &KeyboardMapping) -> EventSummary {
         if event::poll(REFRESH_RATE).map_err(|_| "crossterm pool event error") == Ok(true) {
             match event::read().unwrap() {
-                Event::Resize(_col, _rows) => todo!(),
+                Event::Resize(_col, _rows) => EventSummary::Resize,
                 Event::Key(k) => {
                     let key = into_native_event(k);
                     let action = keyboard.action_for(&key);
 
-                    let _ = action;
-                    todo!()
+                    EventSummary::Execution(action)
                 }
-                _ => (),
+                _ => EventSummary::Ignored,
             }
+        } else {
+            EventSummary::Nothing
         }
     }
 
@@ -71,5 +80,5 @@ mod crossterm_event {
 mod termion_event {
     use super::*;
 
-    pub fn listen_for_event(keyboard: &KeyboardMapping) {}
+    pub fn listen_for_event(keyboard: &KeyboardMapping) -> EventSummary {}
 }
