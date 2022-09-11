@@ -18,8 +18,8 @@ impl KeyboardMapping {
         KeyboardMapping(mappings)
     }
 
-    pub fn action_for(&self, key: &Key) -> KeyboardAction {
-        self.0.get(key).cloned().unwrap_or(KeyboardAction::Nothing)
+    pub fn action_for(&self, key: &Key) -> Option<KeyboardAction> {
+        self.0.get(key).cloned()
     }
 }
 
@@ -74,4 +74,8 @@ pub enum KeyboardAction {
     SeekForward,
     // Seek current track in backward direction
     SeekBackward,
+    // Insert this character to search query
+    PushSearchQuery(char),
+    // Remove last character from search query
+    PopSearchQuery,
 }

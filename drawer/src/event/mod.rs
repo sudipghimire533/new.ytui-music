@@ -1,14 +1,8 @@
+use crate::gadgets::state::AppState;
 use user_config::action::KeyboardAction;
 use user_config::action::KeyboardMapping;
 use user_config::keyboard::Key;
 
-pub fn listen_for_event(keyboard: &KeyboardMapping) -> EventSummary {
-    #[cfg(feature = "crossterm")]
-    return crossterm_event::listen_for_event(keyboard);
-
-    #[cfg(feature = "termion")]
-    return termion_event::listen_for_event(keyboard);
-}
 #[derive(Clone, Copy, Eq, PartialEq)]
 pub enum EventSummary {
     Execution(KeyboardAction),
@@ -17,8 +11,41 @@ pub enum EventSummary {
     Ignored,
 }
 
+pub fn listen_for_event(keyboard: &KeyboardMapping, appstate: &AppState) -> EventSummary {
+    #[cfg(feature = "crossterm")]
+    return crossterm_event::listen_for_event(keyboard, appstate);
+
+    #[cfg(feature = "termion")]
+    return termion_event::listen_for_event(keyboard);
+}
+
+pub fn handle_action(action: KeyboardAction, appstate: &mut AppState) {
+    match action {
+        KeyboardAction::Quit => (),
+        KeyboardAction::ForceQuit => std::process::exit(1),
+        KeyboardAction::PushSearchQuery(ch) => {
+            appstate.altering_query.push(ch);
+        }
+        KeyboardAction::PopSearchQuery => {
+            appstate.altering_query.pop();
+        }
+        KeyboardAction::GotoNextWindow => {
+            let new_active_window = appstate.active_window.next();
+            (*appstate).active_window = new_active_window;
+        }
+        KeyboardAction::StartSearching => {
+            (*appstate).active_window = crate::gadgets::window::Window::SearchBar;
+        }
+        KeyboardAction::GotoPrviousWindow => {}
+        KeyboardAction::Nothing => (),
+        _ => todo!(),
+    }
+}
+
 #[cfg(feature = "crossterm")]
 mod crossterm_event {
+    use crate::gadgets::window::Window;
+
     use super::*;
     use crossterm::event::{self, Event, KeyCode, KeyEvent, KeyModifiers};
     use std::time::Duration;
@@ -27,13 +54,27 @@ mod crossterm_event {
     // make this configurable
     const REFRESH_RATE: Duration = Duration::from_secs(2);
 
-    pub fn listen_for_event(keyboard: &KeyboardMapping) -> EventSummary {
+    pub fn listen_for_event(keyboard: &KeyboardMapping, appstate: &AppState) -> EventSummary {
         if event::poll(REFRESH_RATE).map_err(|_| "crossterm pool event error") == Ok(true) {
             match event::read().unwrap() {
                 Event::Resize(_col, _rows) => EventSummary::Resize,
                 Event::Key(k) => {
                     let key = into_native_event(k);
-                    let action = keyboard.action_for(&key);
+                    let action = {
+                        if appstate.active_window == Window::SearchBar {
+                            if let Key::Char(ch) = key {
+                                KeyboardAction::PushSearchQuery(ch)
+                            } else if key == Key::Backspace {
+                                KeyboardAction::PopSearchQuery
+                            } else if key == Key::Esc {
+                                KeyboardAction::GotoNextWindow
+                            } else {
+                                KeyboardAction::Nothing
+                            }
+                        } else {
+                            keyboard.action_for(&key).unwrap_or(KeyboardAction::Nothing)
+                        }
+                    };
 
                     EventSummary::Execution(action)
                 }
@@ -80,5 +121,7 @@ mod crossterm_event {
 mod termion_event {
     use super::*;
 
-    pub fn listen_for_event(keyboard: &KeyboardMapping) -> EventSummary {}
+    pub fn listen_for_event(keyboard: &KeyboardMapping, app_state: &AppState) -> EventSummary {
+        todo!()
+    }
 }

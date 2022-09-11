@@ -51,7 +51,7 @@ fn run_app<B: tui::backend::Backend>(
         keyboard,
     } = config;
 
-    let appstate = AppState::default();
+    let mut appstate = AppState::default();
     let mut rect_map = HashMap::new();
 
     'ui_renderer: loop {
@@ -61,18 +61,14 @@ fn run_app<B: tui::backend::Backend>(
             .map_err(|e| format!("While creating geometry from Rect map: {e:#?}"))?;
 
         terminal.draw(|frame| draw_all_ui(frame, &appstate, &theme, geometrics))?;
-        let event_summary = listen_for_event(&keyboard);
+        let event_summary = listen_for_event(&keyboard, &appstate);
 
         match event_summary {
-            EventSummary::Nothing => {}
-
-            EventSummary::Execution(keyboard_action) => match keyboard_action {
-                KeyboardAction::Quit => break 'ui_renderer,
-                KeyboardAction::ForceQuit => std::process::exit(1),
-                _ => todo!(),
-            },
-
-            _ => todo!(),
+            EventSummary::Nothing => (),
+            EventSummary::Resize => (),
+            EventSummary::Ignored => (),
+            EventSummary::Execution(action) if action == KeyboardAction::Quit => break 'ui_renderer,
+            EventSummary::Execution(action) => event::handle_action(action, &mut appstate),
         }
     }
 

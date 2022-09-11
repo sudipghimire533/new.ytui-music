@@ -2,11 +2,31 @@
 pub enum Window {
     SearchBar,
     Shortcut,
-    PaneTab,
+    PaneTab(PaneWindow),
     Pane(PaneWindow),
-    None,
     Popup,
     Gauge,
+    None,
+}
+
+impl Window {
+    pub fn next(&self) -> Self {
+        match self {
+            Window::SearchBar => Window::Shortcut,
+            Window::Shortcut => Window::PaneTab(PaneWindow::first()),
+            Window::PaneTab(pane_window) => match pane_window.next() {
+                Some(new_pane) => Window::PaneTab(new_pane),
+                None => Window::Pane(PaneWindow::MusicPane),
+            },
+            Window::Pane(pane_window) => match pane_window.next() {
+                Some(new_pane) => Window::Pane(new_pane),
+                None => Window::Gauge,
+            },
+            Window::Popup => Window::SearchBar,
+            Window::Gauge => Window::SearchBar,
+            Window::None => Window::SearchBar,
+        }
+    }
 }
 
 #[derive(PartialEq, Eq, Clone, Copy)]
@@ -35,5 +55,17 @@ impl PaneWindow {
         } else {
             None
         }
+    }
+
+    pub fn first() -> Self {
+        PaneWindow::MusicPane
+    }
+
+    pub fn last() -> Self {
+        PaneWindow::ArtistPane
+    }
+
+    pub fn next(self) -> Option<Self> {
+        Self::try_from_index(self.into_index() + 1)
     }
 }
