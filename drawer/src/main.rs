@@ -56,7 +56,8 @@ fn run_app<B: tui::backend::Backend>(
     let geometrics = utils::consume_and_get_geometry(&mut rect_map)
         .map_err(|e| format!("While creating geometry from Rect map: {e:#?}"))?;
 
-    draw_all_ui(&mut terminal.get_frame(), &appstate, &theme, geometrics);
+    terminal.draw(|frame| draw_all_ui(frame, &appstate, &theme, geometrics))?;
+
     listen_for_event(&keyboard);
 
     Ok(())
