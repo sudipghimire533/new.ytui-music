@@ -58,7 +58,7 @@ pub fn default_config() -> Config {
                 Item {
                     identifier: Gadget("searchbar".into()),
                     childs: [].to_vec(),
-                    size: Length::Absolute(3),
+                    size: Length::Fill,
                     split: Direction::Vertical,
                 },
                 Item {
@@ -82,7 +82,7 @@ pub fn default_config() -> Config {
                 Item {
                     identifier: Gadget("gauge".into()),
                     childs: [].to_vec(),
-                    size: Length::AtLeast(3),
+                    size: Length::Absolute(3),
                     split: Direction::Vertical,
                 },
                 //------
@@ -109,7 +109,7 @@ pub fn default_config() -> Config {
                 Item {
                     identifier: Container("BotttomArea".to_string()),
                     childs: [Gadget("gauge".into())].to_vec(),
-                    size: Length::Absolute(3),
+                    size: Length::AtLeast(3),
                     split: Direction::Vertical,
                 },
             ]

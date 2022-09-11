@@ -43,6 +43,7 @@ fn run_app<B: tui::backend::Backend>(
     config: Config,
 ) -> Result<(), Box<dyn Error>> {
     let terminal_rect = utils::into_my_rect(terminal.size()?);
+    eprintln!("Terminal size is: {:?}", terminal_rect);
     let Config {
         layout,
         theme,
@@ -55,9 +56,11 @@ fn run_app<B: tui::backend::Backend>(
 
     let geometrics = utils::consume_and_get_geometry(&mut rect_map)
         .map_err(|e| format!("While creating geometry from Rect map: {e:#?}"))?;
+    eprintln!("{:#?}", geometrics);
 
     terminal.draw(|frame| draw_all_ui(frame, &appstate, &theme, geometrics))?;
 
+    std::thread::sleep(std::time::Duration::from_secs(3));
     listen_for_event(&keyboard);
 
     Ok(())

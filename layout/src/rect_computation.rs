@@ -184,15 +184,60 @@ mod tests {
     };
 
     #[test]
-    #[ignore = "Not yet implemented"]
     fn default_config_rect_computation() {
+        use Identifier::*;
+
         let default_config = include_str!("../../res/default-config.json");
         let ui = serde_json::from_str::<Config>(default_config).unwrap();
         let mut size_map = HashMap::new();
+        let terminal_rect = Rect{ x: 0, y: 0, height: 43, width: 190 };
 
-        compute_rect_for_item_tree(&ui.layout.item_root, &mut size_map, &TERMINAL_RECT);
+        compute_rect_for_item_tree(&ui.layout.item_root, &mut size_map, &terminal_rect);
 
-        todo!()
+        let root = Rect { ..terminal_rect.clone() };
+        assert_eq!(
+            Some(&root),
+            size_map.get(&Container("IAmRoot".into()))
+        );
+
+        let top_area = Rect{ height: 3, ..root.clone() };
+        let mid_area = Rect{ y: 3, height: 30, ..root };
+        let bottom_area = Rect{ y: 33, height: 10, ..root };
+        assert_eq!(
+            Some(&top_area),
+            size_map.get(&Container("TopArea".into()))
+        );
+        assert_eq!(
+            Some(&mid_area),
+            size_map.get(&Container("MidArea".into()))
+        );
+        assert_eq!(
+            Some(&bottom_area),
+            size_map.get(&Container("BotttomArea".into()))
+        );
+
+        let shortcuts = Rect { x: 0, width: 57, ..mid_area.clone() };
+        let central = Rect { x: 57, width: 133, ..mid_area.clone() };
+        assert_eq!(
+            Some(&central),
+            size_map.get(&Container("Central".into())),
+        );
+        assert_eq!(
+            Some(&shortcuts),
+            size_map.get(&Gadget("MidArea->shortcuts".into()))
+        );
+
+        println!("{size_map:#?}");
+        let searchbar = Rect { height: 3, ..top_area.clone() };
+        let gauge = Rect { height: 3, ..bottom_area.clone() };
+        assert_eq!(
+            Some(&gauge),
+            size_map.get(&Gadget("BotttomArea->gauge".into()))
+        );
+        assert_eq!(
+            Some(&searchbar),
+            size_map.get(&Gadget("TopArea->searchbar".into())),
+        );
     }
 
     #[test]
