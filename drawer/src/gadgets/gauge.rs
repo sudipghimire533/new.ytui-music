@@ -2,6 +2,7 @@ use crate::gadgets::state::AppState;
 use crate::gadgets::state::PlayerInfo;
 use crate::gadgets::window::Window;
 use tui::layout::Alignment;
+use tui::style::Modifier;
 use tui::style::Style;
 use tui::widgets::Block;
 use tui::widgets::BorderType;
@@ -48,13 +49,23 @@ where
         played = appdata.played_music_duration(),
         total = appdata.music_total_duration()
     );
+    let played_percent = get_played_percent(String::new(), String::new());
     let base_style = Style::default().fg(theme.base_color.into());
     let gauge_style = Style::default().fg(theme.inactive_color.into());
-    let played_percent = get_played_percent(String::new(), String::new());
+    let border_style = if appdata.is_gauge_active() {
+        Style::default()
+            .fg(theme.active_color.into())
+            .add_modifier(Modifier::ITALIC)
+    } else {
+        Style::default()
+            .fg(theme.inactive_color.into())
+            .add_modifier(Modifier::ITALIC)
+    };
 
     let block = Block::default()
         .border_type(BorderType::Rounded)
         .borders(Borders::ALL)
+        .border_style(border_style)
         .title_alignment(Alignment::Center)
         .title(combined_duration);
 
