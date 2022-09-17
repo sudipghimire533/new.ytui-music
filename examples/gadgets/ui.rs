@@ -254,5 +254,5 @@ fn draw_playlistpane<B: tui::backend::Backend>(f: &mut tui::Frame<B>) {
 
     let appdata = ExampleAppdata::get_filled();
 
-    draw_all_ui(f, &appdata, &theme, geometry)
+    draw_all_ui(f, &appdata, &theme, &geometry)
 }
