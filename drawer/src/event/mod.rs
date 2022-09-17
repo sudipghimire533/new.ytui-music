@@ -1,4 +1,5 @@
 use crate::gadgets::state::AppState;
+use crate::types::window::Window;
 use user_config::action::KeyboardAction;
 use user_config::action::KeyboardMapping;
 use user_config::keyboard::Key;
@@ -29,14 +30,46 @@ pub fn handle_action(action: KeyboardAction, appstate: &mut AppState) {
         KeyboardAction::PopSearchQuery => {
             appstate.altering_query.pop();
         }
-        KeyboardAction::GotoNextWindow => {
-            let new_active_window = appstate.active_window.next();
-            (*appstate).active_window = new_active_window;
+
+        KeyboardAction::GotoNextWindow => match appstate.active_window {
+            Window::PaneWindow | Window::PaneTab => {
+                if let Some(new_tab) = appstate.panetab_state.active_tab.next() {
+                    (*appstate).panetab_state.active_tab = new_tab;
+                } else {
+                    (*appstate).active_window =
+                        appstate.active_window.next().unwrap_or_else(Window::first);
+                }
+            }
+
+            _ => {
+                (*appstate).active_window =
+                    appstate.active_window.next().unwrap_or_else(Window::first);
+            }
+        },
+
+        KeyboardAction::GotoPrviousWindow => match appstate.active_window {
+            Window::PaneWindow | Window::PaneTab => {
+                if let Some(new_tab) = appstate.panetab_state.active_tab.prev() {
+                    (*appstate).panetab_state.active_tab = new_tab;
+                } else {
+                    (*appstate).active_window =
+                        appstate.active_window.prev().unwrap_or_else(Window::last)
+                }
+            }
+
+            _ => {
+                (*appstate).active_window =
+                    appstate.active_window.prev().unwrap_or_else(Window::last)
+            }
+        },
+
+        KeyboardAction::Escape => {
+            (*appstate).active_window = appstate.active_window.next().unwrap_or_else(Window::first);
         }
+
         KeyboardAction::StartSearching => {
             (*appstate).active_window = crate::gadgets::window::Window::SearchBar;
         }
-        KeyboardAction::GotoPrviousWindow => {}
         KeyboardAction::Nothing => (),
         _ => todo!(),
     }

@@ -118,10 +118,10 @@ pub fn default_config() -> Config {
             .unwrap(),
         },
         theme: Theme {
-            base_color: RGB(0, 0, 0),
-            highlight_color: RGB(0, 0, 0),
-            active_color: RGB(0, 0, 0),
-            inactive_color: RGB(0, 0, 0),
+            base_color: RGB(101, 255, 68),
+            highlight_color: RGB(170, 51, 34),
+            active_color: RGB(119, 119, 68),
+            inactive_color: RGB(69, 85, 68),
         },
         keyboard: [
             (Key::Up, KeyboardAction::MoveUp),
@@ -139,6 +139,7 @@ pub fn default_config() -> Config {
             (Key::Char('p'), KeyboardAction::PreviousTrack),
             (Key::Char('s'), KeyboardAction::ShuffleToggle),
             (Key::Char('r'), KeyboardAction::RepeatSwitch),
+            (Key::Esc, KeyboardAction::Escape),
         ]
         .into_iter()
         .collect::<HashMap<_, _>>()

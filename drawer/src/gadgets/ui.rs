@@ -90,10 +90,8 @@ where
     }
 
     let panetab_state = <A as Provider<PanetabState>>::provide(appdata);
-    let active_pane =
-        PaneWindow::try_from_index(panetab_state.selected).unwrap_or(PaneWindow::MusicPane);
 
-    match active_pane {
+    match panetab_state.active_tab {
         PaneWindow::MusicPane => {
             let musicpane_rect = geometrics.musicpane;
             if musicpane_rect.area() > 1 {

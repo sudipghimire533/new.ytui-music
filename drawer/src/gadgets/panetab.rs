@@ -30,10 +30,10 @@ pub trait PanetabAppdata {
 
 impl PanetabAppdata for AppState {
     fn is_panetab_active(&self) -> bool {
-        matches!(self.active_window, Window::PaneTab(_))
+        self.active_window == Window::PaneTab
     }
     fn selected(&self) -> usize {
-        self.panetab_state.selected
+        self.panetab_state.active_tab as usize
     }
 }
 

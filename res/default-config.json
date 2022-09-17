@@ -73,16 +73,17 @@
     ]
   },
   "theme": {
-    "base_color": "#000000",
-    "highlight_color": "#000000",
-    "active_color": "#000000",
-    "inactive_color": "#000000"
+    "base_color": "#65ff44",
+    "highlight_color": "#AA3322",
+    "active_color": "#777744",
+    "inactive_color": "#455544"
   },
   "keyboard": {
     "<up>": "MoveUp",
     "<down>": "MoveDown",
     "<tab>": "GotoNextWindow",
     "<backtab>": "GotoPrviousWindow",
+    "<esc>": "Escape",
     "n": "NextTrack",
     "p": "PreviousTrack",
     "<right>": "SeekForward",

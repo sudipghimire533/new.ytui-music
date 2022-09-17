@@ -17,6 +17,7 @@ use drawer::gadgets::ui::draw_all_ui;
 use drawer::gadgets::ui::Provider;
 use drawer::gadgets::unit::MusicUnit;
 use drawer::gadgets::unit::PlaylistUnit;
+use drawer::types::window::PaneWindow;
 use tui::layout::Constraint;
 use tui::layout::Rect;
 use tui::widgets::ListState;
@@ -141,7 +142,9 @@ impl Provider<ShortcutListState> for ExampleAppdata {
 
 impl Provider<PanetabState> for ExampleAppdata {
     fn provide(&self) -> PanetabState {
-        PanetabState { selected: 1 }
+        PanetabState {
+            active_tab: PaneWindow::MusicPane,
+        }
     }
 }
 

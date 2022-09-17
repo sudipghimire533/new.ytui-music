@@ -1,5 +1,6 @@
 use crate::types::query::FinalQuery;
 use crate::types::unit::{ArtistUnit, MusicUnit, PlaylistUnit};
+use crate::types::window::PaneWindow;
 use crate::types::window::Window;
 use tui::layout::Constraint;
 use tui::layout::Rect;
@@ -9,7 +10,7 @@ use tui::widgets::TableState;
 use super::query::Query;
 
 macro_rules! make_wrapper {
-    ($name: ident, $inner: ident) => {
+    ($name: ident ($inner: ident)) => {
         // Todo:
         /// Make #[derive] statement as input of this arm
         #[derive(Clone)]
@@ -52,13 +53,13 @@ pub struct QueryResult<T> {
     pub list: Vec<T>,
 }
 
-make_wrapper!(ShortcutListState, ListState);
-make_wrapper!(MusicPaneState, TableState);
-make_wrapper!(PlaylistPaneState, TableState);
+make_wrapper!(ShortcutListState(ListState));
+make_wrapper!(MusicPaneState(TableState));
+make_wrapper!(PlaylistPaneState(TableState));
 
 #[derive(Clone)]
 pub struct PanetabState {
-    pub selected: usize,
+    pub active_tab: PaneWindow,
 }
 
 /// This struct will contains data that
@@ -96,7 +97,9 @@ impl Default for AppState {
                 list: [].into(),
             },
             active_window: Window::SearchBar,
-            panetab_state: PanetabState { selected: 0 },
+            panetab_state: PanetabState {
+                active_tab: PaneWindow::MusicPane,
+            },
             shortcut_list_state: ShortcutListState(Default::default()),
             music_pane_state: MusicPaneState(Default::default()),
             playlist_pane_state: PlaylistPaneState(Default::default()),

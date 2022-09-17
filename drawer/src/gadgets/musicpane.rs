@@ -2,7 +2,6 @@ use crate::gadgets::state::AppState;
 use crate::gadgets::state::GeometryData;
 use crate::gadgets::unit::MusicUnit;
 use crate::gadgets::window::PaneWindow;
-use crate::gadgets::window::Window;
 use tui::layout::Constraint;
 use tui::style::Modifier;
 use tui::style::Style;
@@ -30,7 +29,7 @@ pub trait MusicpaneGeometry {
 
 impl MusicpaneAppdata for AppState {
     fn is_musicpane_active(&self) -> bool {
-        self.active_window == Window::Pane(PaneWindow::MusicPane)
+        self.panetab_state.active_tab == PaneWindow::MusicPane
     }
     fn selected(&self) -> Option<usize> {
         self.music_pane_state.get_ref().selected()
