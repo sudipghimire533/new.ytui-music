@@ -10,8 +10,10 @@ pub mod preferences;
 pub mod styles;
 
 pub mod reexports {
+    pub use layout;
     pub use layout::rect::Rect;
     pub use layout::rect_computation::compute_rect_for_item_tree;
+    pub use layout_config;
     pub use layout_config::identifier::Identifier;
     pub use layout_config::item::ItemTree;
 }
@@ -124,23 +126,24 @@ pub fn default_config() -> Config {
             inactive_color: RGB(69, 85, 68),
         },
         keyboard: [
-            (Key::Up, KeyboardAction::MoveUp),
-            (Key::Down, KeyboardAction::MoveDown),
-            (Key::Tab, KeyboardAction::GotoNextWindow),
-            (Key::BackTab, KeyboardAction::GotoPrviousWindow),
-            (Key::Right, KeyboardAction::SeekForward),
-            (Key::Left, KeyboardAction::SeekBackward),
-            (Key::Char(' '), KeyboardAction::PausePlay),
-            (Key::Char('q'), KeyboardAction::Quit),
-            (Key::Ctrl('c'), KeyboardAction::ForceQuit),
-            (Key::Char('+'), KeyboardAction::VolumeUp),
-            (Key::Char('-'), KeyboardAction::VolumeDown),
-            (Key::Char('n'), KeyboardAction::NextTrack),
-            (Key::Char('p'), KeyboardAction::PreviousTrack),
-            (Key::Char('s'), KeyboardAction::ShuffleToggle),
-            (Key::Char('r'), KeyboardAction::RepeatSwitch),
-            (Key::Esc, KeyboardAction::Escape),
+            (Key::Up, None, KeyboardAction::MoveUp),
+            (Key::Down, None, KeyboardAction::MoveDown),
+            (Key::Tab, None, KeyboardAction::GotoNextWindow),
+            (Key::BackTab, None, KeyboardAction::GotoPrviousWindow),
+            (Key::Right, None, KeyboardAction::SeekForward),
+            (Key::Left, None, KeyboardAction::SeekBackward),
+            (Key::Char(' '), None, KeyboardAction::PausePlay),
+            (Key::Char('q'), None, KeyboardAction::Quit),
+            (Key::Ctrl('c'), None, KeyboardAction::ForceQuit),
+            (Key::Char('+'), None, KeyboardAction::VolumeUp),
+            (Key::Char('-'), None, KeyboardAction::VolumeDown),
+            (Key::Char('n'), None, KeyboardAction::NextTrack),
+            (Key::Char('p'), None, KeyboardAction::PreviousTrack),
+            (Key::Char('s'), None, KeyboardAction::ShuffleToggle),
+            (Key::Char('r'), None, KeyboardAction::RepeatSwitch),
+            (Key::Esc, None, KeyboardAction::Escape),
         ]
+        .map(|(k1, k2, v)| ((k1, k2).into(), v))
         .into_iter()
         .collect::<HashMap<_, _>>()
         .into(),

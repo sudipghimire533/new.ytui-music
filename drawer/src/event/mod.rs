@@ -105,7 +105,13 @@ mod crossterm_event {
                                 KeyboardAction::Nothing
                             }
                         } else {
-                            keyboard.action_for(&key).unwrap_or(KeyboardAction::Nothing)
+                            keyboard
+                                .action_for(&(key, Some(appstate.active_window)).into())
+                                .unwrap_or_else(|| {
+                                    keyboard
+                                        .action_for(&(key, None).into())
+                                        .unwrap_or(KeyboardAction::Nothing)
+                                })
                         }
                     };
 

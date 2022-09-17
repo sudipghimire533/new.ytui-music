@@ -1,24 +1,77 @@
 use crate::keyboard::Key;
+use layout_config::window::Window;
 use serde::{Deserialize, Serialize};
-use std::collections::HashMap;
+use std::{borrow::Cow, collections::HashMap};
 
 #[repr(transparent)]
 #[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq)]
 #[serde(transparent)]
-pub struct KeyboardMapping(HashMap<Key, KeyboardAction>);
+pub struct KeyboardMapping(HashMap<MappingIndex, KeyboardAction>);
 
-impl From<HashMap<Key, KeyboardAction>> for KeyboardMapping {
-    fn from(map: HashMap<Key, KeyboardAction>) -> Self {
+// In JSON representation this should be represented as:
+// Examples:
+// (Down, Some(MusicList))->MoveDown <=> "Down|MusicList": "MoveDown"
+// (Up, Some(MusicList))->MoveUp <=> "Up|MusicList": "MoveUp"
+// (Up, None)->PreviousWindow <=> "Up": "PreviousWindow"
+//
+// Window name is to be seperated by single `|`
+// if nothing is behind last `|` or no `|` then take Option to be None
+#[derive(Clone, Debug, Serialize, Deserialize, PartialEq, Eq, Hash)]
+#[serde(try_from = "String")]
+#[serde(into = "String")]
+pub struct MappingIndex(Key, Option<Window>);
+
+impl TryFrom<String> for MappingIndex {
+    type Error = String;
+
+    fn try_from(mapping_index: String) -> Result<Self, Self::Error> {
+        if let Some((key_str, window_str)) = mapping_index.rsplit_once('|') {
+            let key = serde_json::from_str::<Key>(key_str)
+                .map_err(|_| format!("Invalid key in mapping index: {mapping_index}"))?;
+            let window = serde_json::from_str::<Window>(window_str)
+                .map_err(|_| format!("Invalid window in mapping index: {mapping_index}"))?;
+
+            Ok(MappingIndex(key, Some(window)))
+        } else {
+            let key: Key = Cow::<'static, str>::Owned(mapping_index.clone())
+                .try_into()
+                .map_err(|e| format!("Invalid mapping index: {mapping_index}. Error: {e:?}"))?;
+
+            Ok(MappingIndex(key, None))
+        }
+    }
+}
+
+impl From<MappingIndex> for String {
+    fn from(MappingIndex(key, window): MappingIndex) -> Self {
+        let key_str: std::borrow::Cow<'static, str> = key.into();
+        let window_str = match window {
+            None => String::new(),
+            Some(window) => format!("|{window}"),
+        };
+
+        format!("{key_str}{window_str}")
+    }
+}
+
+impl From<(Key, Option<layout_config::window::Window>)> for MappingIndex {
+    fn from((key, window): (Key, Option<layout_config::window::Window>)) -> Self {
+        MappingIndex(key, window)
+    }
+}
+
+impl From<HashMap<MappingIndex, KeyboardAction>> for KeyboardMapping {
+    fn from(map: HashMap<MappingIndex, KeyboardAction>) -> Self {
         KeyboardMapping(map)
     }
 }
 
 impl KeyboardMapping {
-    pub fn new(mappings: HashMap<Key, KeyboardAction>) -> Self {
+    pub fn new(mappings: HashMap<MappingIndex, KeyboardAction>) -> Self {
         KeyboardMapping(mappings)
     }
 
-    pub fn action_for(&self, key: &Key) -> Option<KeyboardAction> {
+    pub fn action_for(&self, key: &MappingIndex) -> Option<KeyboardAction> {
         self.0.get(key).cloned()
     }
 }
