@@ -14,7 +14,7 @@ use event::EventSummary;
 use types::{state::AppState, utils};
 use user_config::action::KeyboardAction;
 
-fn main() -> Result<(), Box<dyn std::error::Error>> {
+pub fn main() -> Result<(), Box<dyn std::error::Error>> {
     let config = init::config::get_config(init::default_config_source)
         .map_err(|e| format!("Unable to get user configuration: {e:?}"))?;
 
