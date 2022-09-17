@@ -126,3 +126,26 @@ pub struct GeometryData {
     pub musicpane_division: PaneDivision<3>,
     pub playlistpane_division: PaneDivision<3>,
 }
+
+impl Default for GeometryData {
+    fn default() -> Self {
+        let default_rect = Rect::default();
+        GeometryData {
+            searchbar: default_rect,
+            shortcuts: default_rect,
+            gauge: default_rect,
+            panetab: default_rect,
+            musicpane: default_rect,
+            playlistpane: default_rect,
+            artistpane: default_rect,
+            musicpane_division: PaneDivision {
+                splits: [Constraint::Length(0); 3],
+                spacing: 0,
+            },
+            playlistpane_division: PaneDivision {
+                splits: [Constraint::Length(0); 3],
+                spacing: 0,
+            },
+        }
+    }
+}

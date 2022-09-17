@@ -1,6 +1,7 @@
 use gadgets::ui::draw_all_ui;
 use std::collections::HashMap;
 use std::error::Error;
+use types::state::GeometryData;
 use user_config::reexports::compute_rect_for_item_tree as compute_rect;
 use user_config::Config;
 
@@ -54,19 +55,24 @@ fn run_app<B: tui::backend::Backend>(
     let mut appstate = AppState::default();
     let mut rect_map = HashMap::new();
 
-    'ui_renderer: loop {
+    let mut recompute_layout = |geometrics: &mut GeometryData| -> Result<(), String> {
         compute_rect(&layout.item_root, &mut rect_map, &terminal_rect);
-
-        let geometrics = utils::consume_and_get_geometry(&mut rect_map)
+        *geometrics = utils::consume_and_get_geometry(&mut rect_map)
             .map_err(|e| format!("While creating geometry from Rect map: {e:#?}"))?;
+        Ok(())
+    };
 
-        terminal.draw(|frame| draw_all_ui(frame, &appstate, &theme, geometrics))?;
+    let mut geometrics = GeometryData::default();
+    recompute_layout(&mut geometrics)?;
+
+    'ui_renderer: loop {
+        terminal.draw(|frame| draw_all_ui(frame, &appstate, &theme, &geometrics))?;
         let event_summary = listen_for_event(&keyboard, &appstate);
 
         match event_summary {
             EventSummary::Nothing => (),
-            EventSummary::Resize => (),
             EventSummary::Ignored => (),
+            EventSummary::Resize => recompute_layout(&mut geometrics)?,
             EventSummary::Execution(action) if action == KeyboardAction::Quit => break 'ui_renderer,
             EventSummary::Execution(action) => event::handle_action(action, &mut appstate),
         }

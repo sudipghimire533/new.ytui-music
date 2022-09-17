@@ -50,8 +50,12 @@ impl Provider<PlaylistPaneState> for AppState {
     }
 }
 
-pub fn draw_all_ui<A, B>(frame: &mut Frame<B>, appdata: &A, theme: &Theme, geometrics: GeometryData)
-where
+pub fn draw_all_ui<A, B>(
+    frame: &mut Frame<B>,
+    appdata: &A,
+    theme: &Theme,
+    geometrics: &GeometryData,
+) where
     B: Backend,
     A: SearchbarAppdata
         + GaugeAppData
@@ -96,7 +100,7 @@ where
             let musicpane_rect = geometrics.musicpane;
             if musicpane_rect.area() > 1 {
                 let mut musicpane_state = <A as Provider<MusicPaneState>>::provide(appdata);
-                let musicpane = get_musicpane_list(appdata, &geometrics, theme);
+                let musicpane = get_musicpane_list(appdata, geometrics, theme);
                 frame.render_stateful_widget(
                     musicpane,
                     musicpane_rect,
@@ -109,7 +113,7 @@ where
             let playlistpane_rect = geometrics.playlistpane;
             if playlistpane_rect.area() > 1 {
                 let mut playlistpane_state = <A as Provider<PlaylistPaneState>>::provide(appdata);
-                let playlistpane = get_playlistpane_list(appdata, &geometrics, theme);
+                let playlistpane = get_playlistpane_list(appdata, geometrics, theme);
                 frame.render_stateful_widget(
                     playlistpane,
                     playlistpane_rect,
