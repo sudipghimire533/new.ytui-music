@@ -4,11 +4,9 @@ use std::path::PathBuf;
 use user_config::Config;
 
 fn get_config_path() -> PathBuf {
-    let root_dir = env!("CARGO_MANIFEST_DIR");
-    PathBuf::from(root_dir)
-        .join("..")
-        .join("res")
-        .join("default-config.json")
+    let mut config_dir = dirs::preference_dir().unwrap();
+    config_dir = config_dir.join("ytui_music").join("config.json");
+    config_dir
 }
 
 pub fn default_config_source() -> Result<BufReader<File>, String> {
