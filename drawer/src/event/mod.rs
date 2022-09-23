@@ -23,7 +23,7 @@ pub fn listen_for_event(keyboard: &KeyboardMapping, appstate: &AppState) -> Even
 pub fn handle_action(action: KeyboardAction, appstate: &mut AppState) {
     match action {
         KeyboardAction::Quit => (),
-        KeyboardAction::ForceQuit => std::process::exit(1),
+        KeyboardAction::ForceQuit => std::process::exit(0),
         KeyboardAction::PushSearchQuery(ch) => {
             appstate.altering_query.push(ch);
         }
