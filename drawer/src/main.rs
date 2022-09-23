@@ -45,7 +45,6 @@ fn run_app<B: tui::backend::Backend>(
     terminal: &mut tui::terminal::Terminal<B>,
     config: Config,
 ) -> Result<(), Box<dyn Error>> {
-    let terminal_rect = utils::into_my_rect(terminal.size()?);
     let Config {
         layout,
         theme,
@@ -55,15 +54,16 @@ fn run_app<B: tui::backend::Backend>(
     let mut appstate = AppState::default();
     let mut rect_map = HashMap::new();
 
-    let mut recompute_layout = |geometrics: &mut GeometryData| -> Result<(), String> {
-        compute_rect(&layout.item_root, &mut rect_map, &terminal_rect);
-        *geometrics = utils::consume_and_get_geometry(&mut rect_map)
-            .map_err(|e| format!("While creating geometry from Rect map: {e:#?}"))?;
-        Ok(())
-    };
+    let mut recompute_layout =
+        |geometrics: &mut GeometryData, terminal_rect| -> Result<(), Box<dyn Error>> {
+            compute_rect(&layout.item_root, &mut rect_map, &terminal_rect);
+            *geometrics = utils::consume_and_get_geometry(&mut rect_map)
+                .map_err(|e| format!("While creating geometry from Rect map: {e:#?}"))?;
+            Ok(())
+        };
 
     let mut geometrics = GeometryData::default();
-    recompute_layout(&mut geometrics)?;
+    recompute_layout(&mut geometrics, utils::into_my_rect(terminal.size()?))?;
 
     'ui_renderer: loop {
         terminal.draw(|frame| draw_all_ui(frame, &appstate, &theme, &geometrics))?;
@@ -72,7 +72,9 @@ fn run_app<B: tui::backend::Backend>(
         match event_summary {
             EventSummary::Nothing => (),
             EventSummary::Ignored => (),
-            EventSummary::Resize => recompute_layout(&mut geometrics)?,
+            EventSummary::Resize => {
+                recompute_layout(&mut geometrics, utils::into_my_rect(terminal.size()?))?
+            }
             EventSummary::Execution(action) if action == KeyboardAction::Quit => break 'ui_renderer,
             EventSummary::Execution(action) => event::handle_action(action, &mut appstate),
         }
