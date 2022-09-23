@@ -55,7 +55,7 @@ fn run_app<B: tui::backend::Backend>(
     let mut rect_map = HashMap::new();
 
     let mut recompute_layout =
-        |geometrics: &mut GeometryData, terminal_rect| -> Result<(), Box<dyn Error>> {
+        |geometrics: &mut GeometryData, terminal_rect| -> Result<(), String> {
             compute_rect(&layout.item_root, &mut rect_map, &terminal_rect);
             *geometrics = utils::consume_and_get_geometry(&mut rect_map)
                 .map_err(|e| format!("While creating geometry from Rect map: {e:#?}"))?;
