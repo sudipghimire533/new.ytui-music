@@ -76,6 +76,14 @@ impl KeyboardMapping {
     }
 }
 
+#[derive(Debug, Clone, Copy, Serialize, Deserialize, Eq, PartialEq)]
+pub enum MoveDirection {
+    Up,
+    Left,
+    Down,
+    Right,
+}
+
 /// Possible set of actions that can be performed from keyboard
 #[derive(Debug, Clone, Copy, Serialize, Deserialize, Eq, PartialEq)]
 pub enum KeyboardAction {
@@ -131,4 +139,6 @@ pub enum KeyboardAction {
     PushSearchQuery(char),
     // Remove last character from search query
     PopSearchQuery,
+    // Move in PaneWindow
+    MoveInPaneWindow(MoveDirection),
 }

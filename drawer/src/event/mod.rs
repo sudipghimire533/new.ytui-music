@@ -1,7 +1,9 @@
 use crate::gadgets::state::AppState;
+use crate::gadgets::window::PaneWindow;
 use crate::types::window::Window;
 use user_config::action::KeyboardAction;
 use user_config::action::KeyboardMapping;
+use user_config::action::MoveDirection;
 use user_config::keyboard::Key;
 
 #[derive(Clone, Copy, Eq, PartialEq)]
@@ -23,9 +25,9 @@ pub fn listen_for_event(keyboard: &KeyboardMapping, appstate: &AppState) -> Even
 pub fn handle_action(action: KeyboardAction, appstate: &mut AppState) {
     match action {
         KeyboardAction::Quit => (),
-        
+
         KeyboardAction::ForceQuit => std::process::exit(0),
-        
+
         KeyboardAction::PushSearchQuery(ch) => {
             appstate.altering_query.push(ch);
         }
@@ -47,11 +49,29 @@ pub fn handle_action(action: KeyboardAction, appstate: &mut AppState) {
         }
 
         KeyboardAction::StartSearching => {
-            (*appstate).active_window = crate::gadgets::window::Window::SearchBar;
+            (*appstate).active_window = Window::SearchBar;
         }
 
+        KeyboardAction::MoveInPaneWindow(MoveDirection::Right) => {
+            (*appstate).panetab_state.active_tab = appstate
+                .panetab_state
+                .active_tab
+                .next()
+                .unwrap_or_else(PaneWindow::first);
+        }
+
+        KeyboardAction::MoveInPaneWindow(MoveDirection::Left) => {
+            (*appstate).panetab_state.active_tab = appstate
+                .panetab_state
+                .active_tab
+                .prev()
+                .unwrap_or_else(PaneWindow::last);
+        }
+
+        KeyboardAction::MoveInPaneWindow(_) => {}
+
         KeyboardAction::Nothing => (),
-        
+
         _ => todo!(),
     }
 }

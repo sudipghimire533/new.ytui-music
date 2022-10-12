@@ -1,8 +1,10 @@
 use action::KeyboardMapping;
-use layout_config::length::Length;
 use layout_config::ui::UI;
+use layout_config::{length::Length, window::Window};
 use preferences::theme::Theme;
 use serde::{Deserialize, Serialize};
+
+use crate::action::MoveDirection;
 
 pub mod action;
 pub mod keyboard;
@@ -142,6 +144,26 @@ pub fn default_config() -> Config {
             (Key::Char('s'), None, KeyboardAction::ShuffleToggle),
             (Key::Char('r'), None, KeyboardAction::RepeatSwitch),
             (Key::Esc, None, KeyboardAction::Escape),
+            (
+                Key::Right,
+                Some(Window::PaneWindow),
+                KeyboardAction::MoveInPaneWindow(MoveDirection::Right),
+            ),
+            (
+                Key::Right,
+                Some(Window::PaneTab),
+                KeyboardAction::MoveInPaneWindow(MoveDirection::Right),
+            ),
+            (
+                Key::Left,
+                Some(Window::PaneWindow),
+                KeyboardAction::MoveInPaneWindow(MoveDirection::Left),
+            ),
+            (
+                Key::Left,
+                Some(Window::PaneTab),
+                KeyboardAction::MoveInPaneWindow(MoveDirection::Left),
+            ),
         ]
         .map(|(k1, k2, v)| ((k1, k2).into(), v))
         .into_iter()

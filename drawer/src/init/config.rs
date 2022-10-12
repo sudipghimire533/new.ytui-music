@@ -20,6 +20,12 @@ where
     R: BufRead,
     F: FnOnce() -> Result<R, String>,
 {
+    // TODO:
+    // remove this block
+    {
+        return Ok(user_config::default_config());
+    }
+
     let reader = config_source().map_err(|e| format!("While getting config source: {e:?}"))?;
     let config = serde_json::from_reader(reader)
         .map_err(|e| format!("While parsing json from reader: {e:?}"))?;
