@@ -141,4 +141,12 @@ pub enum KeyboardAction {
     PopSearchQuery,
     // Move in PaneWindow
     MoveInPaneWindow(MoveDirection),
+    // Move in Shortcut list
+    MoveInShortcuts(MoveDirection),
+    // Move in Music tab list
+    MoveInMusicList(MoveDirection),
+    // Move in Playlist tab list
+    MoveInPlaylistList(MoveDirection),
+    // Move in Artist tab list
+    MoveInArtistList(MoveDirection),
 }

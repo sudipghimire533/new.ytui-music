@@ -164,6 +164,16 @@ pub fn default_config() -> Config {
                 Some(Window::PaneTab),
                 KeyboardAction::MoveInPaneWindow(MoveDirection::Left),
             ),
+            (
+                Key::Down,
+                Some(Window::Shortcut),
+                KeyboardAction::MoveInShortcuts(MoveDirection::Down),
+            ),
+            (
+                Key::Up,
+                Some(Window::Shortcut),
+                KeyboardAction::MoveInShortcuts(MoveDirection::Up),
+            ),
         ]
         .map(|(k1, k2, v)| ((k1, k2).into(), v))
         .into_iter()

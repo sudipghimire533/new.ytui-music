@@ -1,3 +1,4 @@
+use crate::gadgets;
 use crate::gadgets::state::AppState;
 use crate::gadgets::window::PaneWindow;
 use crate::types::window::Window;
@@ -69,6 +70,32 @@ pub fn handle_action(action: KeyboardAction, appstate: &mut AppState) {
         }
 
         KeyboardAction::MoveInPaneWindow(_) => {}
+
+        KeyboardAction::MoveInShortcuts(MoveDirection::Down) => {
+            let next = appstate
+                .shortcut_list_state
+                .get_ref()
+                .selected()
+                .map(|s| {
+                    if s + 1 < gadgets::shortcut::LIST_ITEMS.len() {
+                        Some(s + 1)
+                    } else {
+                        None
+                    }
+                })
+                .unwrap_or(Some(0));
+            (*appstate).shortcut_list_state.get_mut_ref().select(next);
+        }
+
+        KeyboardAction::MoveInShortcuts(MoveDirection::Up) => {
+            let next = appstate
+                .shortcut_list_state
+                .get_ref()
+                .selected()
+                .map(|s| if s > 0 { Some(s - 1) } else { None })
+                .unwrap_or(Some(gadgets::shortcut::LIST_ITEMS.len() - 1));
+            (*appstate).shortcut_list_state.get_mut_ref().select(next);
+        }
 
         KeyboardAction::Nothing => (),
 

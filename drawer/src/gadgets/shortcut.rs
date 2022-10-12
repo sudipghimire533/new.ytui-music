@@ -9,6 +9,17 @@ use tui::widgets::List;
 use tui::widgets::ListItem;
 use user_config::preferences::{shortcut::Shortcut, theme::Theme};
 
+pub const LIST_ITEMS: [Shortcut; 8] = [
+    Shortcut::Trending,
+    Shortcut::YoutubeCommunity,
+    Shortcut::LikedSongs,
+    Shortcut::MyPlaylist,
+    Shortcut::Downloaded,
+    Shortcut::FollowingArtist,
+    Shortcut::Local,
+    Shortcut::Search,
+];
+
 pub trait ShortcutListAppdata {
     fn is_shortcutlist_active(&self) -> bool;
     fn selected(&self) -> Option<usize>;
@@ -31,17 +42,6 @@ pub fn get_shortcut_list<'a, A>(appdata: &A, theme: &Theme) -> List<'a>
 where
     A: ShortcutListAppdata,
 {
-    const LIST_ITEMS: [Shortcut; 8] = [
-        Shortcut::Trending,
-        Shortcut::YoutubeCommunity,
-        Shortcut::LikedSongs,
-        Shortcut::MyPlaylist,
-        Shortcut::Downloaded,
-        Shortcut::FollowingArtist,
-        Shortcut::Local,
-        Shortcut::Search,
-    ];
-
     let list_items = LIST_ITEMS
         .into_iter()
         .enumerate()
