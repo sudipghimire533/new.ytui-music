@@ -23,24 +23,45 @@ pub fn listen_for_event(keyboard: &KeyboardMapping, appstate: &AppState) -> Even
 pub fn handle_action(action: KeyboardAction, appstate: &mut AppState) {
     match action {
         KeyboardAction::Quit => (),
-
         KeyboardAction::ForceQuit => std::process::exit(0),
-
         KeyboardAction::PushSearchQuery(ch) => {
             appstate.altering_query.push(ch);
         }
-
         KeyboardAction::PopSearchQuery => {
             appstate.altering_query.pop();
         }
 
-        KeyboardAction::GotoNextWindow => {
-            (*appstate).active_window = appstate.active_window.next().unwrap_or_else(Window::first);
-        }
+        KeyboardAction::GotoNextWindow => match appstate.active_window {
+            Window::PaneWindow | Window::PaneTab => {
+                if let Some(new_tab) = appstate.panetab_state.active_tab.next() {
+                    (*appstate).panetab_state.active_tab = new_tab;
+                } else {
+                    (*appstate).active_window =
+                        appstate.active_window.next().unwrap_or_else(Window::first);
+                }
+            }
 
-        KeyboardAction::GotoPrviousWindow => {
-            (*appstate).active_window = appstate.active_window.prev().unwrap_or_else(Window::last);
-        }
+            _ => {
+                (*appstate).active_window =
+                    appstate.active_window.next().unwrap_or_else(Window::first);
+            }
+        },
+
+        KeyboardAction::GotoPrviousWindow => match appstate.active_window {
+            Window::PaneWindow | Window::PaneTab => {
+                if let Some(new_tab) = appstate.panetab_state.active_tab.prev() {
+                    (*appstate).panetab_state.active_tab = new_tab;
+                } else {
+                    (*appstate).active_window =
+                        appstate.active_window.prev().unwrap_or_else(Window::last)
+                }
+            }
+
+            _ => {
+                (*appstate).active_window =
+                    appstate.active_window.prev().unwrap_or_else(Window::last)
+            }
+        },
 
         KeyboardAction::Escape => {
             (*appstate).active_window = appstate.active_window.next().unwrap_or_else(Window::first);
@@ -49,7 +70,6 @@ pub fn handle_action(action: KeyboardAction, appstate: &mut AppState) {
         KeyboardAction::StartSearching => {
             (*appstate).active_window = crate::gadgets::window::Window::SearchBar;
         }
-
         KeyboardAction::Nothing => (),
         _ => todo!(),
     }
