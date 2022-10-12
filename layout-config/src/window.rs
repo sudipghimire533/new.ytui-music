@@ -6,7 +6,7 @@ pub enum Window {
     SearchBar,
     Shortcut,
     PaneTab,
-    PaneWindow,
+    Pane(PaneWindow),
     Popup,
     Gauge,
     None,
@@ -25,8 +25,10 @@ impl Window {
         let next = match self {
             Window::SearchBar => Window::Shortcut,
             Window::Shortcut => Window::PaneTab,
-            Window::PaneTab => Window::PaneWindow,
-            Window::PaneWindow => Window::Gauge,
+            Window::PaneTab => Window::Pane(PaneWindow::MusicPane),
+            Window::Pane(PaneWindow::MusicPane) => Window::Pane(PaneWindow::PlaylistPane),
+            Window::Pane(PaneWindow::PlaylistPane) => Window::Pane(PaneWindow::ArtistPane),
+            Window::Pane(PaneWindow::ArtistPane) => Window::Gauge,
             Window::Popup => Window::SearchBar,
             Window::Gauge => return None,
             Window::None => return None,
@@ -39,9 +41,11 @@ impl Window {
             Window::SearchBar => return None,
             Window::Shortcut => Window::SearchBar,
             Window::PaneTab => Window::Shortcut,
-            Window::PaneWindow => Window::PaneTab,
+            Window::Pane(PaneWindow::MusicPane) => Window::PaneTab,
+            Window::Pane(PaneWindow::PlaylistPane) => Window::Pane(PaneWindow::MusicPane),
+            Window::Pane(PaneWindow::ArtistPane) => Window::Pane(PaneWindow::PlaylistPane),
             Window::Popup => Window::Gauge,
-            Window::Gauge => Window::PaneWindow,
+            Window::Gauge => Window::Pane(PaneWindow::ArtistPane),
             Window::None => return None,
         };
         Some(prev)
@@ -56,7 +60,7 @@ impl Window {
     }
 }
 
-#[derive(PartialEq, Eq, Clone, Copy)]
+#[derive(Debug, Clone, Hash, Eq, PartialEq, Serialize, Deserialize, Copy)]
 pub enum PaneWindow {
     MusicPane = 0,
     PlaylistPane = 1,
