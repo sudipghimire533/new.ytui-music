@@ -91,10 +91,6 @@ pub enum KeyboardAction {
     StartSearching,
     // toggle stop/resume of playing track
     PausePlay,
-    // Move down to the list
-    MoveDown,
-    // Move up to the list
-    MoveUp,
     // go to next window
     GotoNextWindow,
     // go to previous window

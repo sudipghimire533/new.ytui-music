@@ -128,12 +128,8 @@ pub fn default_config() -> Config {
             inactive_color: RGB(69, 85, 68),
         },
         keyboard: [
-            (Key::Up, None, KeyboardAction::MoveUp),
-            (Key::Down, None, KeyboardAction::MoveDown),
             (Key::Tab, None, KeyboardAction::GotoNextWindow),
             (Key::BackTab, None, KeyboardAction::GotoPrviousWindow),
-            (Key::Right, None, KeyboardAction::SeekForward),
-            (Key::Left, None, KeyboardAction::SeekBackward),
             (Key::Char(' '), None, KeyboardAction::PausePlay),
             (Key::Char('q'), None, KeyboardAction::Quit),
             (Key::Ctrl('c'), None, KeyboardAction::ForceQuit),
